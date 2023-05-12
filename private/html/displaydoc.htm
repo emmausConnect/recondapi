@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<style>
+.container {
+    width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px black solid;
+}
+
+.centered-element{
+    margin-left: auto;
+    margin-right: auto;
+    padding: 15px;
+
+}
+.ltext{
+    font-style:italic
+}
+.indent{
+    margin-left: 40px;
+}
+</style>
+</HEAD>
+<Body class="container">
+<main class="centered-element">
+<h1>Résumé du traitement</h1>
+<h2>Catégorie CPU</h2>
+si <b>"EMMAUSCONNECT <u>nnnnn</u>"</b>,<br>
+<div class="indent">
+    c'est ce <u>nnnnn</u> qui sera utilisé comme indice du CPU<br>
+</div>
+<br>
+sinon<br>
+    <div class="indent">
+    a) recherche si le nom CPU ne se trouve pas dans la table de transcodification.<br>
+    <div class="indent">
+    <span class="ltext, indent">voir "../private/cputranscodagedata.json" de la page "Gestion".</span><br>
+    Pour l'instant il n'y a que :<br>
+    <span class=" indent">"CORE I5 M 520 2.40 GHZ" : "Intel Core i5-520M @ 2.40GHz",</span><br>
+    <br>
+    </div>
+    b) recherche dans la table cache pour voir si ce CPU n'a pas déjà été mémorisé<br>
+    <div class="indent">
+    <span class="ltext, indent">voir "../private/cpuindicecachedata.json" de la page "Gestion".</span><br>
+    si le CPU y est<br>
+        <span class=" indent">on utilise l'indice qui s'y trouve</span><br>
+    sinon<br>
+        <span class=" indent">recherche sur le site WEB.</span><br>
+    </div>
+    <br>
+    puis utilisation du paramétrage<span class="ltext"> (voir "../private/param.ini" de la page "Gestion".)</span><br>
+    ce qui nous donne la <b>catégorie du CPU</b><br>
+</div>
+
+<h2>Catégorie disque et ram</h2>
+utilisation du paramétrage <span class="ltext">(voir "../private/param.ini" de la page "Gestion".)</span>
+
+<h2>Catégorie du PC</h2>
+
+1) calcul de la catégorie du PC en fonction du paramétrage <span class="ltext">(voir "../private/param.ini" de la page "Gestion".)</span><br>
+ <br>
+2) calcul de la catégorie maximum à accorder au PC en fonction de la règle :
+<div class="indent">
+    Un PC avec un CPU de code catégorie 1 (indice inférieur à 2500) et<br>
+    * un disque dur de type HDD est classé au mieux en catégorie C<br>
+    * un disque dur de type SSD est classé au mieux en catégorie B<br>
+</div>
+<br>
+3) on garde la plus mauvaise catégorie des 2.<br>
+</main>
+</Body>

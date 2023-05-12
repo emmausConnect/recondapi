@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<HTML>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+Ce site peut être utilisé de 2 façons :
+* intéractivement
+* en tant qu'API
+*
+
+<h1>INTERACTIF</h1>
+<ul>
+<li>connectez-vous au site</li>
+<li>dans le champ "Demande", copiez les colonnes "cpu", "taille RAM" et "taille disque"</li>
+<li>cliquez sur "calculer"</li>
+<li>copiez/coller la réponse du champ "Résultat" dans votre Excel</li>
+</ul>
+
+<h1>API</h1>
+<pre>
+Le mode API est prévu pour être utilisé par un programme, fonction Excel ...
+
+dans l'URL, vous devez indiquer les infos suivantes :
+/!\ ne pas oublié de faire l'encode d'URL (qui entre autre remplace les espaces par des "+" /!\
+
+* query :
+    cpu : seulement les info du CPU (indice et catégorie)
+    pc  : évaluation du PC
+
+
+* cpu[] : si on veut mettre plusieurs syntaxes pour le CPU
+   le programme fera la recherche et renverra le résultat pour le premier qui fonctionne
+    exemple : 
+	si le CPU est connu sous 2 noms : 
+	   AMD A10 PRO-7800B APU
+	   et
+	   AMD A10 PRO-7800B
+	
+	cpu[]=AMD+A10+PRO-7800B+APU&cpu[]=AMD+A10+PRO-7800B
+
+* cpu : text du CPU (quand il n'y a qu'un seukl texte de CPU les [] sont inutiles) : default = ""
+
+
+* tailleram  : taille de la ram sous forme "4g" "4 Go" ... : default = 0g
+* taillehdd  :  taille de la ram sous forme "4g" "4 Go" ... : default = 0g
+* outfmt     : format de sortie 
+      json
+	  text  :  dft = JSON
+* separateur : utilisé si format "text". dft = "\t" (tabulation)
+* detail     : 1 => le détail du calcul est joint au résultat (pour debug)
+<pre>
+<h2>Appel avec juste un CPU</h2>
+seules les infos du CPU sont pertinantes
+<div style="border:1px solid black">
+<pre>
+{
+	"status": "OK",
+	"err": {
+       ...
+	},
+	"data": {
+		"resultindice": {
+           ...
+		},
+		"categoriePC": "INVENDABLE",
+		"prixPC": "0",
+		"cpuTextInput": [
+			"AMD A10 PRO-7800B APU"
+		],
+		<span style="background-color:#A0A0A0;">"indiceCPU": "3171",</span>
+		<span style="background-color:#A0A0A0;">"categorieCPU": "2",</span>
+		"tailleRam": 0,
+		"categorieRam": "-8",
+		"tailleHDD": 0,
+		"categorieHDD": "-8",
+		"categorieTotal": -14
+	}
+}
+</pre>
+</div>
+<h2>Appel avec CPU, ram et disque</h2>
+
+<div style="border:1px solid black">
+<pre>
+
+</pre>
+</div>
+</body>

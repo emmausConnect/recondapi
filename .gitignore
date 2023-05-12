@@ -1,0 +1,53 @@
+# "environnement.ini" est un fichier nécessaire à l'application.
+# il est à la racine du site est contient soit "PROD" soit "TEST".
+# il conditionne quelque traitement.
+# /environnement.ini
+
+# ==========================================================================================================================
+# dossiers nécessaires à l'application mais dont le contenu ne doit pas être mis dans GIT ==================================
+
+# upload contient les fichiers téléchargés par l'utilisateur
+public/upload/
+
+# work contient des fichiers créés/mis à jour par l'application
+work/
+
+# ==========================================================================================================================
+# fichiers nécessaires à l'application mais qui ne doivent  pas être mis dans GIT ==================================
+
+# les vidéo MP4 doivent être stockées ailleurs car trop gros
+*.mp4
+
+# fichiers personnels utilisés uniquement en local ===========================================================================
+# petits PHP pour tester une fonction ...
+xtest*
+
+# pasGit contient des fichiers qui n'ont rien à faire sur le git
+#   mais utile en local
+pasGit/
+
+# ==========================================================================================================================
+# fichiers temporaires classique
+*.tmp
+*.temp
+
+#Travail de Libreoffice
+.~*
+~*
+
+# fichier log
+*.log
+
+# fichier système windows
+/desktop.ini
+
+
+
+
+# fichiers de Visual studio ====================================================
+.vscode/
+
+# fichier du plugin de visual studio Local History https://marketplace.visualstudio.com/items?itemName=xyz.local-history
+.history/
+
+

@@ -1,0 +1,289 @@
+.body_flex {
+    display: flex;
+    justify-content: center;
+
+}
+
+main {
+    width: 880px;
+}
+
+.titre {
+    display: flex;
+    justify-content: space-between;
+    top: 0px;
+    left: 0px;
+    height: 60px;
+    border-style: solid none solid none;
+    border-color: #00acb0;
+    text-align: center;
+    font-size: 40px;
+}
+
+.version {
+    display: flex;
+    margin-top: 5px;
+    justify-content: space-between;
+    width: 850px;
+}
+
+h2 {
+    margin: 5px 10px 5px 10px;
+    color: #272350;
+}
+
+h3 {
+    margin: 5px 10px 5px 10px;
+    color: #272350;
+}
+
+p{
+    margin: 5px 0px 5px 0px;
+}
+
+form label {
+    display: inline-block;
+    vertical-align: top;
+    text-align: right;
+    padding-right: 8px;
+    padding-top: 2px;
+    width: 200px;
+}
+
+form p {
+    text-align: left;
+}
+
+article {
+    border: 1px;
+    border-style: inset;
+    margin: 5px 10px 5px 10px;
+    padding: 5px;
+    width: 850px;
+}
+
+.article2 {
+    width: 800px;
+}
+
+table,
+th,
+td {
+    border: 1px solid blue;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+.ec-btn {
+    color: #ffffff !important;
+    border-color: #233d8d !important;
+    background-image: initial;
+    background-color: #00acb0;
+    border-width: 12px !important;
+    letter-spacing: 2px;
+    font-size: 20px;
+    line-height: 1 !important;
+    padding-right: 1em !important;
+    padding-left: 1em !important;
+    border-radius: 50px;
+}
+.ec-nav {
+    font-size: 15px;
+}
+
+.ec-btn:hover {
+    background-color: #223094;
+}
+
+.div-saisie {
+    border: 1px;
+    border-style: inset;
+    padding: 10px;
+}
+
+.menutitre {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.menuoption {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.div-menu-bas {
+    border-top-style: solid;
+    border-top-width: 1px;
+    padding: 5px 0px 0px 0px;
+    margin: 5px 0px 0px 0px;
+}
+
+.img-border {
+    border: 1px solid #00F;
+}
+
+.overborder:hover {
+    border: 5px solid #00F;
+}
+
+a:link {
+    text-decoration: none;
+    color: hotpink;
+}
+
+a:visited {
+    text-decoration: none;
+    color: hotpink;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: hotpink;
+}
+
+a:active {
+    text-decoration: underline;
+    color: hotpink;
+}
+
+/*right position*/
+.tooltipright {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltipright .toolttext {
+    visibility: hidden;
+    width: 200px;
+    height: 100px;
+    background-color: lightsalmon;
+    color: black;
+    text-align: center;
+    border-radius: 4px;
+    padding: 8px;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 0;
+    left: 110%;
+}
+
+.tooltipright:hover .toolttext {
+    visibility: visible;
+}
+
+/*left position*/
+.tooltipleft {
+    position: relative;
+    display: inline-block;
+    border-bottom: 2px dotted blue;
+}
+
+.tooltipleft .toolttextleft {
+    visibility: hidden;
+    width: 200px;
+    height: 50px;
+    background-color: lightsalmon;
+    color: black;
+    text-align: center;
+    border-radius: 4px;
+    padding: 5px;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    right: 130%;
+}
+
+.tooltipleft:hover .toolttextleft {
+    visibility: visible;
+}
+
+.msgerrtext {
+    color: red;
+}
+
+.msgsuccesstext {
+    color: green;
+}
+
+.popupmsg {
+    position: relative;
+    text-align: center;
+    width: 100%;
+}
+
+.popupmsgform {
+    display: none;
+    position: fixed;
+    left: 45%;
+    top: 5%;
+    transform: translate(-50%, 5%);
+    border: 3px solid #999999;
+    z-index: 9;
+  }
+
+  .loginPopup {
+    position: relative;
+    text-align: center;
+    width: 100%;
+  }
+  .formPopup {
+    display: none;
+    position: fixed;
+    left: 45%;
+    top: 5%;
+    transform: translate(-50%, 5%);
+    border: 3px solid #999999;
+    z-index: 9;
+  }
+  .formContainer {
+    max-width: 300px;
+    padding: 20px;
+    background-color: #fff;
+  }
+  .formContainer input[type=text],
+  .formContainer input[type=password] {
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0 20px 0;
+    border: none;
+    background: #eee;
+  }
+  .formContainer input[type=text]:focus,
+  .formContainer input[type=password]:focus {
+    background-color: #ddd;
+    outline: none;
+  }
+  .formContainer .btn {
+    padding: 12px 20px;
+    border: none;
+    background-color: #8ebf42;
+    color: #fff;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 15px;
+    opacity: 0.8;
+  }
+  .formContainer .cancel {
+    background-color: #cc0000;
+  }
+  .formContainer .btn:hover,
+  .openButton:hover {
+    opacity: 1;
+  }
+
+  input:invalid {
+    background-color: #c58338;
+  }
+  input:required {
+    border: 2px solid black;
+  }
+
+  .radioLeft
+{
+    text-align:left;
+    margin-left: 350px;
+}

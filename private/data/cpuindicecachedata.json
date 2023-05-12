@@ -1,0 +1,8 @@
+{
+	"description" : "mise en cache disque des indice CPU pour diminuer le nombre de requètes au service web",
+	"data" :
+		{
+		"A" : {"indice" :  "1" , "date" : "20220101"}
+
+		}
+}

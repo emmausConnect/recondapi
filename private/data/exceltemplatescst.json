@@ -1,0 +1,53 @@
+{
+	"*BOLC": {
+		"operation": "constante",
+		"templatename": "*BOLC",
+		"templatedesc": "Emmaus-connect BOLC",
+		"updatedby": "mben",
+		"updatedtime": "2022-09-11 17:41:38",
+		"coldebug": "V",
+		"data" : {
+			"ligneentete" : "4"  ,
+			"colnumlot" : "A"  ,
+			"colidentifiantunique" : "B" ,
+			"coltypemateriel" : "C"  ,
+			"colconstructeur" : "D" ,
+			"colpcmodel" : "E" ,
+			"colnumserie" : "F" ,
+			"colcpu" : "G" ,
+			"coltypedisk" : "H" ,
+			"coltailledisk" : "I" ,
+			"coltypedisk2" : "J" ,
+			"coltailledisk2" : "K" ,
+			"coltailleram" : "L" ,
+			"coldvd" : "M" ,
+			"colwebcam" : "N" ,
+			"colecran" : "O" ,
+			"colremarque" : "P" ,
+			"colgradeesthetique" : "Q" ,
+			"colcategorie" : "R" ,
+			"colerreur" :  "S" 
+			},
+		"header" : {
+			"colnumlot" : "Numéro Lot",
+			"colidentifiantunique" : "Identifiant unique",
+			"coltypemateriel" : "Type matériel",
+			"colconstructeur" : "Constructeur",
+			"colpcmodel" : "Model",
+			"colnumserie" : "N° Serie",
+			"colcpu" : "Processeur",
+			"coltypedisk" : "Type disque 1",
+			"coltailledisk" : "Taille disque 1",
+			"coltypedisk2" : "Type disque 2",
+			"coltailledisk2" : "taille disque 2",
+			"coltailleram" : "RAM",
+			"coldvd" : "DVD",
+			"colwebcam" : "Webcam",
+			"colecran" : "ECRAN",
+			"colremarque" : "REMARQUES",
+			"colgradeesthetique" : "Grade esth.",
+			"colcategorie" : "Catégorie",
+			"colerreur" : "Erreur calcul"
+		}
+	}
+}
