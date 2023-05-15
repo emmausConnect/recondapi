@@ -1,5 +1,10 @@
 <?php
 declare(strict_types=1);
+
+// tentative de générer un fichier pour les tests unitaires
+// pas terminé ;-)
+
+
 require 'loggerrec.class.php';
 $debug = 0;
 header('Cache-Control: no-cache');

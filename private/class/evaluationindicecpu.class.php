@@ -9,15 +9,18 @@ require_once __DIR__.'/pc.class.php';
 require_once __DIR__.'/util01.class.php';
 require_once __DIR__.'/loggerrec.class.php';
 
+/**
+ * fait l'évaluation d'un CPU contenu dans un objet "Pc"
+ */
 class EvaluationIndiceCpu
 {
   private array      $cpuTextInputArray = array();     // renseigné à l'instentiation
-  private ?string    $status = null;
+  private ?string    $status            = null;
   private EvaluationErrors   $evaluationErrorsCl;      // renseigné à l'instentiation
-  private ?string    $cputextnorm = null;              // renseigné lors de l'évaluation
-  private ?IndiceCPU $indiceCPUCl = null;              // renseigné lors de l'évaluation
+  private ?string    $cputextnorm       = null;        // renseigné lors de l'évaluation
+  private ?IndiceCPU $indiceCPUCl       = null;        // renseigné lors de l'évaluation
   private ?CpuBenchmarkResult $cpuBenchmarkResultCl;   // renseigné lors de l'évaluation si recherche sur le web|null
-  //private ?string    $categorieCPU  = null;
+  //private ?string    $categorieCPU    = null;
   private LoggerRec  $logger;
 
   private function __construct()
@@ -188,6 +191,7 @@ class EvaluationIndiceCpu
    * * supprime les caratère non imprimables
    * * supprime la fin de ligne
    * * supprime les espaces au début et à la fin
+   * * complète le texte comme il peut
    * @param string $cpu
    * @param string $fmtcpu
    * @return string
@@ -249,15 +253,6 @@ class EvaluationIndiceCpu
         
     }
     return $cpuNorm;
-  }
-  function normalyseCpuTextOld(string $cpuTextInput, $fmtcpu = "1") : string
-  {
-    $this->logger->addLogDebugLine(">>> normalyseCpuText(" . $cpuTextInput . ")");
-    // suppression de la fin de ligne
-    //$cpuTextInput = preg_replace('/[\x00-\x1F\x7F]/u', '', $cpuTextInput);
-    //Util01::Util01::cleanString($cpuTextInput);
-    // check si présent dans la transcodification
-    return $cpuTextInput;
   }
 
   // ==================================================================

@@ -1,4 +1,8 @@
 <?php
+/**
+ * utilisé par recapexcel.php
+ */
+
 $listExceltest= array(
     "1658819447_r_202220725-Catégorie ASF.xlsx"
 );

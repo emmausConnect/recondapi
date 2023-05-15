@@ -10,6 +10,9 @@ require __DIR__.'/../../libraries/spreadsheet/vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
+/**
+ * Traitement d'un fichier Excel
+ */
 class TrtExcel {
     private $log=""; // 1 => le log est joint à la réponse (pour debug)
     private $logger; // initialisé à l'instantiation

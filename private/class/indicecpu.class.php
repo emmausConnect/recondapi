@@ -3,7 +3,7 @@ declare(strict_types=1);
 require_once __DIR__.'/cpubenchmarkresult.class.php';
 
 /**
- * données sur l'indice d'un CPU
+ * contient le résultat de l'évaluation de l'indice CPU repris du site web
  */
 class IndiceCPU {
 	private string $cpuTextNorm = "";

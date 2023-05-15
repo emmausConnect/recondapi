@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-class CpuTranscodage {
+
 	/**
 	 * contient 2 postes :
 	 * "description"
@@ -8,6 +8,8 @@ class CpuTranscodage {
 	 *  * "data" est un tableau associatif :
 	 *  * "nom cpu" : "nom normalisé"
 	 * */
+class CpuTranscodage {
+
 	private static $dataJson = NULL;
 	
 	public static function getTransCpu($cpuName) {

@@ -1,9 +1,13 @@
 <?php
 declare(strict_types=1);
+
 require_once __DIR__ . '/pc.class.php';
 require_once __DIR__ . '/evaluationpc.class.php';
 require_once __DIR__ . '/util01.class.php';
 
+/**
+ * gère une requête API
+ */
 class APIeval
 {
     private string    $debug;    // init à l'instanciation

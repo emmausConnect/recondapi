@@ -1,5 +1,9 @@
 <?php
 declare(strict_types=1);
+/**
+ * affcihele menu de gestion
+ */
+
 require_once __DIR__.'/pageheaderhtml.php';
 
 //$debugValue = getDebugFromBrowserSessionCookie();

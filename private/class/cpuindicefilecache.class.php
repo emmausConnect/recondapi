@@ -1,9 +1,10 @@
 <?php
 declare(strict_types=1);
+
 /**
- gère le fichier cache dans lequel on a mémorisé
- les indices des CPU
- cela évite des accès au service web
+ * gère le fichier cache dans lequel on a mémorisé
+ * les indices des CPU
+ * cela évite des accès au service web
  */
 class CpuIndiceFileCache {
 	private static $indiceCpuJson = "";

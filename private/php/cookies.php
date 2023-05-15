@@ -6,8 +6,6 @@ declare(strict_types=1);
  * {
  *    debug = x
  * }
- * 
- * 
  */
 
 /**

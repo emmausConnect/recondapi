@@ -1,10 +1,17 @@
 <?php
 declare(strict_types=1);
+
+/**
+ * gestion du log
+ * 
+ * peut écrire dans un fichier
+ * peut mémoriser en RAM (avec gestion d'une taille maxi)
+ */
 class LoggerRec {
 	private  $log = ""; // concaténation de tous les message de log reçus
 	private  $debugLevel = "0";
 	private  $outFile = "";
-	private  $ramOverflowFlag = false; // true sile messgae "depassement de capacité" à déjà été ajouté à $log
+	private  $ramOverflowFlag = false; // true si le messgae "dépassement de capacité" à déjà été ajouté à $log
 	private  $ramMax = 100000;  // taille maximum de $log
 	private  $numLigLog = 0;    // numérotation des ligne du log
 	private static $instance = null;

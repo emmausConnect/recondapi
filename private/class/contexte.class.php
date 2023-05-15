@@ -1,8 +1,12 @@
 <?php
 declare(strict_types=1);
+
 require_once __DIR__.'/loggerrec.class.php';
 
-
+/**
+ * stocke des infos de contexte d'exécution, tel le niveau de log
+ * et des valeurs à utiliser par défaut
+ */
 class Contexte {
     private LoggerRec $logger;
     private string  $debugLevel;

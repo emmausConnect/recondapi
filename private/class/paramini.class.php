@@ -1,7 +1,8 @@
 <?php
 declare(strict_types=1);
+
 /**
- * Lecture de fichier .ini
+ * Lecture de fichiers .ini
  */
 class ParamIni
 {

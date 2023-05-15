@@ -1,10 +1,9 @@
 <?php
-
 declare(strict_types=1);
+
 /**
  * conteneur d'un message d'erreur
  */
-
 class EvaluationError
 {
         private $code;

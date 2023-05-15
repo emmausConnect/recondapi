@@ -1,4 +1,8 @@
 <?php
+/**
+ * utilitaire créé en janvier 2023 pour contrôler tous les excels déjà traités
+ *  et vérifier que la catégorie y était bonne
+ */
 
 // cd D:\users\Mick5\Desktop\temp\upload\dest_r
 // D:\xampp-windows-x64-8.1.4-1-VS16\php\php.exe D:\Users\Mick5\Documents\GitHub\EC-recondapi.git\private\class\recapexcel.php

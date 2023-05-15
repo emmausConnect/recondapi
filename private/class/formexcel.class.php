@@ -4,6 +4,9 @@ require_once __DIR__.'/loggerrec.class.php';
 require_once __DIR__.'/../php/pageheaderhtml.php';
 require_once __DIR__.'/../php/pageexcelhtml.php';
 
+/**
+ * affichage du formulaire de soumission d'excels
+ */
 class FormExcel {
     private LoggerRec $logger;
     private string    $debug;

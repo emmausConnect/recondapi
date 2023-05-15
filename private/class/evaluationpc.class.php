@@ -8,7 +8,7 @@ require_once __DIR__.'/paramini.class.php';
 //require_once 'loggerrec.class.php';
 
 /**
- * Calcul le code catégorie d'un PC
+ * Calcul le code catégorie d'un objet Pc
  */
 class EvaluationPc
 {
@@ -26,11 +26,11 @@ class EvaluationPc
     private EvaluationErrors    $evaluationErrorsCl;
     /** résultat du calcul de l'indice CPU (avec calculs intermédiaires) */
     private EvaluationIndiceCpu $EvaluationIndiceCpuCl;
-    /** code catégorie du CPU en nombre de point (1 2 3 ..) */
+    /** code catégorie du CPU en nombre de points (1 2 3 ..) */
     private ?string $categorieCPU = null;
-    /** code catégorie du RAM en nombre de point (1 2 3 ..) */
+    /** code catégorie du RAM en nombre de points (1 2 3 ..) */
     private ?string $categorieRam = null;
-    /** tableau contenant les codes catégorie (1 2 ...) des disques en nombre de point (1 2 3 ..).
+    /** tableau contenant les codes catégorie (1 2 ...) des disques en nombre de points (1 2 3 ..).
      *  commence à l'indice 1.
      *  $categorieDiskArr[1] contient le code catégorie (1 2 ...) du disque 1
     */

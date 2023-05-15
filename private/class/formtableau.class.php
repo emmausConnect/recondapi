@@ -7,7 +7,9 @@ require_once __DIR__ . '/../php/pageheaderhtml.php';
 require_once __DIR__ . '/../php/pageformulairehtml.php';
 require_once __DIR__ . '/../php/pagedebughtml.php';
 
-
+/**
+ * Affichage du forumulaire permettant d'évaluer 1 PC
+ */
 class FormTableau
 {
     private string    $debug;    // init à l'instanciation

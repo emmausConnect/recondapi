@@ -3,6 +3,7 @@ declare(strict_types=1);
 require_once __DIR__.'/evaluationerrors.class.php';
 require_once __DIR__.'/evaluationerror.class.php';
 require_once __DIR__.'/indicecpu.class.php';
+
 /**
  * resultat de la recherche sur le web de l'indce CPU
  */

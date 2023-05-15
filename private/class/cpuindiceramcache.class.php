@@ -1,7 +1,9 @@
 <?php
 
 declare(strict_types=1);
-/** stocke en tableau les classes IndiceCPU déjà trouvés */
+/** stocke en tableau RAM les classes IndiceCPU déjà trouvés 
+ *    cela évite de faire plusieurs fois la même requête HTTP
+*/
 require_once __DIR__.'/loggerrec.class.php';
 
 

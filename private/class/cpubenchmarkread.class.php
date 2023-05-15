@@ -1,8 +1,14 @@
 <?php
 declare(strict_types=1);
+
 require_once __DIR__.'/indicecpu.class.php';
 require_once __DIR__.'/loggerrec.class.php';
 require_once __DIR__.'/cpubenchmarkresult.class.php';
+
+/**
+ * lit la page web pour en extraire l'indice CPU
+ * et le stocke dans l'objet cpubenchmarkresult
+ */
 class Cpubenchmarkread {
 	private CpuBenchmarkResult $cpuBenchmarkResult;
 	private LoggerRec $logger;

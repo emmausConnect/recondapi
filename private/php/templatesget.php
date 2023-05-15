@@ -1,5 +1,8 @@
 <?php
 declare(strict_types=1);
+/**
+ * gestion des templates excel des utilisateurs
+ */
 $reponse = [];
 $reponse['status'] = 'KO';
 $reponse['msg'] = 'Erreur inconnue';
