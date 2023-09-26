@@ -11,14 +11,17 @@ $debugDev=""; // utiliser pour conditionner la sortie de debug ponctuel de dev
 
 session_set_cookie_params(['samesite' => 'Lax']);
 session_start();
+require_once __DIR__.'/initcontexte.php';
+$path_private_php = $g_contexte_instance->getPath('private/php');
+require_once $path_private_php . '/cookies.php';
+require_once $path_private_php . '/errormanagement.php';
+require_once $path_private_php . '/util01.php';
 
-require_once __DIR__."/../private/php/cookies.php";
-require_once __DIR__."/../private/php/errormanagement.php";
-require_once __DIR__."/../private/php/util01.php";
-require_once __DIR__."/../private/class/loggerrec.class.php";
-require_once __DIR__."/../private/class/util01.class.php";
-require_once __DIR__."/../private/class/paramini.class.php";
-require_once __DIR__."/../private/class/contexte.class.php";
+$path_private_php_class = $g_contexte_instance->getPath('private/class');
+require_once $path_private_php_class . '/loggerrec.class.php';
+require_once $path_private_php_class . '/util01.class.php';
+require_once $path_private_php_class . '/paramini.class.php';
+require_once $path_private_php_class . '/contexte.class.php';
 
 // check qu'on est en https, sauf si localhost
 if (!str_starts_with($_SERVER['HTTP_HOST'],'localhost')) {
@@ -36,21 +39,21 @@ $contexte = Contexte::getInstance();
 // s'il ne contient pas PROD :
 //    * une banière "!! environnement de test" est affichée
 //    * certains traitemenent ont un comportement différent
-$fileEnvirName = '../environnement.ini';
-$g_environnement = ""; // global : environnement prod ou test
-if (! file_exists($fileEnvirName)) {
-    echo "Fichier '$fileEnvirName' non trouvé";
-    exit();
-}else{
-    $txt_file = fopen('../environnement.ini','r');
-    $g_environnement = fgets($txt_file);
-    fclose($txt_file);
-    if ($g_environnement != 'PROD' and $g_environnement != 'TEST') {
-        echo "Valeur environnement invalide : '$g_environnement'";
-        exit();
-    }
-}
-$contexte->setEnvironnement($g_environnement);
+// $fileEnvirName = '../environnement.ini';
+// $g_environnement = ""; // global : environnement prod ou test
+// if (! file_exists($fileEnvirName)) {
+//     echo "Fichier '$fileEnvirName' non trouvé";
+//     exit();
+// }else{
+//     $txt_file = fopen('../environnement.ini','r');
+//     $g_environnement = fgets($txt_file);
+//     fclose($txt_file);
+//     if ($g_environnement != 'PROD' and $g_environnement != 'TEST' and $g_environnement != 'LOCAL') {
+//         echo "Valeur environnement invalide : '$g_environnement'";
+//         exit();
+//     }
+// }
+//$contexte->setEnvironnement($g_environnement);
 
 $debug = getDebugFromBrowserSessionCookie();
 if ($debug == null) {
@@ -163,7 +166,13 @@ $actiontodo = [
     
     "exgestion.php"      => '../private/php/gestion.php',
     "exgentest.php"      => '../private/php/gentest.php',
-    "exdisplaydoc.php"   => '../private/php/displaydoc.php'
+    "exdisplaydoc.php"   => '../private/php/displaydoc.php',
+
+    "excrtsmartphonestables.php"  => '../private/php/install/crtsmartphonestables.php',
+    "exsearchsmartphone.php"      => '../private/php/smartphones/searchsmartphone.php',
+    "exloadsmartphonesexcel.php"  => '../private/php/smartphones/loadsmartphonesexcel.php',
+    "exdisplaysmartphonebd.php"   => '../private/php/smartphones/displaysmartphonebd.php',
+    'exgetsmartphoneslist.php'    => '../private/php/smartphones/getsmartphoneslist.php'
 ];
 
 // echo "<pre>";

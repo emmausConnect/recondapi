@@ -67,5 +67,4 @@ function logexec($file, $msg="", $outputType = "") {
 	$execlog = "\n".date('d/m/y H:i:s') .' | '. $_SERVER['REMOTE_ADDR'] .' | '.basename($file).' | user = ' . $user ." | ".$msg.' | ';
 	file_put_contents($outFile, $execlog,  FILE_APPEND | LOCK_EX);
 }
-
 ?>

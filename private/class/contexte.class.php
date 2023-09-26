@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__.'/loggerrec.class.php';
+require_once __DIR__."/paramini.class.php";
 
 /**
  * stocke des infos de contexte d'exécution, tel le niveau de log
@@ -9,24 +10,85 @@ require_once __DIR__.'/loggerrec.class.php';
  */
 class Contexte {
     private LoggerRec $logger;
-    private string  $debugLevel;
-    private bool    $debugBool;
-    private bool    $useDefaultUnit;
-    private bool    $useDefaultDiskType;
-    private string  $environnement;  // "PROD" ou autre
+    private static   Contexte $instance;
+    private string   $debugLevel;
+    private bool     $debugBool;
+    private bool     $useDefaultUnit;
+    private bool     $useDefaultDiskType;
+    private string   $environnement;      // "PROD" ou autre, stocké en majuscule
+    private string   $tprefix;            // prefix pour les tables de la BDD
+    private ParamIni $paramPhpIni;        // prefix pour le tables de la BDD
     
     private function __construct(){ }
 
     public static function getInstance() : Contexte 
     {
-        $c = new Contexte();
-        $c->logger = LoggerRec::getInstance();
-        $c->debugLevel           = "";
-        $c->debugBool            = false;
-        $c->useDefaultUnit       = false;
-        $c->useDefaultDiskType   = false;
-        $c->environnement        = "";
-        return $c;
+        if (! isset(self::$instance)) {
+            $c = new Contexte();
+            $c->logger = LoggerRec::getInstance();
+            $c->debugLevel           = "";
+            $c->debugBool            = false;
+            $c->useDefaultUnit       = false;
+            $c->useDefaultDiskType   = false;
+            $c->environnement        = "";
+
+            // le fichier environnement contient soit "PROD" soit "TEST"
+            // s'il ne contient pas PROD :
+            //    * une banière "!! environnement de test" est affichée
+            //    * certains traitemenent ont un comportement différent
+            
+            // $fileEnvirName = __DIR__.'/../../environnement.ini';
+            // $g_environnement = ""; // global : environnement prod ou test
+            // if (! file_exists($fileEnvirName)) {
+            //     echo "Fichier '$fileEnvirName' non trouvé";
+            //     exit(1);
+            // }else{
+            //     $txt_file = fopen('../environnement.ini','r');
+            //     $g_environnement = fgets($txt_file);
+            //     fclose($txt_file);
+            //     if ($g_environnement != 'PROD' and $g_environnement != 'TEST' and $g_environnement != 'LOCAL') {
+            //         echo "Valeur environnement invalide : '$g_environnement'";
+            //         exit(1);
+            //     }
+            // }
+            // $c->environnement = strtoupper($g_environnement);
+            $c->environnement = strtoupper(self::getEnvironnementIni());
+
+            $c->paramPhpIni = ParamIni::getInstance('*paramphp.ini');
+
+            self::$instance = $c;
+        }
+        return self::$instance;
+    }
+
+    static function getEnvironnementIni() {
+        // le fichier environnement contient soit "PROD" soit "TEST"
+        // s'il ne contient pas PROD :
+        //    * une banière "!! environnement de test" est affichée
+        //    * certains traitemenent ont un comportement différent
+        
+        $fileEnvirName = __DIR__.'/../../environnement.ini';
+        $g_environnement = ""; // global : environnement prod ou test
+        if (! file_exists($fileEnvirName)) {
+            echo "Fichier '$fileEnvirName' non trouvé";
+            exit(1);
+        }else{
+            $txt_file = fopen('../environnement.ini','r');
+            $g_environnement = fgets($txt_file);
+            fclose($txt_file);
+            if ($g_environnement != 'PROD' and $g_environnement != 'TEST' and $g_environnement != 'LOCAL') {
+                echo "Valeur environnement invalide : '$g_environnement'";
+                exit(1);
+            }
+        }
+        return $g_environnement;
+    }
+
+    function getPath($pathName) {
+        $paramArray = $this->paramPhpIni->getParam();
+        $path = $paramArray['path'][$pathName];
+        $path = $_SERVER['DOCUMENT_ROOT'].$path;
+        return $path;
     }
 
     /**
@@ -66,6 +128,11 @@ class Contexte {
     function setEnvironnement(string $environnement) {
         $this->environnement = strtoupper($environnement);
     }
+    /**
+     * retourne le type d'environnemet en MAJUSCULE
+     *
+     * @return String
+     */
     function getEnvironnement() : String {
         return $this->environnement;
     }
@@ -77,6 +144,12 @@ class Contexte {
         }
     }
 
+    function setTprefix(string $tprefix) {
+        $this->tprefix = $tprefix;
+    }
+    function getTprefix() :string {
+        return $this->tprefix;
+    }
 	//******************************************************************* */
 	function __call($name, $arguments)
     {

@@ -14,15 +14,24 @@ class ParamIni
     private array $param = array();
 
 
-    private function __construct()
-    {
-    }
+    private function __construct() { }
 
     /** retourne une nouvelle instance de la classe
      * @return ParamIni
      */
     public static function getInstance(string $file): ParamIni
     {
+        if ($file == '*paramphp.ini') {
+            $file = $_SERVER["DOCUMENT_ROOT"].'/../private/config/paramphp.ini';
+        }
+        if ($file == '*paramphp.ini') {
+            $file = $_SERVER["DOCUMENT_ROOT"].'/../private/config/paramphp.ini';
+        }
+
+        if ($file == '*paramconfidentiel.ini') {
+            $file = $_SERVER["DOCUMENT_ROOT"].'/../confidentiel/paramconfidentiel.ini';
+        }
+
         if (!array_key_exists($file, self::$paramCl)) {
             $dir = __DIR__;
             $c = new ParamIni();

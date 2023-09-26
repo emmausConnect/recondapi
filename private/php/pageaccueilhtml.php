@@ -69,12 +69,20 @@ EOT;
 	$retour .= <<<'EOT'
 		<article>
 			<h2 class="menutitre">Menu reconditionneurs</h2>
+			<h3 class="menutitre">PC</h2>
 			<div class="menuoption" style="padding:0px 0px 5px 20px;">
 				<a class="ec-btn" data-goto="exformexcel.php">Traitement d'Excel</a><br>
 				<br>
 				<a class="ec-btn" href="exdisplayvideoaide.htm">Vidéo d'aide</a><br>
 				<br>
 				<a class="ec-btn" href="files/modele_import_audit_dispo_pc_V2.xlsx">Télécharger l'Excel modèle</a><br>
+			</div>
+			<h3 class="menutitre">Smartphone</h2>
+			<div class="menuoption" style="padding:0px 0px 5px 20px;">
+				<a class="ec-btn" data-goto="exsearchsmartphone.php">Recherche d'un smartphone</a><br>
+			</div>
+			<div class="menuoption" style="padding:0px 0px 5px 20px;">
+				<a class="ec-btn" data-goto="exdisplaysmartphonebd.php" target="_blank">Afficher la BDD smartphones</a><br>
 			</div>
 		</article>
 		<article>
