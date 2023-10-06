@@ -98,7 +98,7 @@ if (! $errInForm) {
             }else{
                 $errmsg .= "Il n'y a aucun modèle dans la base avec les critères spécifiés<br>.";
                 $errmsg .= "Pensez à cocher la case 'Supprimer les espaces en trop<br>";
-                $errmsg .= "pensez aussi à changer les chiffres romains en chiffres arabes.";
+                $errmsg .= "Pensez aussi à changer les chiffres romains en chiffres arabes.";
                 $helpHtml .= $errmsg;
             }
         }else{
@@ -248,6 +248,13 @@ $htmlpage .= <<<"EOT"
                 if (children.length >0) {
                     let input = column.footer().children[0];
                     input.placeholder = title;
+
+
+                    if (columnName == 'Modele') {
+                        let debutModele = document.getElementById('modele').value.split(" ")[0] // premier mot
+                        column.search(debutModele, false, false).draw();
+                        input.value = debutModele;
+                    }
                     if (columnName == 'Ram') {
                         column.search('^'+document.getElementById('ram').value+'$', true, false).draw();
                         input.value = document.getElementById('ram').value;
@@ -271,34 +278,34 @@ $htmlpage .= <<<"EOT"
     }
 
     // =================
-    if (document.getElementById('sm_modele_ram_stk_table') != null) {
-        let sm_modele_ram_stk_table = $('#sm_modele_ram_stk_table').DataTable( {
-            searching: true,
-            ordering:  true,
-            "aLengthMenu": [[10, 25, 50, 75, -1], [10, 25, 50, 75, "All"]],
-            "pageLength": 10
-        } );
+    // if (document.getElementById('sm_modele_ram_stk_table') != null) {
+    //     let sm_modele_ram_stk_table = $('#sm_modele_ram_stk_table').DataTable( {
+    //         searching: true,
+    //         ordering:  true,
+    //         "aLengthMenu": [[10, 25, 50, 75, -1], [10, 25, 50, 75, "All"]],
+    //         "pageLength": 10
+    //     } );
 
-        sm_modele_ram_stk_table.columns()
-            .every(function () {
-                let column = this;
-                let title = column.footer().textContent;
-                let children = column.footer().children;
-                if (children.length >0) {
-                    let input = column.footer().children[0];
-                    input.placeholder = title;
-                    //input.classList.add('searchInput');
-                    //column.footer().replaceChildren(input);
+    //     sm_modele_ram_stk_table.columns()
+    //         .every(function () {
+    //             let column = this;
+    //             let title = column.footer().textContent;
+    //             let children = column.footer().children;
+    //             if (children.length >0) {
+    //                 let input = column.footer().children[0];
+    //                 input.placeholder = title;
+    //                 //input.classList.add('searchInput');
+    //                 //column.footer().replaceChildren(input);
 
-                    // Event listener for user input
-                    input.addEventListener('keyup', () => {
-                        if (column.search() !== this.value) {
-                            column.search(input.value).draw();
-                        }
-                    });
-                }
-            });
-    }
+    //                 // Event listener for user input
+    //                 input.addEventListener('keyup', () => {
+    //                     if (column.search() !== this.value) {
+    //                         column.search(input.value).draw();
+    //                     }
+    //                 });
+    //             }
+    //         });
+    // }
 
     // =================
     if (document.getElementById('sm_marque_table') != null) {
@@ -488,6 +495,13 @@ $htmlpage .= <<<"EOT"
         dataArray['os']        = document.getElementById(modalPrefix+'_os').value;
         dataArray['url']       = document.getElementById(modalPrefix+'_url').value;
         dataArray['username']  = document.getElementById(modalPrefix+'_username').value;
+        dataArray['origine']   = 
+EOT;
+
+
+    $htmlpage .= "'".  basename(__FILE__) ."';";
+
+    $htmlpage .= <<<"EOT"
         realCopyInDb(dataArray, modalPrefix);
     }
 
@@ -646,26 +660,26 @@ Utilisé si le champ "titre" n'est pas renseigné.<br>
 EOT;
 if ($helpHtml != "") {
 $htmlpage .= <<<"EOT"
-    <div id="div_help" style="border:1px solid;padding: 10px;width: 700px; background-color: #eeeeee;">
+    <div id="div_help" style="border:1px solid;padding: 10px;width: 800px; background-color: #eeeeee;">
     $helpHtml<hr>
-    Ce smartphone existe peut-être dans la base avec une orthographe légèrement différente.<br>
-    3 extractions vous sont présentées ci-dessous :<br>
+    Votre smartphone existe peut-être dans la base avec une orthographe légèrement différente.<br>
+    Pour vous aider, <b>2 extractions</b> vous sont présentées ci-dessous :<br>
         <br>
-        <b>1) Ceux de la marque recherchée dont le modèle contient le 1er mot du modèle que vous avez indiqué</b><br>
-          - cliquez sur "<u><b>ok</b></u>" pour sélectionner celui qui correspond à celui recherché.<br>
-          - logiquement, il devrait avoir les même taille de ram et de stockage<br>
-           <br>
-        <b>2) Tous les modèles de la marque recherchée</b><br>
-        Cliquez sur "<u><b>afficher le détail</b></u>", cela affichera les combinaisons ram/stockage connues<br>
-        puis cliquez sur "<u><b>ok</b></u>" comme pour le point "1".<br>
-        <br>
-        <b>3) la liste des marques contenues dans la base</b><br>
+        <b>1) Ceux de la <u>marque</u> recherchée, préfiltré sur le 1er mot du <u>modèle</u> que vous avez indiqué, sa <u>ram</u>
+         et son <u>stockage</u>.</b><br>
+         Si vous trouvez votre bonheur, vous pouvez :<br>
+         - utiliser le resultat du calcul de la catégorie<br>
+         - nous aider à améliorer la base en y ajoutant votre découverte :<br>
+         &nbsp;- cliquez sur le bouton "<u><b>ok</b></u>" de la ligne (aucun danger)<br>
+         &nbsp;- une fenêtre s'affichera, suivez ses instructions"<br>
+         <br>
+        <b>2) la liste des marques contenues dans la base</b><br>
         Vérifier qu'il n'y a pas une erreur de votre part dans la saisie de la marque<br>
         <br>
         La colonne "URL" permet d'afficher la page kimovil du smartphone. Le visuel peut aider à valider le choix.
         <hr>
-        Vous ne trouvez pas votre smartphone dans notre base, cherchez le sur le site <a href="https://www.kimovil.com/fr/comparatif-smartphone" target="_blank">kimovil</a><br>
-        puis ajoutez le à la base de données <button onclick="displayAddInDb()">ajouter</button>
+        <b>Vous ne trouvez pas votre smartphone dans notre base</b>, cherchez le sur le site <a href="https://www.kimovil.com/fr/comparatif-smartphone" target="_blank">kimovil</a><br>
+        puis ajoutez le à la base de données en cliquant sur ==><button onclick="displayAddInDb()">ajouter</button>
     </div> <!-- div_help -->
 EOT;
 }
@@ -798,46 +812,48 @@ $htmlpage .= '</div>';
         //=========================================================
         //=== Modèles de smartphones pour la marque ram stockage
         //=========================================================
-        $htmlpage .= '<hr><h3>Modèle de la marque <span style="text-decoration: underline;">'.$marque.'</span>';
-        $htmlpage .= ', ram = <span style="text-decoration: underline;">'.$ram.'</span> et';
-        $htmlpage .= ' et stockage = <span style="text-decoration: underline;">'.$stockage.'</span>';
-        $htmlpage .= '</h3>';
-        $htmlpage .= '<div id="div_03a" style="width:1000px; border-style: solid; border-width: 1px;">';
-        $htmlpage .= '<table id="sm_modele_ram_stk_table" style="width:820px">';
-        $htmlpage .= '<thead>';
-        $htmlpage .= "<tr><th>Marque</th><th>Modele</th><th>Ram</th><th>Stockage</th><th>Indice</th><th>Catégorie</th><th>URL</th><th>Choix</th></tr>";
-        $htmlpage .= '</thead>';
-        $htmlpage .= '<tfoot>';
-        $htmlpage .= '<tr>';
-        $htmlpage .= '<th><input class="marqueWidth"></th>';
-        $htmlpage .= '<th><input class="modeleWidth"></th>';
-        $htmlpage .= '<th><input class="ramWidth"></th>';
-        $htmlpage .= '<th><input class="stockageWidth"></th>';
-        $htmlpage .= '<th><input class="indiceWidth"></th>';
-        $htmlpage .= '<th>&nbsp;</th>';
-        $htmlpage .= '<th>&nbsp;</th>';
-        $htmlpage .= '<th>&nbsp;</th>';
-        $htmlpage .= '</tr>';
-        $htmlpage .= '</tfoot>';
-        $htmlpage .= '<tbody>';
-        foreach($modelesForMarqueRamStk as $m) {
-            $note      = calculCategorie($m['ram'], $m['stockage'], $m['indice'] );
+        if (false) {
+            $htmlpage .= '<hr><h3>Modèle de la marque <span style="text-decoration: underline;">'.$marque.'</span>';
+            $htmlpage .= ', ram = <span style="text-decoration: underline;">'.$ram.'</span> et';
+            $htmlpage .= ' et stockage = <span style="text-decoration: underline;">'.$stockage.'</span>';
+            $htmlpage .= '</h3>';
+            $htmlpage .= '<div id="div_03a" style="width:1000px; border-style: solid; border-width: 1px;">';
+            $htmlpage .= '<table id="sm_modele_ram_stk_table" style="width:820px">';
+            $htmlpage .= '<thead>';
+            $htmlpage .= "<tr><th>Marque</th><th>Modele</th><th>Ram</th><th>Stockage</th><th>Indice</th><th>Catégorie</th><th>URL</th><th>Choix</th></tr>";
+            $htmlpage .= '</thead>';
+            $htmlpage .= '<tfoot>';
             $htmlpage .= '<tr>';
-            $htmlpage .= "<td>".htmlentities($m['marque'])."</td>";
-            $htmlpage .= '<td class="marque">'.htmlentities($m['modele']).'</td>';
-            $htmlpage .= '<td style="text-align: right;">'.$m['ram']."</td>";
-            $htmlpage .= '<td style="text-align: right;">'.$m['stockage']."</td>";
-            $htmlpage .= '<td style="text-align: right;">'.$m['indice']."</td>";
-            $htmlpage .= '<td style="text-align: right;">'.$note[4]."</td>";
-            $htmlpage .= '<td>'.getUrlInchor($m['url']).'</td>'; 
-            $htmlpage .= '<td>';
-            $htmlpage .=  makeSetDuplicationModalButton($m, $note);
-            $htmlpage .= '</td>';
+            $htmlpage .= '<th><input class="marqueWidth"></th>';
+            $htmlpage .= '<th><input class="modeleWidth"></th>';
+            $htmlpage .= '<th><input class="ramWidth"></th>';
+            $htmlpage .= '<th><input class="stockageWidth"></th>';
+            $htmlpage .= '<th><input class="indiceWidth"></th>';
+            $htmlpage .= '<th>&nbsp;</th>';
+            $htmlpage .= '<th>&nbsp;</th>';
+            $htmlpage .= '<th>&nbsp;</th>';
             $htmlpage .= '</tr>';
+            $htmlpage .= '</tfoot>';
+            $htmlpage .= '<tbody>';
+            foreach($modelesForMarqueRamStk as $m) {
+                $note      = calculCategorie($m['ram'], $m['stockage'], $m['indice'] );
+                $htmlpage .= '<tr>';
+                $htmlpage .= "<td>".htmlentities($m['marque'])."</td>";
+                $htmlpage .= '<td class="marque">'.htmlentities($m['modele']).'</td>';
+                $htmlpage .= '<td style="text-align: right;">'.$m['ram']."</td>";
+                $htmlpage .= '<td style="text-align: right;">'.$m['stockage']."</td>";
+                $htmlpage .= '<td style="text-align: right;">'.$m['indice']."</td>";
+                $htmlpage .= '<td style="text-align: right;">'.$note[4]."</td>";
+                $htmlpage .= '<td>'.getUrlInchor($m['url']).'</td>'; 
+                $htmlpage .= '<td>';
+                $htmlpage .=  makeSetDuplicationModalButton($m, $note);
+                $htmlpage .= '</td>';
+                $htmlpage .= '</tr>';
+            }
+            $htmlpage .= '</tbody>';
+            $htmlpage .= '</table>';
+            $htmlpage .= '</div>';
         }
-        $htmlpage .= '</tbody>';
-        $htmlpage .= '</table>';
-        $htmlpage .= '</div>';
     
 
         //=========================================================
@@ -917,7 +933,14 @@ $htmlpage .= <<<"EOT"
 </div>
 
 <!-- modal pour afficher un message -->
-<div id="msg_div" class="modal">
+<div id="msg_div"  style="display: block;
+        z-index: 99999;
+        position: absolute;
+        top: 0px;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(4,0,0,0.4);
+        display:none;">
     <!-- Modal content -->
     <div  class="modal-content">
         <span id = "msg_close" class="close">&times;</span>
@@ -930,13 +953,28 @@ $htmlpage .= <<<"EOT"
 <div id="addindb_div" class="modal">
     <!-- Modal content -->
     <div  class="modal-content">
-        <span id = "addindb_close" class="close">&times;</span>
-        Vous allez ajouter ce smartphone :
-        <div id="addindb_saisie">
-        </div>
-        <div id="addindb_msg" style="color:red">
-        </div>
+        <div>
+            <span id = "addindb_close" class="close">&times;</span>
+            <b>Ajout d'un smartphone à notre base</b><br>
+            <br>
+            Vous avez un smartphone que vous n'avez pas trouvé dans notre base.<br>
+            Vous l'avez cherché et trouvé sur le site Kimovil.<br>
+            Vous pouvez ajouter cette découverte dans notre base grâce au formulaire ci dessous<br>
+            <br>
+            Le smartphone sera indiqué "à controler" afin que le gestionnaire de la base le vérifie<br>
+            <div style="display:flex">
+                <div id="addindb_saisie" style="  margin-left: auto; margin-right: auto;">
+                </div>
+                <div style="  margin-left: auto; margin-right: auto;">
+                <img src="images/smartphones/kimovil.webp" style="height:400px">
+                </div>
+            <div>
+            <div id="addindb_msg" style="color:red">
+            </div>
+
+        <div>
     </div>
+
 </div>
 </body>
 </html>

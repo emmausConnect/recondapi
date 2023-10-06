@@ -32,35 +32,34 @@ $htmlpage .= <<<"EOT"
 <!DOCTYPE html>
 <head>
 
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
-
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js</script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js</script>
-<script src="https://cdn.datatables.net/fixedcolumns/4.3.0/js/dataTables.fixedColumns.min.js</script>
-
+<link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+<!-- <link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" rel="stylesheet"> -->
+<!-- <link href="https://cdn.datatables.net/colreorder/1.7.0/css/colReorder.dataTables.min.css" rel="stylesheet"> -->
+<!-- <link href="https://cdn.datatables.net/fixedcolumns/4.3.0/css/fixedColumns.dataTables.min.css" rel="stylesheet"> -->
+<!-- <link href="https://cdn.datatables.net/fixedheader/3.4.0/css/fixedHeader.dataTables.min.css" rel="stylesheet"> -->
+ 
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<!-- <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script> -->
+<!-- <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script> -->
+<!-- <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script> -->
+<!-- script src="https://cdn.datatables.net/fixedcolumns/4.3.0/js/dataTables.fixedColumns.min.js"></script> -->
+<!-- <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script> -->
 
 <link rel="stylesheet" href="style/stylesm.css" />
 
 <script>
     $(document).ready( function () {
-        let tableDb = $('#tableDb').DataTable( {
-            // searching: true,
-            // ordering:  true,
-            // aLengthMenu: [[15, 25, 50, 75, -1], [15, 25, 50, 75, "All"]],
-            // pageLength: 15,
-            dom:            "Bfrtip",
-            scrollY:        "500px",
-            scrollX:        true,
-            scrollCollapse: true,
-            paging:         false,
-            buttons:        [ 'colvis' ],
-            fixedColumns:   {
-                left: 2
-            }
+        tableDb = $('#tableDb').DataTable( {
+            searching: true,
+            ordering:  true,
+            aLengthMenu: [[15, 25, 50, 75, -1], [15, 25, 50, 75, "All"]],
+            pageLength: 15,
+
+           // buttons:        [ 'colvis' ],
+            // fixedColumns:   {
+            //     left: 4
+            // }
         } );
 
         tableDb.columns()
@@ -84,7 +83,11 @@ $htmlpage .= <<<"EOT"
                     // Event listener for user input
                     input.addEventListener('keyup', () => {
                         if (column.search() !== this.value) {
-                            column.search(input.value).draw();
+                            if (input.value =='/') {
+                                column.search('^$', true, false).draw();
+                            }else{
+                                column.search(input.value).draw();
+                            }
                         }
                     });
                 }
@@ -95,16 +98,29 @@ $htmlpage .= <<<"EOT"
     //var table = $('#example').DataTable();
  
     function toggle(colType) {
-
+        let colNbrs = [];
+        if (colType == 'crt') {
+            colNbrs = [6, 7, 8, 9];
+        }
+        if (colType == 'upd') {
+            colNbrs = [10, 11, 12, 13];
+        }
+        let tableDb = $('#tableDb').DataTable();
+        colNbrs.forEach(col => {
+            tableDb.column(col).visible(! tableDb.column(col).visible());
+        });
     }
 
 </script>
 
 </head>
 <body>
-liste de la BDD<hr>
+<h1>liste de la BDD</h1>
 <button onclick="toggle('crt');">Afficher/cacher les colonnes crt</button>
-<table class="table table-sm table-striped" id="tableDb">
+<button onclick="toggle('upd');">Afficher/cacher les colonnes upd</button>
+Pour n'afficher que les cellules vides, mettre un '/'. Pour n'afficher que les cellules non vides, mettre un espace ' '.
+Pour un texte exact, mettre entre guillemets "galaxy A01".
+<table  id="tableDb" class="table table-sm table-striped" style="width:50%">
 <thead>
     <tr>
         <th>marque</th>

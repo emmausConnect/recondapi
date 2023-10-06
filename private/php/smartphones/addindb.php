@@ -18,7 +18,8 @@ try {
     $indice     = getPostValue('indice',null);
     $os         = getPostValue('os',null);
     $url        = getPostValue('url',null);
-    $crtorigine = getPostValue('crtorigine',null);
+    $origine    = getPostValue('origine',null);
+    $tocheck    = getPostValue('crtorigine','Y');
 
 
     // marque2 ... sont le modèle
@@ -106,17 +107,18 @@ try {
         $indice = $rowModele['indice'];
         $os     = $rowModele['os'];
         $url    = $rowModele['url'];
-        $crtorigine = '['.$marque2.'] ['.$modele2.'] ['.$ram2.'] ['.$stockage2.']';
+        $crtorigine = $origine.'['.$marque2.'] ['.$modele2.'] ['.$ram2.'] ['.$stockage2.']';
         $crttype = 'duplic';
 
     }else{
         $crttype = 'manuel';
+        $crtorigine = $origine;
     }
 
     // insertion du nouveau smartphone
     $sqlQueryInsert = "INSERT INTO $tableName(marque, modele, ram, stockage, indice, os, url, 
-    crtorigine, crtby, crtdate, crttype ) 
-    VALUES (:marque, :modele, :ram, :stockage, :indice, :os, :url, :crtorigine, :crtby, :crtdate, :crttype);";
+    crtorigine, crtby, crtdate, crttype, tocheck ) 
+    VALUES (:marque, :modele, :ram, :stockage, :indice, :os, :url, :crtorigine, :crtby, :crtdate, :crttype, :tocheck);";
     $insertRecipe = $db->prepare($sqlQueryInsert);
     $insertRecipe->execute([
         'marque'   => $marque,
@@ -129,8 +131,8 @@ try {
         'crtorigine'  => $crtorigine,
         'crtby'    => $username,
         'crtdate'  => date ('Y-m-d H:i:s'),
-        'crttype'  => $crttype
-
+        'crttype'  => $crttype,
+        'tocheck'  => $tocheck
     ]);
 
     $retour['status'] = 1;
