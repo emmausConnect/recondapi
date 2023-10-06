@@ -2,7 +2,7 @@
 
 $path_private_class = $g_contexte_instance->getPath('private/class');
 require_once $path_private_class .'/db/dbmanagement.class.php';
-echo "liste de la BDD<hr>";
+
 $errmsg = "";
 
 $dbInstance = DbManagement::getInstance();
@@ -13,33 +13,54 @@ $sqlQuery = "SELECT * from $tableName ORDER BY marque, modele, ram, stockage;";
 $stmt = $db->prepare($sqlQuery);
 $stmt->execute([]);
 $rowsForTitle = [];
-$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-if (count($rows) != 0) {
-    foreach($rows as $row) {
-        array_push($rowsForTitle, $row);
-    }
-}else{
-    $errmsg = "table vide";
+//$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$rowsForTitle = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if (count($rowsForTitle) == 0) {
+     $errmsg = "table vide";
 }
+// if (count($rows) != 0) {
+//     foreach($rows as $row) {
+//         array_push($rowsForTitle, $row);
+//     }
+// }else{
+//     $errmsg = "table vide";
+// }
 
 $htmlpage ="";
 $htmlpage .= <<<"EOT"
 
 <!DOCTYPE html>
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
+
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js</script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js</script>
+<script src="https://cdn.datatables.net/fixedcolumns/4.3.0/js/dataTables.fixedColumns.min.js</script>
+
 
 <link rel="stylesheet" href="style/stylesm.css" />
 
 <script>
     $(document).ready( function () {
         let tableDb = $('#tableDb').DataTable( {
-            searching: true,
-            ordering:  true,
-            "aLengthMenu": [[10, 25, 50, 75, -1], [10, 25, 50, 75, "All"]],
-            "pageLength": 10
+            // searching: true,
+            // ordering:  true,
+            // aLengthMenu: [[15, 25, 50, 75, -1], [15, 25, 50, 75, "All"]],
+            // pageLength: 15,
+            dom:            "Bfrtip",
+            scrollY:        "500px",
+            scrollX:        true,
+            scrollCollapse: true,
+            paging:         false,
+            buttons:        [ 'colvis' ],
+            fixedColumns:   {
+                left: 2
+            }
         } );
 
         tableDb.columns()
@@ -73,12 +94,16 @@ $htmlpage .= <<<"EOT"
     } );
     //var table = $('#example').DataTable();
  
+    function toggle(colType) {
 
+    }
 
 </script>
 
 </head>
 <body>
+liste de la BDD<hr>
+<button onclick="toggle('crt');">Afficher/cacher les colonnes crt</button>
 <table class="table table-sm table-striped" id="tableDb">
 <thead>
     <tr>
@@ -96,6 +121,7 @@ $htmlpage .= <<<"EOT"
         <th>updby</th>
         <th>upddate</th>
         <th>updtype</th>
+        <th>tocheck</th>
     </tr>
 </thead>
 <tfoot>
@@ -115,6 +141,7 @@ $htmlpage .= makeInput('origineWidth');
 $htmlpage .= makeInput('crtbyWidth');
 $htmlpage .= makeInput('crtdateWidth');
 $htmlpage .= makeInput('crttypeWidth');
+$htmlpage .= makeInput('tocheckWidth');
 
 $htmlpage .= <<<"EOT"
     </tr>
@@ -131,17 +158,15 @@ foreach($rowsForTitle as $m) {
     $htmlpage .= '<td><a href="'.$m['url'].'" target="_blank">'.'go'.'</td>';
     $htmlpage .= '<td>'.$m['crtorigine']."</td>";
     $htmlpage .= '<td>'.$m['crtby'].'</td><td>'.$m['crtdate'].'</td><td>'.$m['crttype'].'</td>';
-    $htmlpage .= '<td>'.$m['updorigine']."</td>";
-    $htmlpage .= '<td>'.$m['updby']."</td><td>".$m['upddate']."</td><td>".$m['updtype']."</td>";
+    $htmlpage .= '<td>'.$m['updorigine'].'</td>';
+    $htmlpage .= '<td>'.$m['updby'].'</td><td>'.$m['upddate']."</td><td>".$m['updtype'].'</td>';
+    $htmlpage .= '<td>'.$m['tocheck'].'</td>';
     $htmlpage .= '</tr>';
 }
 
 $htmlpage .= <<<'EOT'
 </tbody>
 </table>
-
-
-
 </body>
 </html>
 EOT;
@@ -149,7 +174,7 @@ EOT;
 echo $htmlpage;
 
 function makeInput($className) {
-    $retour  = "<th>";
+    $retour  = '<th>';
     $retour .= '  <div class="'.$className.'" style="border: 1px solid; resize: horizontal; overflow: auto;">';
     $retour .= '     <input type="text" style="width:100%">';
     $retour .= '  </div>';  

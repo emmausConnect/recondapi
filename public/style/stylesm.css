@@ -73,6 +73,9 @@
     .crttypeWidth {
         width:100px;
     }
+    .tocheckWidth {
+        width:10px;
+    }
 
 /* datatable */
     tfoot {

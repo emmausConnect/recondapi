@@ -28,7 +28,6 @@ try {
     $sqlQuery = "CREATE TABLE `$tableName` (
         `marque`  VARCHAR(300) NOT NULL ,
         `modele` VARCHAR(300) , 
-
         `ram` INT NOT NULL ,
         `stockage` INT NOT NULL , 
         `indice` INT NOT NULL , 
@@ -41,9 +40,15 @@ try {
         `updorigine` VARCHAR(100),
         `updby`   VARCHAR(100),
         `upddate` DATETIME,
-        `updtype` VARCHAR(10)
+        `updtype` VARCHAR(10),
+        `tocheck` CHAR(1) NOT NULL ,
+        CONSTRAINT tocheck_YN CHECK (tocheck ='Y' || tocheck ='N')
          )
         ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_unicode_ci;";
+        // crttype    crtorigine 
+        // 'excel'     nom excel
+        // 'duplic'    nom du sm
+        // 'manuel'    text
     $preparedSql = $db->prepare($sqlQuery);
     $preparedSql->execute();
     echo "table $tableName crée";

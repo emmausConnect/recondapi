@@ -152,7 +152,7 @@ function getPlagesAsTable() {
     $categoriePlages = $plages[3];
     $ligneVide ='<td>&nbsp;</td><td>&nbsp;</td>';
     $nbLig = max (count($ramPlages), count($stockagePlages), count($indicePlages), count($categoriePlages));
-    $html  = '<table><thead><tr>';
+    $html  = '<table  style=" margin: 0 auto;"><thead><tr>';
     $html .= '<th>Ram</th><th>&nbsp;</th>';
     $html .= '<th>Stockage</th><th>&nbsp;</th>';
     $html .= '<th>Indice</th><th>&nbsp;</th>';
@@ -161,25 +161,25 @@ function getPlagesAsTable() {
     for ($l = 0; $l < $nbLig; ++$l) {
         $html .= '<tr>';
         if ($l < count($ramPlages)) {
-            $html .= '<td>'.$ramPlages[$l][0].'</td><td>'.$ramPlages[$l][1].'</td>';
+            $html .= '<td style="text-align: right;">'.$ramPlages[$l][0].'</td><td style="text-align: right;">'.$ramPlages[$l][1].'</td>';
         }else{
             $html .= $ligneVide;
         }
 
         if ($l < count($stockagePlages)) {
-            $html .= '<td>'.$stockagePlages[$l][0].'</td><td>'.$stockagePlages[$l][1].'</td>';
+            $html .= '<td style="text-align: right;">'.$stockagePlages[$l][0].'</td><td style="text-align: right;">'.$stockagePlages[$l][1].'</td>';
         }else{
             $html .= $ligneVide;
         }
 
         if ($l < count($indicePlages)) {
-            $html .= '<td>'.$indicePlages[$l][0].'</td><td>'.$indicePlages[$l][1].'</td>';
+            $html .= '<td style="text-align: right;">'.$indicePlages[$l][0].'</td><td style="text-align: right;">'.$indicePlages[$l][1].'</td>';
         }else{
             $html .= $ligneVide;
         }
 
         if ($l < count($categoriePlages)) {
-            $html .= '<td>'.$categoriePlages[$l][0].'</td><td>'.$categoriePlages[$l][1].'</td>';
+            $html .= '<td style="text-align: right;">'.$categoriePlages[$l][0].'</td><td style="text-align: right;">'.$categoriePlages[$l][1].'</td>';
         }else{
             $html .= $ligneVide;
         }

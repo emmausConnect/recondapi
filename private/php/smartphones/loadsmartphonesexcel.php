@@ -90,10 +90,10 @@ function trtExcel(String $uploaDir, String $fileNameOrig, $reader, $truncate) {
     echo("<br>    ".$fileNameOrig." highestRowIndex : ".$highestRowIndex."   highestColumnIndex : ".$highestColumnIndex."\n");
     
     $sqlQueryInsert = "INSERT INTO $tableName( marque, modele, ram, stockage, indice, os, url, 
-        crtorigine, crtby, crtdate, crttype ) 
-        VALUES (:marque, :modele, :ram, :stockage, :indice, :os, :url, :origine, :crtby, :crtdate, :crttype)
+        crtorigine, crtby, crtdate, crttype, tocheck ) 
+        VALUES (:marque, :modele, :ram, :stockage, :indice, :os, :url, :origine, :crtby, :crtdate, :crttype, :tocheck)
         ON DUPLICATE KEY UPDATE indice =:indice, os=:os, url=:url, 
-            updorigine =:origine, upddate=:crtdate, updby=:crtby, updtype=:crttype
+            updorigine =:origine, upddate=:crtdate, updby=:crtby, updtype=:crttype, tocheck=:tocheck
         
         ;";
 
@@ -138,7 +138,8 @@ function trtExcel(String $uploaDir, String $fileNameOrig, $reader, $truncate) {
                     'origine'  => $fileNameOrig,
                     'crtby'    => basename(__FILE__),
                     'crtdate'  => $mysqltime,
-                    'crttype'  => 'excel'
+                    'crttype'  => 'excel',
+                    'tocheck'  => 'N'
                 ]);
                 ++$nbLignesInserted;
             }
