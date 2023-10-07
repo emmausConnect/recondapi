@@ -83,7 +83,7 @@ $htmlpage .= <<<"EOT"
                     // Event listener for user input
                     input.addEventListener('keyup', () => {
                         if (column.search() !== this.value) {
-                            if (input.value =='/') {
+                            if (input.value =='  ') {
                                 column.search('^$', true, false).draw();
                             }else{
                                 column.search(input.value).draw();
@@ -118,7 +118,7 @@ $htmlpage .= <<<"EOT"
 <h1>liste de la BDD</h1>
 <button onclick="toggle('crt');">Afficher/cacher les colonnes crt</button>
 <button onclick="toggle('upd');">Afficher/cacher les colonnes upd</button>
-Pour n'afficher que les cellules vides, mettre un '/'. Pour n'afficher que les cellules non vides, mettre un espace ' '.
+Pour n'afficher que les <b>cellules vides</b>, mettre <b>2 espaces</b> '&nbsp;&nbsp;'. Pour n'afficher que les <b>cellules <u>non</u> vides</b>, mettre <b>1 espaces</b> ' '.
 Pour un texte exact, mettre entre guillemets "galaxy A01".
 <table  id="tableDb" class="table table-sm table-striped" style="width:50%">
 <thead>
