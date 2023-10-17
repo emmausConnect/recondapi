@@ -65,7 +65,7 @@ EOT;
 	<div class="div-saisie">
 	<h3>Résultat</h3>
 	<pre>
-	<textarea rows="10" cols="100">
+	<textarea rows="1" cols="100">
 EOT;
 	if ($result != null) {
 		foreach ($result as $evalPC) {

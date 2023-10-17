@@ -3,6 +3,9 @@
 $path_private_class = $g_contexte_instance->getPath('private/class');
 require_once $path_private_class .'/db/dbmanagement.class.php';
 
+$path_private_php = $g_contexte_instance->getPath('private/php');
+require_once $path_private_php .'/pageheaderhtml.php';
+
 $errmsg = "";
 
 $dbInstance = DbManagement::getInstance();
@@ -26,11 +29,8 @@ if (count($rowsForTitle) == 0) {
 //     $errmsg = "table vide";
 // }
 
-$htmlpage ="";
+$htmlpage  = getHtmlHead();;
 $htmlpage .= <<<"EOT"
-
-<!DOCTYPE html>
-<head>
 
 <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
 <!-- <link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" rel="stylesheet"> -->
@@ -112,13 +112,18 @@ $htmlpage .= <<<"EOT"
     }
 
 </script>
+EOT;
+$htmlpage .= '</head>';
+$htmlpage .= '<body>';
+$htmlpage .= '<div style="width: 800px;">';
+$htmlpage .= getHtmlHeader();
+$htmlpage .= '</div>';
 
-</head>
-<body>
+$htmlpage .= <<<"EOT"
 <h1>liste de la BDD</h1>
 <button onclick="toggle('crt');">Afficher/cacher les colonnes crt</button>
 <button onclick="toggle('upd');">Afficher/cacher les colonnes upd</button>
-Pour n'afficher que les <b>cellules vides</b>, mettre <b>2 espaces</b> '&nbsp;&nbsp;'. Pour n'afficher que les <b>cellules <u>non</u> vides</b>, mettre <b>1 espaces</b> ' '.
+Pour n'afficher que les <b>cellules vides</b>, mettre <b>2 espaces</b> '&nbsp;&nbsp;'. Pour n'afficher que les <b>cellules <u>non</u> vides</b>, mettre <b>1 espace</b> ' '.
 Pour un texte exact, mettre entre guillemets "galaxy A01".
 <table  id="tableDb" class="table table-sm table-striped" style="width:50%">
 <thead>

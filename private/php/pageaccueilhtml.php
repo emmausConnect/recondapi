@@ -84,6 +84,9 @@ EOT;
 			<div class="menuoption" style="padding:0px 0px 5px 20px;">
 				<a class="ec-btn" data-goto="exdisplaysmartphonebd.php" target="_blank">Afficher la BDD smartphones</a><br>
 			</div>
+			<div class="menuoption" style="padding:0px 0px 5px 20px;">
+				<a class="ec-btn" data-goto="exdisplayvideoaidesm.htm" target="_blank">Vidéo de présentation</a><br>
+			</div>
 		</article>
 		<article>
 			<h2 class="menutitre">Menu gestionnaires</h2>

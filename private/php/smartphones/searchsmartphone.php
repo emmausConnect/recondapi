@@ -6,27 +6,46 @@ require_once $path_private_php .'/pageheaderhtml.php';
 
 $path_private_class = $g_contexte_instance->getPath('private/class');
 require_once $path_private_class .'/db/dbmanagement.class.php';
+require_once $path_private_class.'/paramini.class.php';
+
+$path_private_config = $g_contexte_instance->getPath('private/config');
 
 require_once 'utilsm.php';
+
+$paramArray = ParamIni::getInstance($path_private_config.'/param.ini')->getParam();
 
 $supressSpaces = "on";
 $marque        = trim(getPostValue('marque',' '));
 $modele        = trim(getPostValue('modele',' '));
 $ram           = trim(getPostValue('ram',' '));
 $stockage      = trim(getPostValue('stockage',' '));
+$ponderationKey= trim(getPostValue('ponderationKey','5'));
+$idec          = trim(getPostValue('idec',' '));
+$statutKey     = trim(getPostValue('statutKey','0'));
+$imei          = trim(getPostValue('imei',' '));
+$osf           = trim(getPostValue('osf',' '));
+$batterie      = trim(getPostValue('batterie',' '));
+
 $incsv         = trim(getPostValue('incsv'," "));
 if (count($_POST) != 0) {
-    $supressSpaces = getPostValue('supressSpaces',"off");
+    $supressSpaces = getPostValue('supressSpaces',"on");
 }
 $supressSpacesBool = ($supressSpaces == "on"?True : False);
 $errmsg = "";
 $errInForm = false;
 $simulation = false;
 $logmsg = "";
-$marqueMsg         = "";
-$modeleMsg        = "";
-$ramMsg           = "";
-$stockageMsg      = "";
+$marqueMsg      = "";
+$modeleMsg      = "";
+$ramMsg         = "";
+$stockageMsg    = "";
+$ponderationMsg = "";
+$idecMsg        = "";
+$statutKeyMsg   = "";
+$imeiMsg        = "";
+$osfMsg         = "";
+$batterieMsg    = "";
+
 $indice = 0;
 $os     = "";
 $url    = "";
@@ -55,6 +74,9 @@ if ($marque == "") {
     }
 }
 
+// *****************************************************************
+// **** Contrôle des valeurs entrées
+// *****************************************************************
 if ($marque != removeMultipleSpace($marque)) {
     $marqueMsg = 'contient des espaces en double';
 }
@@ -63,15 +85,32 @@ if ($modele != removeMultipleSpace($modele)) {
 }
 
 if (! ctype_digit($ram)) {
-    $ramMsg = '<span style="color: red">ne doit contenir que des chiffres</span>';
-    $errmsg .= "<br>Ram ne doit contenir que des chiffres";
+    $ramMsg = '<span style="color: red">uniquement des chiffres</span>';
+    $errmsg .= "<br>Ram : uniquement des chiffres";
     $errInForm = true;
 }
 if (! ctype_digit($stockage)) {
-    $stockageMsg = '<span style="color: red">ne doit contenir que des chiffres</span>';
-    $errmsg   .= "<br>Stockage ne doit contenir que des chiffres";
+    $stockageMsg = '<span style="color: red">uniquement des chiffres</span>';
+    $errmsg   .= "<br>Stockage : uniquement  des chiffres";
     $errInForm = true;
 }
+if ($statutKey == 0) {
+    $statutKeyMsg = '<span style="color: red">faire un choix</span>';
+    $errmsg    .= "<br>Préciser le statut";
+    $errInForm  = true;
+}
+if ($batterie != "OK" && $batterie != "KO") {
+    $batterieMsg = '<span style="color: red">faire un choix</span>';
+    $errmsg    .= "<br>Préciser le statut de la batterie";
+    $errInForm  = true;
+}
+
+
+$statutText       = getStatutText($statutKey);
+$ponderationValue = getPonderationValue($ponderationKey);
+
+
+
 if (! $errInForm) {
     if (! $errInForm && $marque != null && $marque != "") {
         if ($marque != "EMMAUSCONNECT") {
@@ -89,12 +128,12 @@ if (! $errInForm) {
                 ]);
             $smRow = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($smRow) {
-                $smRowFound = true;
+                $smRowFound  = true;
                 $indice      = $smRow['indice'];
                 $os          = $smRow['os'];
                 $url         = $smRow['url'];
                 $origine     = $smRow['crtorigine'];
-                $note        = calculCategorie($ram, $stockage, $indice );
+                $note        = calculCategorie($ram, $stockage, $indice, $ponderationValue );
             }else{
                 $errmsg .= "Il n'y a aucun modèle dans la base avec les critères spécifiés<br>.";
                 $errmsg .= "Pensez à cocher la case 'Supprimer les espaces en trop<br>";
@@ -122,7 +161,7 @@ if (! $errInForm) {
             $smRow['upddate'] = '';
             $smRow['updtype'] = '';
 
-            $note  = calculCategorie($ram, $stockage, $indice );
+            $note  = calculCategorie($ram, $stockage, $indice, $ponderationValue );
         }
 
     }else{
@@ -219,6 +258,7 @@ $cvt = 'cvtTextToCsv';
 $htmlentities = 'cvtToHtmlentities';
 $supressSpaces = ($supressSpacesBool ? "checked" : "");
 $htmlpage  = getHtmlHead();
+
 $htmlpage .= <<<"EOT"
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />
@@ -345,7 +385,25 @@ $htmlpage .= <<<"EOT"
         document.getElementById('modele').value = 'Galaxy S3';
         document.getElementById('ram').value = '1';
         document.getElementById('stockage').value = '16';
+        document.getElementById('idec').value = 'LITEST-9999';
+        document.getElementById('statutKey').value="4";
+        document.getElementById('imei').value = '123456789123456';
+        document.getElementById('osf').value = 'android test';
+        document.getElementById('batterieok').checked = true;
+    }
 
+    function clearValues() {
+        document.getElementById('marque').value = '';
+        document.getElementById('modele').value = '';
+        document.getElementById('ram').value = '';
+        document.getElementById('stockage').value = '';
+        document.getElementById('ponderationKey').value="5";
+        document.getElementById('idec').value = '';
+        document.getElementById('statutKey').value="0";
+        document.getElementById('imei').value = '';
+        document.getElementById('osf').value = '';
+        document.getElementById('batterieok').checked = false;
+        document.getElementById('batterieko').checked = false;
     }
 
     function displayDetailModele(bouton, marque, modele) {
@@ -618,10 +676,11 @@ EOT;
 </script>
 EOT;
 $htmlpage .= '</head>';
+$htmlpage .= '<body>';
+$htmlpage .= '<div style="width: 800px;">';
+$htmlpage .= getHtmlHeader();
+$htmlpage .= '</div>';
 $htmlpage .= <<<"EOT"
-<body>
-Cet écran n'est pas celui qui sera mis en production. C'est une maquette pour tester et mieux appréhender le besoin.<br>
-Les champs sont préremplis à l'affichage afin de ne pas avoir à les ressaisir à chaque test.
 <div id="div_00" style="display: flex;">
 <div id="div_01" style="border:1px solid;padding: 10px;width: 700px; background-color: #dddddd;">
 La recherche se fait sans tenir compte des majuscules/minuscules.
@@ -631,6 +690,9 @@ La recherche se fait sans tenir compte des majuscules/minuscules.
 <br>
 Les espaces/blancs en début et fin de critère sont supprimés.
 <button onclick="setDemoValues()">set demo values</button>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<button onclick="clearValues()">effacer</button>
+
 <br>
 <form id="form_search" action="exsearchsmartphone.php"  method="post">
 <div style="border:1px solid;padding: 10px;width: 600px;" class="input">
@@ -638,12 +700,57 @@ Les espaces/blancs en début et fin de critère sont supprimés.
 <input type="text" id="marque" name="marque" value="{$htmlentities($marque)}">&nbsp;$marqueMsg<br>
 <label class="shortLabel" for="modele">Modèle</label>
 <input type="text" id="modele" name="modele" value="{$htmlentities($modele)}">&nbsp;$modeleMsg<br>
-<label class="shortLabel" for="ram">Ram</label>
-<input type="text" id="ram" name="ram" value="{$htmlentities($ram)}">&nbsp;$ramMsg<br>
-<label class="shortLabel" for="Stockage">stockage</label>
-<input type="text" id="stockage" name="stockage" value="{$htmlentities($stockage)}">&nbsp;$stockageMsg<br>
+<label class="shortLabel" for="ram">Ram Go</label>
+<input type="number" min="0" step="1" id="ram" name="ram" value="{$htmlentities($ram)}">&nbsp;$ramMsg<br>
+<label class="shortLabel" for="stockage">Stockage Go</label>
+<input type="number" min="0" step="1" id="stockage" name="stockage" value="{$htmlentities($stockage)}">&nbsp;$stockageMsg<br>
+
+<label class="shortLabel" for="ponderationKey">Pondération</label>
+<select name="ponderationKey" id="ponderationKey">
+EOT;
+$htmlpage .= getPonderationSelect($ponderationKey);
+$htmlpage .= <<<"EOT"
+</select>&nbsp;$ponderationMsg<br>
+<label class="shortLabel" for="idec">Identifiant EC</label>
+<input type="text" id="idec" name="idec" value="{$htmlentities($idec)}">&nbsp;$idecMsg<br>
+
+<label class="shortLabel" for="statutKey">Statut</label>
+<select name="statutKey" id="statutKey">
+EOT;
+$htmlpage .= getStatutSelect($statutKey);
+$htmlpage .= <<<"EOT"
+</select>&nbsp;$statutKeyMsg<br>
+<label class="shortLabel" for="imei">IMEI</label>
+<input type="number" id="imei" name="imei" value="{$htmlentities($imei)}">&nbsp;$imeiMsg<br>
+
+<label class="shortLabel" for="osf">OS</label>
+<input type="text" id="osf" name="osf" value="{$htmlentities($osf)}">&nbsp;$osfMsg<br>
+
+<label class="shortLabel" for="div_batterie">Batterie</label>
+<span id="div_batterie">
+OK
+<input type="radio" id="batterieok" name="batterie" style="width:30px" value="OK"
+EOT;
+if ($batterie == "OK") {
+    $htmlpage .=" checked";
+}
+$htmlpage .= <<<"EOT"
+>
+ko
+<input type="radio" id="batterieko" name="batterie" style="width:30px" value="KO"
+EOT;
+if ($batterie == "KO") {
+    $htmlpage .=" checked";
+}
+$htmlpage .= <<<"EOT"
+>
+&nbsp;$batterieMsg<br>
+</span>
+
+
+
 </div>
-<div style="border:1px solid;padding: 10px;width: 600px;" class="input">
+<div style="border:1px solid;padding: 10px;width: 600px;display: none;" class="input">
 Utilisé si le champ "titre" n'est pas renseigné.<br>
 <label class="shortLabel" for="incsv">csv</label>
 <input type="text" id="incsv" name="incsv" size="60" value="{$htmlentities($incsv)}"><br>
@@ -654,7 +761,8 @@ Utilisé si le champ "titre" n'est pas renseigné.<br>
 <input type="checkbox" id="supressSpaces" name="supressSpaces" $supressSpaces />
 </div>
 <br>
-<input type="submit" value="Chercher">
+
+<input type="submit" value="Catégoriser">
 </form>
 </div> <!-- div_01 -->
 EOT;
@@ -694,25 +802,61 @@ if ($errmsg != '') {
 //=========================================================
 //=== smartphone trouvé
 //=========================================================
+$resultCsv = "";
+if ($errmsg == '') {
+$resultCsv = <<<"EOT"
+csv pour copie dans GSheet<br>
+<textarea style="width:100%">
+""\t
+{$cvt("".$idec)}\t
+{$cvt("Smartphone")}\t
+{$cvt($note['categoriePondereAlpha']."")}\t
+{$cvt("".$statutText)}\t
+{$cvt("".$smRow['marque'])}\t
+{$cvt("".$smRow['modele'])}\t
+{$cvt("".$batterie)}\t
+""\t
+""\t
+""\t
+{$cvt("".$imei)}\t
+$indice\t
+{$cvt("".$osf)}\t
+$stockage\t
+$ram\t
+</textarea>
+<hr>
+EOT;
+$resultCsv = str_replace("\n", '', $resultCsv);
+$resultCsv = str_replace("\r", '', $resultCsv);
+}
+
 if($smRowFound) {
     $htmlpage .= <<<"EOT"
-<div id="div_02"style="border:1px solid;padding: 10px;width: 700px; background-color: #aaaaaa;"> 
+<div id="div_02"style="border:1px solid;padding: 10px;width: 700px; background-color: #aaaaaa;">
 <h2 style="text-align: center;">Résultat</h2>
+$resultCsv
 <p  style="text-align: center;">Les critères utilisés pour la recherche sont en rouge quand ils sont différents de ceux que vous avez saisis<p>.
 
 <table style=" margin: 0 auto;">
 <thead>
-<tr><th>&nbsp;</th><th>Résultat du calcul</th><th>&nbsp;</th></tr>
+<tr><th>&nbsp;</th><th>Détail du calcul</th><th>&nbsp;</th></tr>
 </thead>
 <tbody>
-<tr><td>Ram</td>      <td style="text-align: right;">{$htmlentities("".$smRow['ram'])}</td>     <td style="text-align: right;">{$note[0]}</td></tr>
-<tr><td>Stockage</td> <td style="text-align: right;">{$htmlentities("".$smRow['stockage'])}</td><td style="text-align: right;">{$note[1]}</td></tr>
-<tr><td>Indice</td>   <td style="text-align: right;">{$htmlentities("".$smRow['indice'])}</td>  <td style="text-align: right;">{$note[2]}</td></tr>
-<tr><td>Total</td>    <td style="text-align: right;">&nbsp;</td>                                <td style="text-align: right;">{$note[3]}</td></tr>
-<tr><td><b>Catégorie</b></td><td>&nbsp;</td>                                                           <td style="text-align: right;"><b>{$note[4]}</b></td></tr>
+<tr><td>Ram</td>      <td style="text-align: right;">{$htmlentities("".$smRow['ram'])}</td>     <td style="text-align: right;">{$note['noteRam']}</td></tr>
+<tr><td>Stockage</td> <td style="text-align: right;">{$htmlentities("".$smRow['stockage'])}</td><td style="text-align: right;">{$note['noteStockage']}</td></tr>
+<tr><td>Indice</td>   <td style="text-align: right;">{$htmlentities("".$smRow['indice'])}</td>  <td style="text-align: right;">{$note['noteIndice']}</td></tr>
+<tr><td>Total</td>    <td style="text-align: right;">&nbsp;</td>                                <td style="text-align: right;">{$note['noteTotale']}</td></tr>
+<tr><td><b>Catégorie</b></td><td>&nbsp;</td><td style="text-align: right;"><b>{$note['categorie']}-{$note['categorieApha']}</b></td></tr>
+
+<tr><td>Pondération</td>   <td style="text-align: right;">&nbsp;</td>  <td style="text-align: right;">{$note['ponderation']}</td></tr>
+<tr><td>Total pond.</td>    <td style="text-align: right;">&nbsp;</td>                                <td style="text-align: right;">{$note['notePondere']}</td></tr>
+<tr><td><b>Catégorie Pond</b></td><td>&nbsp;</td><td style="text-align: right;"><b>{$note['categoriePondere']}-{$note['categoriePondereAlpha']}</b></td></tr>
+
 </tbody></table>
 <br>
 EOT;
+
+
 
 if ($simulation) {
     $htmlpage .= "Il s'agit d'une simulation, les données ne viennent pas de la BDD";
@@ -744,14 +888,7 @@ if ($simulation) {
 </tbody></table>
 EOT;
 }
-$htmlpage .= <<<"EOT"
 
-csv<br>
-<textarea style="width:100%">
-{$cvt("".$smRow['marque'])}\t{$cvt("".$smRow['modele'])}\t$ram\t$stockage\t$indice\t$note[4]\t{$cvt($os)}\t{$cvt($url)}
-</textarea>
-<hr>
-EOT;
 $htmlpage .= getPlagesAsTable();
 $htmlpage .= '</div>';
 }else{

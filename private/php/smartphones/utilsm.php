@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 
-
 function getPostValue(string $htmlName, null|string $default = Null): null|string {
     $retour = "";
     if (array_key_exists($htmlName, $_POST)) {
@@ -62,94 +61,84 @@ function formatKey($text, bool $supSpaces): string {
 }
 
 function getSmPlages() {
-    $ramPlages = [];
-    array_push($ramPlages , [1 , 30]);
-    array_push($ramPlages , [2 , 40]);
-    array_push($ramPlages , [3 , 54]);
-    array_push($ramPlages , [4 , 73]);
-    array_push($ramPlages , [6 , 99]);
-    array_push($ramPlages , [8 , 133]);
-    array_push($ramPlages , [12 , 180]);
-    array_push($ramPlages , [16 , 243]);
-
-    $stockagePlages = [];
-    array_push($stockagePlages , [0, -9999]);
-    array_push($stockagePlages , [16, 31]);
-    array_push($stockagePlages , [32, 45]);
-    array_push($stockagePlages , [64, 66]);
-    array_push($stockagePlages , [128, 96]);
-    array_push($stockagePlages , [256, 141]);
-    array_push($stockagePlages , [512, 207]);
-    array_push($stockagePlages , [1000, 304]);
-
-    $indicePlages =[];
-    array_push($indicePlages , [     0 , 40]);
-    array_push($indicePlages , [ 50000 , 44]);
-    array_push($indicePlages , [100000 , 49]);
-    array_push($indicePlages , [150000 , 54]);
-    array_push($indicePlages , [200000 , 60]);
-    array_push($indicePlages , [250000 , 67]);
-    array_push($indicePlages , [300000 , 74]);
-    array_push($indicePlages , [350000 , 82]);
-    array_push($indicePlages , [400000 , 91]);
-    array_push($indicePlages , [450000 , 101]);
-    array_push($indicePlages , [500000 , 112]);
-    array_push($indicePlages , [550000 , 125]);
-    array_push($indicePlages , [600000 , 138]);
-    array_push($indicePlages , [650000 , 153]);
-    array_push($indicePlages , [700000 , 170]);
-    array_push($indicePlages , [750000 , 189]);
-    array_push($indicePlages , [800000 , 209]);
-    array_push($indicePlages , [850000 , 232]);
-    array_push($indicePlages , [900000 , 257]);
-    array_push($indicePlages , [950000 , 286]);
-
-    $categoriePlages = [];
-    array_push($categoriePlages , [0 , 1]);
-    array_push($categoriePlages , [90 , 2]);
-    array_push($categoriePlages , [165 , 3]);
-    array_push($categoriePlages , [255 , 4]);
-    array_push($categoriePlages , [375 , 5]);
-
-    return [$ramPlages, $stockagePlages, $indicePlages, $categoriePlages];
+    global  $paramArray;
+    return getSmPlages2($paramArray);
 }
 
-function calculCategorie($ram, $stockage, $indice) {
-    $plages = getSmPlages();
+function getSmPlages2($paramArray) {
+    $ramPlages       = $paramArray['smram'];
+    $stockagePlages  = $paramArray['smstockage'];
+    $indicePlages    = $paramArray['smindice'];
+    $categoriePlages = $paramArray['smcategorie'];
+    $categoriePlagesAlpha = $paramArray['smcategoriealpha'];
+
+    return [$ramPlages, $stockagePlages, $indicePlages, $categoriePlages, $categoriePlagesAlpha];
+}
+
+function calculCategorie($ram, $stockage, $indice, $ponderation = 0) {
+    global  $paramArray;
+    return calculCategorie2($ram, $stockage, $indice, $paramArray, $ponderation);
+}
+
+function calculCategorie2($ram, $stockage, $indice, $paramArray, $ponderation): array {
+    $plages = getSmPlages($paramArray);
     $ramPlages = $plages[0];
     $stockagePlages = $plages[1];
     $indicePlages =$plages[2];
     $categoriePlages = $plages[3];
+    $categorieAlphaPlages = $plages[4];
 
     $noteRam      = searchIndice($ramPlages, $ram);
     $noteStockage = searchIndice($stockagePlages, $stockage);
     $noteIndice   = searchIndice($indicePlages, $indice);
     $noteTotale   = $noteRam + $noteStockage + $noteIndice;
+    $notePondere  = round($noteTotale * ( 1 + ($ponderation/100)));
     $categorie    = searchIndice($categoriePlages, $noteTotale);
-    return [$noteRam, $noteStockage, $noteIndice, $noteTotale, $categorie];
+    $categoriePondere    = searchIndice($categoriePlages, $notePondere);
+    //return [$noteRam, $noteStockage, $noteIndice, $noteTotale, $categorie, $notePondere, $categoriePondere];
+    return [
+        'noteRam' => $noteRam,
+        'noteStockage' => $noteStockage,
+        'noteIndice' => $noteIndice,
+        'noteTotale' => $noteTotale,
+        'categorie' => $categorie,
+        'categorieApha' => $categorieAlphaPlages[$categorie],
+        'ponderation' => $ponderation,
+        'notePondere' => $notePondere,
+        'categoriePondere' => $categoriePondere,
+        'categoriePondereAlpha' => $categorieAlphaPlages[$categoriePondere]];
 }
 
-function searchIndice($arr, $value) {
-    $retour = null;
-    $nbPostes = count($arr);
-    for ($i = 1; $i < $nbPostes-1; $i++) {
-        if ($arr[$i][0] > $value) {
-            $retour = $arr[$i-1][1];
+/**
+ * Undocumented function
+ *
+ * @param [type] $arr liste des plages 
+ * @param [type] $value valeur à évaluer
+ * @return void
+ */
+
+ function searchIndice($arr, $value): int {
+    $retour = -9999;
+    foreach ($arr as $key => $val) {
+        if ($key <= $value) {
+            $retour = (int) $val;
+        }else{
             break;
         }
-    }
-    if ($retour === null) {
-        $retour = $arr[$nbPostes -1][1];
     }
     return $retour;
 }
 
 function getPlagesAsTable() {
     $plages = getSmPlages();
-    $ramPlages = $plages[0];
-    $stockagePlages = $plages[1];
-    $indicePlages =$plages[2];
-    $categoriePlages = $plages[3];
+    $ramPlages = [];
+    forEach($plages[0] as $key=>$val) {array_push($ramPlages, [$key, $val]);}
+    $stockagePlages = [];
+    forEach($plages[1] as $key=>$val) {array_push($stockagePlages, [$key, $val]);}
+    $indicePlages =[];
+    forEach($plages[2] as $key=>$val) {array_push($indicePlages, [$key, $val]);}
+    $categoriePlages = [];
+    forEach($plages[3] as $key=>$val) {array_push($categoriePlages, [$key, $val]);}
     $ligneVide ='<td>&nbsp;</td><td>&nbsp;</td>';
     $nbLig = max (count($ramPlages), count($stockagePlages), count($indicePlages), count($categoriePlages));
     $html  = '<table  style=" margin: 0 auto;"><thead><tr>';
@@ -187,4 +176,71 @@ function getPlagesAsTable() {
     }
     $html .= '<tbody></table>';
     return $html;
+}
+
+/**
+ * Retourne les textes <option> des  statut
+ *
+ * @param string $dftKey : le code à préselectionner
+ * @return string
+ */
+function getStatutSelect($dftKey = ""): string {
+    global  $paramArray;
+    if ($dftKey == "") {$dftKey = "0";}
+    $retour = "";
+    forEach($paramArray['smselectstatut'] as $key => $val) {
+        // <option value="DEEE">DEEE</option>
+        $retour .= '<option value="'.htmlentities($key."").'" ';
+        if ($key == $dftKey) {
+            $retour .= 'selected';
+        }
+        $retour .= '>'.htmlentities($val).'</option>';
+    }
+    return $retour;
+}
+
+/**
+ * Retourne les textes <option> des codes podération
+ *
+ * @param string $dftKey
+ * @return string
+ */
+function getPonderationSelect($dftKey = ""): string {
+    global  $paramArray;
+    //if ($dftKey == "") { $dftKey = "0";}
+    $retour = "";
+    forEach($paramArray['smselectponderation'] as $key => $val) {
+        // <option value="DEEE">DEEE</option>
+        $retour .= '<option value="'.htmlentities($key."").'" ';
+        if ($dftKey != "") {
+            if ($key == $dftKey) {
+                $retour .= 'selected';
+            }
+        }else{
+            if ($val == 0) {
+                $retour .= 'selected';
+            }
+        }
+        $retour .= '>'.htmlentities($val).'</option>';
+    }
+    return $retour;
+}
+
+function getStatutText(string $statutKey): string | null {
+    global  $paramArray;
+    $retour = null;
+    if (array_key_exists($statutKey, $paramArray['smselectstatut'])) {
+        $retour = $paramArray['smselectstatut'][$statutKey];
+    }
+    return $retour;
+}
+
+function getPonderationValue(string $ponderationKey): int | null {
+    global  $paramArray;
+    $retour = null;
+    if (array_key_exists($ponderationKey, $paramArray['smselectponderation'])) {
+        $retour = (int)$paramArray['smselectponderation'][$ponderationKey];
+
+    }
+    return $retour;
 }

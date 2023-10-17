@@ -14,6 +14,7 @@ function getHtmlHead() {
 	<HEAD>
 		<meta charset="UTF-8">
 		<link rel="stylesheet" href="style01.css"/>
+		<!-- fin getHtmlHead -->
 EOT;
 	return $retour;
 }
@@ -26,7 +27,7 @@ function getHtmlHeader() {
 	}
 	$paramPhpArray = ParamIni::getInstance(__DIR__.'/../config/paramphp.ini')->getParam();
 	$menuInitial = "/?".$_SERVER['QUERY_STRING'];
-	$retour = '';
+	$retour = '<!-- debut getHtmlHeader( -->';
 	if ($g_environnement != 'PROD') {
 		$retour .= '<div style="background-color:red; text-align:center; font-size:150%;">Environnement de test<br>Les résultats peuvent être faux car des tests y sont en cours</div>';
 	}
@@ -38,7 +39,7 @@ function getHtmlHeader() {
 	$retour .=  '  </a>';
 	$retour .=  ' </div>';
 	$retour .=  ' <div style="display:inline; margin-right:50px;">';
-	$retour .=  '   Emmaus-Connect Evaluation de PC';
+	$retour .=  '   Emmaus-Connect Catégorisation';
 	$retour .=  ' </div>';
 	$retour .=  '</div>';
 
@@ -60,6 +61,7 @@ function getHtmlHeader() {
 	}
 	$retour .=  '</div>';
 	$retour .=  '</header>';
+	$retour .= '<!-- fin getHtmlHeader( -->';
 	return $retour;
 }
 

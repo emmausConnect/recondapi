@@ -1,7 +1,7 @@
 /** menu **/
     .shortLabel {
         display: inline-block;
-        width: 50px;
+        /** width: 100px; **/
         text-align: right;
     }
     .longLabel {
@@ -11,9 +11,8 @@
     }
     input {
         padding: 5px 10px;
+        width  : 250px;
     }
-        
-    
     
     .key {
         font-weight: bold;
