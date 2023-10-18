@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+$path_private_class = $g_contexte_instance->getPath('private/class');
+require_once $path_private_class.'/paramini.class.php';
+
 function getPostValue(string $htmlName, null|string $default = Null): null|string {
     $retour = "";
     if (array_key_exists($htmlName, $_POST)) {
@@ -15,7 +18,7 @@ function getPostValue(string $htmlName, null|string $default = Null): null|strin
     return $retour;
 }
 
-function getGetValue(string $htmlName, null|string $default = Null): null|string {
+function getGetText(string $htmlName, null|string $default = Null): null|string {
     $retour = "";
     if (array_key_exists($htmlName, $_GET)) {
         $retour = $_GET[$htmlName];
@@ -60,57 +63,8 @@ function formatKey($text, bool $supSpaces): string {
     return $retour;
 }
 
-function getSmPlages() {
-    global  $paramArray;
-    return getSmPlages2($paramArray);
-}
-
-function getSmPlages2($paramArray) {
-    $ramPlages       = $paramArray['smram'];
-    $stockagePlages  = $paramArray['smstockage'];
-    $indicePlages    = $paramArray['smindice'];
-    $categoriePlages = $paramArray['smcategorie'];
-    $categoriePlagesAlpha = $paramArray['smcategoriealpha'];
-
-    return [$ramPlages, $stockagePlages, $indicePlages, $categoriePlages, $categoriePlagesAlpha];
-}
-
-function calculCategorie($ram, $stockage, $indice, $ponderation = 0) {
-    global  $paramArray;
-    return calculCategorie2($ram, $stockage, $indice, $paramArray, $ponderation);
-}
-
-function calculCategorie2($ram, $stockage, $indice, $paramArray, $ponderation): array {
-    $plages = getSmPlages($paramArray);
-    $ramPlages = $plages[0];
-    $stockagePlages = $plages[1];
-    $indicePlages =$plages[2];
-    $categoriePlages = $plages[3];
-    $categorieAlphaPlages = $plages[4];
-
-    $noteRam      = searchIndice($ramPlages, $ram);
-    $noteStockage = searchIndice($stockagePlages, $stockage);
-    $noteIndice   = searchIndice($indicePlages, $indice);
-    $noteTotale   = $noteRam + $noteStockage + $noteIndice;
-    $notePondere  = round($noteTotale * ( 1 + ($ponderation/100)));
-    $categorie    = searchIndice($categoriePlages, $noteTotale);
-    $categoriePondere    = searchIndice($categoriePlages, $notePondere);
-    //return [$noteRam, $noteStockage, $noteIndice, $noteTotale, $categorie, $notePondere, $categoriePondere];
-    return [
-        'noteRam' => $noteRam,
-        'noteStockage' => $noteStockage,
-        'noteIndice' => $noteIndice,
-        'noteTotale' => $noteTotale,
-        'categorie' => $categorie,
-        'categorieApha' => $categorieAlphaPlages[$categorie],
-        'ponderation' => $ponderation,
-        'notePondere' => $notePondere,
-        'categoriePondere' => $categoriePondere,
-        'categoriePondereAlpha' => $categorieAlphaPlages[$categoriePondere]];
-}
-
 /**
- * Undocumented function
+ * retourne l'indice
  *
  * @param [type] $arr liste des plages 
  * @param [type] $value valeur à évaluer
@@ -130,15 +84,20 @@ function calculCategorie2($ram, $stockage, $indice, $paramArray, $ponderation): 
 }
 
 function getPlagesAsTable() {
-    $plages = getSmPlages();
+    $paramArray = ParamIni::getInstance(__DIR__.'/../../config/param.ini')->getParam();
+    $ramPlagesA            = $paramArray['smram'];
+    $stockagePlagesA       = $paramArray['smstockage'];
+    $indicePlagesA         = $paramArray['smindice'];
+    $categoriePlagesA      = $paramArray['smcategorie'];
+    $categorieAlphaPlagesA = $paramArray['smcategoriealpha'];
     $ramPlages = [];
-    forEach($plages[0] as $key=>$val) {array_push($ramPlages, [$key, $val]);}
+    forEach($ramPlagesA as $key=>$val) {array_push($ramPlages, [$key, $val]);}
     $stockagePlages = [];
-    forEach($plages[1] as $key=>$val) {array_push($stockagePlages, [$key, $val]);}
+    forEach($stockagePlagesA as $key=>$val) {array_push($stockagePlages, [$key, $val]);}
     $indicePlages =[];
-    forEach($plages[2] as $key=>$val) {array_push($indicePlages, [$key, $val]);}
+    forEach($indicePlagesA as $key=>$val) {array_push($indicePlages, [$key, $val]);}
     $categoriePlages = [];
-    forEach($plages[3] as $key=>$val) {array_push($categoriePlages, [$key, $val]);}
+    forEach($categoriePlagesA as $key=>$val) {array_push($categoriePlages, [$key, $val]);}
     $ligneVide ='<td>&nbsp;</td><td>&nbsp;</td>';
     $nbLig = max (count($ramPlages), count($stockagePlages), count($indicePlages), count($categoriePlages));
     $html  = '<table  style=" margin: 0 auto;"><thead><tr>';
@@ -168,7 +127,7 @@ function getPlagesAsTable() {
         }
 
         if ($l < count($categoriePlages)) {
-            $html .= '<td style="text-align: right;">'.$categoriePlages[$l][0].'</td><td style="text-align: right;">'.$categoriePlages[$l][1].'</td>';
+            $html .= '<td style="text-align: right;">'.$categoriePlages[$l][0].'</td><td style="text-align: right;">'.$categorieAlphaPlagesA[$categoriePlages[$l][1]].'</td>';
         }else{
             $html .= $ligneVide;
         }

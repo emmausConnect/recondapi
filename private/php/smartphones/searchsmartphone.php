@@ -5,8 +5,10 @@ $path_private_php = $g_contexte_instance->getPath('private/php');
 require_once $path_private_php .'/pageheaderhtml.php';
 
 $path_private_class = $g_contexte_instance->getPath('private/class');
-require_once $path_private_class .'/db/dbmanagement.class.php';
+require_once $path_private_class.'/db/dbmanagement.class.php';
 require_once $path_private_class.'/paramini.class.php';
+require_once $path_private_class.'/smartphones/smartphone.class.php';
+require_once $path_private_class.'/smartphones/evaluationSm.class.php';
 
 $path_private_config = $g_contexte_instance->getPath('private/config');
 
@@ -24,7 +26,7 @@ $idec          = trim(getPostValue('idec',' '));
 $statutKey     = trim(getPostValue('statutKey','0'));
 $imei          = trim(getPostValue('imei',' '));
 $osf           = trim(getPostValue('osf',' '));
-$batterie      = trim(getPostValue('batterie',' '));
+$batterieStatut= trim(getPostValue('batterie',' '));
 
 $incsv         = trim(getPostValue('incsv'," "));
 if (count($_POST) != 0) {
@@ -99,159 +101,135 @@ if ($statutKey == 0) {
     $errmsg    .= "<br>Préciser le statut";
     $errInForm  = true;
 }
-if ($batterie != "OK" && $batterie != "KO") {
+if ($batterieStatut != "OK" && $batterieStatut != "KO") {
     $batterieMsg = '<span style="color: red">faire un choix</span>';
     $errmsg    .= "<br>Préciser le statut de la batterie";
     $errInForm  = true;
 }
 
 
-$statutText       = getStatutText($statutKey);
+$statutText      = getStatutText($statutKey);
 $ponderationValue = getPonderationValue($ponderationKey);
 
 
 
 if (! $errInForm) {
     if (! $errInForm && $marque != null && $marque != "") {
-        if ($marque != "EMMAUSCONNECT") {
-            $dbInstance = DbManagement::getInstance();
-            $db = $dbInstance->openDb();
-            $tableName = $dbInstance->tableName('smartphones');
-            $sqlQuery = "SELECT * from $tableName 
-                where marque=:marque and modele=:modele and ram=:ram and stockage=:stockage;";
+        $smObj = Smartphone::getInstance();
+        $smObj->setMarque($marque);
+        $smObj->setModele($modele);
+        $smObj->setRam((int) $ram);
+        $smObj->setStockage((int) $stockage);
+        $smObj->setPonderationKey($ponderationKey);
+        $smObj->setPonderationValue((int) $ponderationValue);
+        $smObj->setIdEc($idec);
+        $smObj->setStatutKey($statutKey);
+        $smObj->setStatutText($statutText);
+        $smObj->setImei($imei);
+        $smObj->setOs($osf);
+        $smObj->setBatterieStatut($batterieStatut);
+
+        $evaluationSmObj = EvaluationSm::getInstance($smObj, $supressSpacesBool);
+        $evaluationSmObj->evalSmartphone();
+
+        $smRowFound  = $evaluationSmObj->getSmRowFound();
+        if ($smRowFound) {
+            $smRow = $evaluationSmObj->getSmRow();
+            $indice      = $smRow['indice'];
+            $os          = $smRow['os'];
+            $url         = $smRow['url'];
+            $origine     = $smRow['crtorigine'];
+            $errMsg      = $evaluationSmObj->getErrMsg();
+            $helpHtml   .= $errMsg;
+        }else{
+            $errmsg .= "<br>Renseignez ou corrigez tous les champs";
+        }
+        $colorErrMarque = "";
+        $colorErrModele = "";
+        $colorErrRam = "";
+        $colorErrStockage = "";
+        if($smRowFound) {
+            // un smartphone a été trouvé
+            // check si les clefs de la ligne lue sont exactement égale aux critères entrés
+            if ($marque != $smRow['marque']) {
+                $colorErrMarque = "red";
+            }
+
+            if ($modele != $smRow['modele']) {
+                $colorErrModele = "red";
+            }
+
+            if ($ram != $smRow['ram']) {
+                $colorErrRam = "red";
+            }
+            
+            if ($stockage != $smRow['stockage']) {
+                $colorErrStockage = "red";
+            }
+
+        }else{
+            // enreg non trouvé
+            // recherche des enregs sur la marque et premier mot de modèle & ram & srockage
+            $debutModele = '';
+            if ($modele != '') {
+                $debutModele = trim(strtok($modele.' ', ' '));
+            }
+            $sqlQuery  = "SELECT * FROM $tableName ";
+            $sqlQuery .= " where marque = :marque and modele like :debutModele "; // and ram = :ram and stockage = :stockage ";
+            $sqlQuery .= " ORDER BY modele, ram, stockage;";
+
             $stmt = $db->prepare($sqlQuery);
             $stmt->execute([
-                'marque'    =>formatKey($marque,$supressSpacesBool),
-                'modele'   => formatKey($modele,$supressSpacesBool),
-                'ram'      => formatKey($ram,$supressSpacesBool),
-                'stockage' => formatKey($stockage,$supressSpacesBool)
+                'marque' =>formatKey($marque,true),
+                'debutModele' => '%'.$debutModele.'%',
+            //    'ram' =>$ram,
+            //    'stockage' =>$stockage
                 ]);
-            $smRow = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($smRow) {
-                $smRowFound  = true;
-                $indice      = $smRow['indice'];
-                $os          = $smRow['os'];
-                $url         = $smRow['url'];
-                $origine     = $smRow['crtorigine'];
-                $note        = calculCategorie($ram, $stockage, $indice, $ponderationValue );
-            }else{
-                $errmsg .= "Il n'y a aucun modèle dans la base avec les critères spécifiés<br>.";
-                $errmsg .= "Pensez à cocher la case 'Supprimer les espaces en trop<br>";
-                $errmsg .= "Pensez aussi à changer les chiffres romains en chiffres arabes.";
-                $helpHtml .= $errmsg;
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (count($rows) != 0) {
+                foreach($rows as $row) {
+                    array_push($rowsForMarqueLikeModel, $row);
+                }
             }
-        }else{
-            // on utilise un indice en constante qui est dans le modèle
-            $simulation = true;
-            $smRowFound = true;
-            $indice = $modele;
-            $smRow['marque']   = $marque;
-            $smRow['modele']   = $modele;
-            $smRow['ram']      = $ram;
-            $smRow['stockage'] = $stockage;
-            $smRow['indice']   = $modele;
-            $smRow['os'] = '';
-            $smRow['url'] = '';
-            $smRow['crtorigine'] = '';
-            $smRow['crtby'] = '';
-            $smRow['crtdate'] = '';
-            $smRow['crttype'] = '';
-            $smRow['updorigine'] = '';
-            $smRow['updby'] = '';
-            $smRow['upddate'] = '';
-            $smRow['updtype'] = '';
 
-            $note  = calculCategorie($ram, $stockage, $indice, $ponderationValue );
-        }
+            //========= recherche des enregs sur la marque ram stockage
+            $sqlQuery = "SELECT DISTINCT * FROM $tableName where marque =:marque and ram =:ram and stockage =:stockage ORDER BY modele; ";
 
-    }else{
-        $errmsg .= "<br>Renseignez ou corrigez tous les champs";
-    }
-    $colorErrMarque = "";
-    $colorErrModele = "";
-    $colorErrRam = "";
-    $colorErrStockage = "";
-    if($smRowFound) {
-        // un smartphone a été trouvé
-        // check si les clefs de la ligne lue sont exactement égale aux critères entrés
-        if ($marque != $smRow['marque']) {
-            $colorErrMarque = "red";
-        }
+            $stmt = $db->prepare($sqlQuery);
+            $stmt->execute([
+                'marque' =>formatKey($marque,$supressSpacesBool),
+                'ram' =>formatKey($ram,$supressSpacesBool),
+                'stockage' =>formatKey($stockage,$supressSpacesBool)
+                ]);
+            $modelesForMarqueRamStk = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        if ($modele != $smRow['modele']) {
-            $colorErrModele = "red";
-        }
+            //========= recherche des enregs sur la marque
+            $sqlQuery = "SELECT DISTINCT modele FROM $tableName where marque =:marque ORDER BY modele; ";
+            //$sqlQuery = "SELECT DISTINCT * FROM $tableName where marque =:marque and ram =:ram and stockage =:stockage ORDER BY modele; ";
 
-        if ($ram != $smRow['ram']) {
-            $colorErrRam = "red";
-        }
+            $stmt = $db->prepare($sqlQuery);
+            $stmt->execute([
+                'marque' =>formatKey($marque,$supressSpacesBool)
+                ]);
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (count($rows) != 0) {
+                // il existe des modèle pour cette marque
+                foreach($rows as $row) {
+                    array_push($modelesForMarque, $row['modele']);
+                }
+            }
+
+            // ===== la marque n'a pas été trouvée, recherche des marques existante
+            $sqlQuery = "SELECT DISTINCT marque FROM $tableName ORDER BY marque; ";
+
+            $stmt = $db->prepare($sqlQuery);
+            $stmt->execute();
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach($rows as $row) {
+                array_push($listeMarque, $row['marque']);
+            }
         
-        if ($stockage != $smRow['stockage']) {
-            $colorErrStockage = "red";
         }
-
-    }else{
-        // enreg non trouvé
-        // recherche des enregs sur la marque et premier mot de modèle & ram & srockage
-        $debutModele = '';
-        if ($modele != '') {
-            $debutModele = trim(strtok($modele.' ', ' '));
-        }
-        $sqlQuery  = "SELECT * FROM $tableName ";
-        $sqlQuery .= " where marque = :marque and modele like :debutModele "; // and ram = :ram and stockage = :stockage ";
-        $sqlQuery .= " ORDER BY modele, ram, stockage;";
-
-        $stmt = $db->prepare($sqlQuery);
-        $stmt->execute([
-            'marque' =>formatKey($marque,true),
-            'debutModele' => '%'.$debutModele.'%',
-        //    'ram' =>$ram,
-        //    'stockage' =>$stockage
-            ]);
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        if (count($rows) != 0) {
-            foreach($rows as $row) {
-                array_push($rowsForMarqueLikeModel, $row);
-            }
-        }
-
-        //========= recherche des enregs sur la marque ram stockage
-        $sqlQuery = "SELECT DISTINCT * FROM $tableName where marque =:marque and ram =:ram and stockage =:stockage ORDER BY modele; ";
-
-        $stmt = $db->prepare($sqlQuery);
-        $stmt->execute([
-            'marque' =>formatKey($marque,$supressSpacesBool),
-            'ram' =>formatKey($ram,$supressSpacesBool),
-            'stockage' =>formatKey($stockage,$supressSpacesBool)
-            ]);
-        $modelesForMarqueRamStk = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        //========= recherche des enregs sur la marque
-        $sqlQuery = "SELECT DISTINCT modele FROM $tableName where marque =:marque ORDER BY modele; ";
-        //$sqlQuery = "SELECT DISTINCT * FROM $tableName where marque =:marque and ram =:ram and stockage =:stockage ORDER BY modele; ";
-
-        $stmt = $db->prepare($sqlQuery);
-        $stmt->execute([
-            'marque' =>formatKey($marque,$supressSpacesBool)
-            ]);
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        if (count($rows) != 0) {
-            // il existe des modèle pour cette marque
-            foreach($rows as $row) {
-                array_push($modelesForMarque, $row['modele']);
-            }
-        }
-
-        // ===== la marque n'a pas été trouvée, recherche des marques existante
-        $sqlQuery = "SELECT DISTINCT marque FROM $tableName ORDER BY marque; ";
-
-        $stmt = $db->prepare($sqlQuery);
-        $stmt->execute();
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        foreach($rows as $row) {
-            array_push($listeMarque, $row['marque']);
-        }
-       
     }
 }
 $cvt = 'cvtTextToCsv';
@@ -316,36 +294,6 @@ $htmlpage .= <<<"EOT"
 
 
     }
-
-    // =================
-    // if (document.getElementById('sm_modele_ram_stk_table') != null) {
-    //     let sm_modele_ram_stk_table = $('#sm_modele_ram_stk_table').DataTable( {
-    //         searching: true,
-    //         ordering:  true,
-    //         "aLengthMenu": [[10, 25, 50, 75, -1], [10, 25, 50, 75, "All"]],
-    //         "pageLength": 10
-    //     } );
-
-    //     sm_modele_ram_stk_table.columns()
-    //         .every(function () {
-    //             let column = this;
-    //             let title = column.footer().textContent;
-    //             let children = column.footer().children;
-    //             if (children.length >0) {
-    //                 let input = column.footer().children[0];
-    //                 input.placeholder = title;
-    //                 //input.classList.add('searchInput');
-    //                 //column.footer().replaceChildren(input);
-
-    //                 // Event listener for user input
-    //                 input.addEventListener('keyup', () => {
-    //                     if (column.search() !== this.value) {
-    //                         column.search(input.value).draw();
-    //                     }
-    //                 });
-    //             }
-    //         });
-    // }
 
     // =================
     if (document.getElementById('sm_marque_table') != null) {
@@ -589,7 +537,7 @@ EOT;
     }
 
     /**
-     * categorie2 est l tableau avec le resultata du calcul catégorie
+     * categorie2 est le tableau avec le resultat du calcul catégorie
      */
     function setDuplicationModal(marque2, modele2, ram2, stockage2, indice2, categorie2) {
         const modalPrefix = 'chooseSm';
@@ -731,7 +679,7 @@ $htmlpage .= <<<"EOT"
 OK
 <input type="radio" id="batterieok" name="batterie" style="width:30px" value="OK"
 EOT;
-if ($batterie == "OK") {
+if ($batterieStatut == "OK") {
     $htmlpage .=" checked";
 }
 $htmlpage .= <<<"EOT"
@@ -739,7 +687,7 @@ $htmlpage .= <<<"EOT"
 ko
 <input type="radio" id="batterieko" name="batterie" style="width:30px" value="KO"
 EOT;
-if ($batterie == "KO") {
+if ($batterieStatut == "KO") {
     $htmlpage .=" checked";
 }
 $htmlpage .= <<<"EOT"
@@ -810,11 +758,11 @@ csv pour copie dans GSheet<br>
 ""\t
 {$cvt("".$idec)}\t
 {$cvt("Smartphone")}\t
-{$cvt($note['categoriePondereAlpha']."")}\t
+{$cvt($evaluationSmObj->getCategoriePondereAlpha()."")}\t
 {$cvt("".$statutText)}\t
 {$cvt("".$smRow['marque'])}\t
 {$cvt("".$smRow['modele'])}\t
-{$cvt("".$batterie)}\t
+{$cvt("".$batterieStatut)}\t
 ""\t
 ""\t
 ""\t
@@ -842,15 +790,15 @@ $resultCsv
 <tr><th>&nbsp;</th><th>Détail du calcul</th><th>&nbsp;</th></tr>
 </thead>
 <tbody>
-<tr><td>Ram</td>      <td style="text-align: right;">{$htmlentities("".$smRow['ram'])}</td>     <td style="text-align: right;">{$note['noteRam']}</td></tr>
-<tr><td>Stockage</td> <td style="text-align: right;">{$htmlentities("".$smRow['stockage'])}</td><td style="text-align: right;">{$note['noteStockage']}</td></tr>
-<tr><td>Indice</td>   <td style="text-align: right;">{$htmlentities("".$smRow['indice'])}</td>  <td style="text-align: right;">{$note['noteIndice']}</td></tr>
-<tr><td>Total</td>    <td style="text-align: right;">&nbsp;</td>                                <td style="text-align: right;">{$note['noteTotale']}</td></tr>
-<tr><td><b>Catégorie</b></td><td>&nbsp;</td><td style="text-align: right;"><b>{$note['categorie']}-{$note['categorieApha']}</b></td></tr>
+<tr><td>Ram</td>      <td style="text-align: right;">{$htmlentities("".$smRow['ram'])}</td>     <td style="text-align: right;">{$evaluationSmObj->getNoteRam()}</td></tr>
+<tr><td>Stockage</td> <td style="text-align: right;">{$htmlentities("".$smRow['stockage'])}</td><td style="text-align: right;">{$evaluationSmObj->getNoteStockage()}</td></tr>
+<tr><td>Indice</td>   <td style="text-align: right;">{$htmlentities("".$smRow['indice'])}</td>  <td style="text-align: right;">{$evaluationSmObj->getNoteIndice()}</td></tr>
+<tr><td>Total</td>    <td style="text-align: right;">&nbsp;</td>                                <td style="text-align: right;">{$evaluationSmObj->getNoteTotale()}</td></tr>
+<tr><td><b>Catégorie</b></td><td>&nbsp;</td><td style="text-align: right;"><b>{$evaluationSmObj->getCategorieApha()}</b></td></tr>
 
-<tr><td>Pondération</td>   <td style="text-align: right;">&nbsp;</td>  <td style="text-align: right;">{$note['ponderation']}</td></tr>
-<tr><td>Total pond.</td>    <td style="text-align: right;">&nbsp;</td>                                <td style="text-align: right;">{$note['notePondere']}</td></tr>
-<tr><td><b>Catégorie Pond</b></td><td>&nbsp;</td><td style="text-align: right;"><b>{$note['categoriePondere']}-{$note['categoriePondereAlpha']}</b></td></tr>
+<tr><td>Pondération</td>   <td style="text-align: right;">&nbsp;</td>  <td style="text-align: right;">{$evaluationSmObj->getPonderation()}</td></tr>
+<tr><td>Total pond.</td>    <td style="text-align: right;">&nbsp;</td><td style="text-align: right;">{$evaluationSmObj->getNotePondere()}</td></tr>
+<tr><td><b>Catégorie Pond</b></td><td>&nbsp;</td><td style="text-align: right;"><b>{$evaluationSmObj->getCategoriePondereAlpha()}</b></td></tr>
 
 </tbody></table>
 <br>
@@ -927,15 +875,16 @@ $htmlpage .= '</div>';
             $htmlpage .= '</tr>';
             $htmlpage .= '</tfoot>';
             $htmlpage .= '<tbody>';
+            $evalSmTemp  = EvaluationSm::getInstance();
             foreach($rowsForMarqueLikeModel as $m) {
-                $note      = calculCategorie($m['ram'], $m['stockage'], $m['indice'] );
+                $note      = $evalSmTemp->calculCategorie($m['ram'], $m['stockage'], $m['indice'] );
                 $htmlpage .= '<tr>';
                 $htmlpage .= "<td>".htmlentities($m['marque'])."</td>";
                 $htmlpage .= '<td class="marque">'.htmlentities($m['modele']).'</td>';
                 $htmlpage .= '<td style="text-align: right;">'.$m['ram']."</td>";
                 $htmlpage .= '<td style="text-align: right;">'.$m['stockage']."</td>";
                 $htmlpage .= '<td style="text-align: right;">'.$m['indice']."</td>";
-                $htmlpage .= '<td style="text-align: right;">'.$note[4]."</td>";
+                $htmlpage .= '<td style="text-align: right;">'.$note['categorieApha']."</td>";
                 $htmlpage .= '<td>'.getUrlInchor($m['url']).'</td>'; 
                 $htmlpage .= '<td>';
                 $htmlpage .=  makeSetDuplicationModalButton($m, $note);
@@ -972,15 +921,16 @@ $htmlpage .= '</div>';
             $htmlpage .= '</tr>';
             $htmlpage .= '</tfoot>';
             $htmlpage .= '<tbody>';
+            $evalSmTemp  = EvaluationSm::getInstance();
             foreach($modelesForMarqueRamStk as $m) {
-                $note      = calculCategorie($m['ram'], $m['stockage'], $m['indice'] );
+                $note      = $evalSmTemp->calculCategorie($m['ram'], $m['stockage'], $m['indice'] );
                 $htmlpage .= '<tr>';
                 $htmlpage .= "<td>".htmlentities($m['marque'])."</td>";
                 $htmlpage .= '<td class="marque">'.htmlentities($m['modele']).'</td>';
                 $htmlpage .= '<td style="text-align: right;">'.$m['ram']."</td>";
                 $htmlpage .= '<td style="text-align: right;">'.$m['stockage']."</td>";
                 $htmlpage .= '<td style="text-align: right;">'.$m['indice']."</td>";
-                $htmlpage .= '<td style="text-align: right;">'.$note[4]."</td>";
+                $htmlpage .= '<td style="text-align: right;">'.$note['categorieApha']."</td>";
                 $htmlpage .= '<td>'.getUrlInchor($m['url']).'</td>'; 
                 $htmlpage .= '<td>';
                 $htmlpage .=  makeSetDuplicationModalButton($m, $note);
@@ -1130,7 +1080,7 @@ function removeMultipleSpace($text) {
 
 function makeSetDuplicationModalButton($from, $note) {
     
-    $retour = '<button  title="Utiliser ce maodèle de smartphone" onclick="setDuplicationModal(' .'\'' 
+    $retour = '<button  title="Utiliser ce modèle de smartphone" onclick="setDuplicationModal(' .'\'' 
         .$from['marque']. '\', \'' 
         .$from['modele']. '\', \'' 
         .$from['ram']. '\', \'' 
