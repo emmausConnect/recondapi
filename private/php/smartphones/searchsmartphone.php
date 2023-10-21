@@ -11,6 +11,7 @@ require_once $path_private_class.'/smartphones/smartphone.class.php';
 require_once $path_private_class.'/smartphones/evaluationSm.class.php';
 
 $path_private_config = $g_contexte_instance->getPath('private/config');
+$path_public_images  = $g_contexte_instance->getPath('public/images');
 
 require_once 'utilsm.php';
 
@@ -118,8 +119,8 @@ if (! $errInForm) {
         $smObj = Smartphone::getInstance();
         $smObj->setMarque($marque);
         $smObj->setModele($modele);
-        $smObj->setRam((int) $ram);
-        $smObj->setStockage((int) $stockage);
+        $smObj->setRam($ram);
+        $smObj->setStockage($stockage);
         $smObj->setPonderationKey($ponderationKey);
         $smObj->setPonderationValue((int) $ponderationValue);
         $smObj->setIdEc($idec);
@@ -169,19 +170,23 @@ if (! $errInForm) {
 
         }else{
             // enreg non trouvé
-            // recherche des enregs sur la marque et premier mot de modèle & ram & srockage
+            // recherche des enregs sur la marque et premier mot de modèle & ram & stockage
+            $dbInstance = DbManagement::getInstance();
+            $db = $dbInstance->openDb();
+            $tableName = $dbInstance->tableName('smartphones');
             $debutModele = '';
             if ($modele != '') {
                 $debutModele = trim(strtok($modele.' ', ' '));
             }
             $sqlQuery  = "SELECT * FROM $tableName ";
-            $sqlQuery .= " where marque = :marque and modele like :debutModele "; // and ram = :ram and stockage = :stockage ";
+            //$sqlQuery .= " where marque = :marque and modele like :debutModele "; // and ram = :ram and stockage = :stockage ";
+            $sqlQuery .= " where marque = :marque "; // and ram = :ram and stockage = :stockage ";
             $sqlQuery .= " ORDER BY modele, ram, stockage;";
 
             $stmt = $db->prepare($sqlQuery);
             $stmt->execute([
                 'marque' =>formatKey($marque,true),
-                'debutModele' => '%'.$debutModele.'%',
+                //'debutModele' => '%'.$debutModele.'%',
             //    'ram' =>$ram,
             //    'stockage' =>$stockage
                 ]);
@@ -369,6 +374,7 @@ $htmlpage .= <<<"EOT"
                 html += '<tbody>';
                 data.forEach(sm => {
                     html += '<tr>';
+                    html += '<td>' +sm['marque']  + '</td>';
                     html += '<td>' +sm['modele']  + '</td>';
                     html += '<td>' +sm['ram']     + '</td>';
                     html += '<td>' +sm['stockage']+ '</td>';
@@ -382,7 +388,7 @@ $htmlpage .= <<<"EOT"
 
                     html += '</td>';
                     html += '<td>';
-                    html +=   '<button title="Utiliser ce maodèle de smartphone"';
+                    html +=   '<button title="Utiliser ce modèle de smartphone"';
                     html +=   'onclick="setDuplicationModal(' +'\'' +marque+ '\', \'' +sm['modele']+ '\', \'' +sm['ram']+ '\', \'' +sm['stockage']+ '\', \'' +sm['indice']+ '\', \'' +sm['categorie'] +'\')">ok</button>';
                     html += '</td>';
                     html += '</tr>';
@@ -849,7 +855,7 @@ $htmlpage .= '</div>';
         $htmlpage .= '<hr><h3>Smartphones de la marque <span style="text-decoration: underline;">'.$marque.'</span>';
         //$htmlpage .= ', ram = <span style="text-decoration: underline;">'.$ram.'</span> et';
         //$htmlpage .= ' et stockage = <span style="text-decoration: underline;">'.$stockage.'</span>';
-        $htmlpage .= ' dont le modèle contient <span style="text-decoration: underline;">'.$debutModele.'</span>';
+        //$htmlpage .= ' dont le modèle contient <span style="text-decoration: underline;">'.$debutModele.'</span>';
         $htmlpage .= '</h3>';
         if (count($rowsForMarqueLikeModel) == 0) {
             $htmlpage .= "... il n'y a aucun smartphone dans la base sur ce seul critère";
@@ -877,10 +883,13 @@ $htmlpage .= '</div>';
             $htmlpage .= '<tbody>';
             $evalSmTemp  = EvaluationSm::getInstance();
             foreach($rowsForMarqueLikeModel as $m) {
-                $note      = $evalSmTemp->calculCategorie($m['ram'], $m['stockage'], $m['indice'] );
+                $note      = $evalSmTemp->calculCategorie($m['ram'], $m['stockage'], $m['indice'], 0, 'GB' );
                 $htmlpage .= '<tr>';
                 $htmlpage .= "<td>".htmlentities($m['marque'])."</td>";
-                $htmlpage .= '<td class="marque">'.htmlentities($m['modele']).'</td>';
+                $htmlpage .= '<td class="marque">'.htmlentities($m['modele']);
+                $htmlpage .= '<img src="images/icones/ok01.webp" alt="ok" width="15" title="copier dans modèle"';
+                $htmlpage .= 'onclick="document.getElementById(\'modele\').value=\''.$m['modele'].'\'">';
+                $htmlpage .= '</td>';
                 $htmlpage .= '<td style="text-align: right;">'.$m['ram']."</td>";
                 $htmlpage .= '<td style="text-align: right;">'.$m['stockage']."</td>";
                 $htmlpage .= '<td style="text-align: right;">'.$m['indice']."</td>";

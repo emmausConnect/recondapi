@@ -88,26 +88,57 @@ var ddup = {
       var id = ddup.getId();
       data.append('id', id);
       data.append('upfile', thisfile);
-      data.append("ligneentete", document.getElementById("ligneentete").value);
-      data.append("colnumlot", document.getElementById("colnumlot").value);
-      data.append("colidentifiantunique", document.getElementById("colidentifiantunique").value);
-      data.append("coltypemateriel", document.getElementById("coltypemateriel").value);
-      data.append("colconstructeur", document.getElementById("colconstructeur").value);
-      data.append("colpcmodel", document.getElementById("colpcmodel").value);
-      data.append("colnumserie", document.getElementById("colnumserie").value);
-      data.append("colcpu", document.getElementById("colcpu").value);
-      data.append("coltailledisk", document.getElementById("coltailledisk").value);
-      data.append("coltypedisk", document.getElementById("coltypedisk").value);
-      data.append("coltailledisk2", document.getElementById("coltailledisk2").value);
-      data.append("coltypedisk2", document.getElementById("coltypedisk2").value);
-      data.append("coltailleram", document.getElementById("coltailleram").value);
-      data.append("coldvd", document.getElementById("coldvd").value);
-      data.append("colwebcam", document.getElementById("colwebcam").value);
-      data.append("colecran", document.getElementById("colecran").value);
-      data.append("colremarque", document.getElementById("colremarque").value);
-      data.append("colgradeesthetique", document.getElementById("colgradeesthetique").value);
-      data.append("colcategorie", document.getElementById("colcategorie").value);
-      data.append("colerreur", document.getElementById("colerreur").value);
+      switch (varglobal['type']) {
+        case 'pc' :
+          // colonnage pour PC
+          data.append("ligneentete", document.getElementById("ligneentete").value);
+          data.append("colnumlot", document.getElementById("colnumlot").value);
+          data.append("colidentifiantunique", document.getElementById("colidentifiantunique").value);
+          data.append("coltypemateriel", document.getElementById("coltypemateriel").value);
+          data.append("colconstructeur", document.getElementById("colconstructeur").value);
+          data.append("colpcmodel", document.getElementById("colpcmodel").value);
+          data.append("colnumserie", document.getElementById("colnumserie").value);
+          data.append("colcpu", document.getElementById("colcpu").value);
+          data.append("coltailledisk", document.getElementById("coltailledisk").value);
+          data.append("coltypedisk", document.getElementById("coltypedisk").value);
+          data.append("coltailledisk2", document.getElementById("coltailledisk2").value);
+          data.append("coltypedisk2", document.getElementById("coltypedisk2").value);
+          data.append("coltailleram", document.getElementById("coltailleram").value);
+          data.append("coldvd", document.getElementById("coldvd").value);
+          data.append("colwebcam", document.getElementById("colwebcam").value);
+          data.append("colecran", document.getElementById("colecran").value);
+          data.append("colremarque", document.getElementById("colremarque").value);
+          data.append("colgradeesthetique", document.getElementById("colgradeesthetique").value);
+          data.append("colcategorie", document.getElementById("colcategorie").value);
+          data.append("colerreur", document.getElementById("colerreur").value);
+          break;
+        case 'sm' :
+          // colonnage smartphone
+            data.append("ligneentete", document.getElementById("ligneentete").value);
+            data.append("colnumlot", document.getElementById("colnumlot").value);
+            data.append("colidentifiantunique", document.getElementById("colidentifiantunique").value);
+            data.append("coltypemateriel", document.getElementById("coltypemateriel").value);
+            data.append("colconstructeur", document.getElementById("colconstructeur").value);
+            data.append("colmodel", document.getElementById("colmodel").value);
+            data.append("colimei", document.getElementById("colimei").value);
+            data.append("colcpu", document.getElementById("colcpu").value);
+            data.append("colos", document.getElementById("colos").value);
+            data.append("coltaillestockage", document.getElementById("coltaillestockage").value);
+            data.append("coltailleram", document.getElementById("coltailleram").value);
+            data.append("colbatterie", document.getElementById("colbatterie").value);
+            data.append("colecran", document.getElementById("colecran").value);
+            data.append("colecranresolution", document.getElementById("colecranresolution").value);
+            data.append("colchargeur", document.getElementById("colchargeur").value);
+            data.append("coloperateur", document.getElementById("coloperateur").value);
+            data.append("colstatut", document.getElementById("colstatut").value);
+            data.append("colremarque", document.getElementById("colremarque").value);
+            data.append("colcouleur", document.getElementById("colcouleur").value);
+            data.append("colgradeesthetique", document.getElementById("colgradeesthetique").value);
+            data.append("colcategorie", document.getElementById("colcategorie").value);
+            data.append("colerreur", document.getElementById("colerreur").value);
+            break;
+      //===========
+      } // switch
       if (document.getElementById("coldebug")) {
         data.append("coldebug", document.getElementById("coldebug").value);
       }
@@ -132,7 +163,7 @@ var ddup = {
       //ddup.hstat.innerHTML = "";
       document.getElementById("excelattente").style.display = "block";
       let xhr = new XMLHttpRequest();
-      xhr.open("POST", "extrtexcel.php?upload=1");
+      xhr.open("POST", "extrtexcel"+varglobal['type']+".php?upload=1");
       xhr.onerror = function(){
         console.log("error")
         ddup.hstat.innerHTML += '<span style="color: red;">Erreur lors du traitement.<br>Code retour :' + xhr.status + '</span>';

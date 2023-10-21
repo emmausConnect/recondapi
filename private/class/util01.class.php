@@ -3,16 +3,19 @@ declare(strict_types=1);
 class Util01
 {
     /**
-     * Undocumented function
-     * @param [type] $text
-     * @param [type] $dest
+     * Convertit en GB
+     * @param [string] $text qt à convertir
+     * @param [type] $dest unité destination
+     * @param [type] $uniteParDefaut unité de $textpar défaut
      * @return string|integer
      *     message d'erreur ou taille convertie
      */
-    public static function convertUnit($text, $dest, $uniteParDefaut) : string|float
+    public static function convertUnit($text, $dest, string $uniteParDefaut) : string|float
     {
-        $text = preg_replace('/\s/', '', $text); // suppression des espaces
-        $text = preg_replace('/[\x00-\x1F\x7F]/u', '', $text); // sup cara non imprimable
+        if(! is_numeric($text)) { 
+            $text = preg_replace('/\s/', '', $text); // suppression des espaces
+            $text = preg_replace('/[\x00-\x1F\x7F]/u', '', $text); // sup cara non imprimable
+        }
         // le texte est de la forme
         // ddG, ddGo ..
         // extraire dd, puis regarder par quoi commence l'unité et la convertie en G

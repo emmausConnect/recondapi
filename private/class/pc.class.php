@@ -182,6 +182,7 @@ class PC {
 				$retour .= "$key => $val";
 			}
 		}
+		return $retour;
 	}
 
 

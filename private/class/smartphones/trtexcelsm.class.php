@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__.'/pc.class.php';
-require_once __DIR__.'/evaluationpc.class.php';
-require_once __DIR__.'/paramini.class.php';
+require_once __DIR__.'/smartphone.class.php';
+require_once __DIR__.'/evaluationsm.class.php';
+require_once __DIR__.'/../paramini.class.php';
 
 //include the file that loads the PhpSpreadsheet classes
-require __DIR__.'/../../libraries/spreadsheet/vendor/autoload.php';
+require __DIR__.'/../../../libraries/spreadsheet/vendor/autoload.php';
 //include the file that loads the PhpSpreadsheet classes//include the classes needed to create and write .xlsx file
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -13,16 +13,16 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 /**
  * Traitement d'un fichier Excel
  */
-class TrtExcel {
+class TrtExcelSm {
     private $log=""; // 1 => le log est joint à la réponse (pour debug)
     private $logger; // initialisé à l'instantiation
     private $timeStampStart;
     private $debug;
     private function __construct(){ }
 
-    public static function getInstance(string $uploadType, string $debug) : TrtExcel
+    public static function getInstance(string $uploadType, string $debug) : TrtExcelSm
     {
-        $c = new TrtExcel();
+        $c = new TrtExcelSm();
         $c->logger = LoggerRec::getInstance();
         //$c->uploadType = $uploadType;
         $c->debug = $debug;
@@ -32,17 +32,10 @@ class TrtExcel {
     /** trtExcel()
      *  pour le trt d'un fichier Excel :
      *  ligneentete     : n° de la ligne en-tête de colonne    dft = 5
-     *  colcpu          : colonne processeur
-     *  coltailleram    : colonne taille ram
-     *  coltailledisk   : colonne taille disk
-     *  coltypedisk     : colonne type disque
-     *  coltailledisk2  : colonne taille disk
-     *  coltypedisk2    : colonne type disque
-     *  colcategorie    : colonne devant recevoir le résultat
-     *  colerreur       : par defaut = colcategorie
+     *  ...
      *  recalculcategorie
      */
-    public function trtExcel() {
+    public function trtExcelSm() {
         GLOBAL $g_environnement;
         $uploadType = $_GET["upload"];
         $this->logger->addLogDebugLine('>>> execUpload  uploadType = "'.$uploadType.'" __LINE__');
@@ -85,19 +78,19 @@ class TrtExcel {
         }
         $inMap["colconstructeur"] = $colconstructeur;
 
-        if (array_key_exists("colpcmodel", $_POST)) {
-            $colpcmodel=strtoupper($_POST['colpcmodel']) ;
+        if (array_key_exists("colmodel", $_POST)) {
+            $colmodel=strtoupper($_POST['colmodel']) ;
         }else{ 
-            $colpcmodel="";
+            $colmodel="";
         }
-        $inMap["colpcmodel"] = $colpcmodel;
+        $inMap["colmodel"] = $colmodel;
 
-        if (array_key_exists("colnumserie", $_POST)) {
-            $colnumserie=strtoupper($_POST['colnumserie']) ;
+        if (array_key_exists("colimei", $_POST)) {
+            $colimei=strtoupper($_POST['colimei']) ;
         }else{ 
-            $colnumserie="";
+            $colimei="";
         }
-        $inMap["colnumserie"] = $colnumserie;
+        $inMap["colimei"] = $colimei;
 
         if (array_key_exists("colcpu", $_POST)) {
             $colcpu=strtoupper($_POST['colcpu']) ;
@@ -106,31 +99,19 @@ class TrtExcel {
         }
         $inMap["colcpu"] = $colcpu;
 
-        if (array_key_exists("coltailledisk", $_POST)) {
-            $coltailledisk=strtoupper($_POST['coltailledisk']) ;
+        if (array_key_exists("colos", $_POST)) {
+            $colos=strtoupper($_POST['colos']) ;
         }else{ 
-            $coltailledisk="";
+            $colos="";
         }
-        $inMap["coltailledisk"] = $coltailledisk;
-        if (array_key_exists("coltypedisk", $_POST)) {
-            $coltypedisk=strtoupper($_POST['coltypedisk']) ;
-        }else{ 
-            $coltypedisk="";
-        }
-        $inMap["coltypedisk"] = $coltypedisk;
+        $inMap["colos"] = $colos;
 
-        if (array_key_exists("coltailledisk2", $_POST)) {
-            $coltailledisk2=strtoupper($_POST['coltailledisk2']) ;
+        if (array_key_exists("coltaillestockage", $_POST)) {
+            $coltaillestockage=strtoupper($_POST['coltaillestockage']) ;
         }else{ 
-            $coltailledisk2="";
+            $coltaillestockage="";
         }
-        $inMap["coltailledisk2"] = $coltailledisk2;
-        if (array_key_exists("coltypedisk2", $_POST)) {
-            $coltypedisk2=strtoupper($_POST['coltypedisk2']);
-        }else{ 
-            $coltypedisk2="";
-        }
-        $inMap["coltypedisk2"] = $coltypedisk2;
+        $inMap["coltaillestockage"] = $coltaillestockage;
 
         if (array_key_exists("coltailleram", $_POST)) {
             $coltailleram=strtoupper($_POST['coltailleram']) ;
@@ -139,19 +120,12 @@ class TrtExcel {
         }
         $inMap["coltailleram"] = $coltailleram;
 
-        if (array_key_exists("coldvd", $_POST)) {
-            $coldvd=strtoupper($_POST['coldvd']) ;
+        if (array_key_exists("colbatterie", $_POST)) {
+            $colbatterie=strtoupper($_POST['colbatterie']) ;
         }else{ 
-            $coldvd="";
+            $colbatterie="";
         }
-        $inMap["coldvd"] = $coldvd;
-
-        if (array_key_exists("colwebcam", $_POST)) {
-            $colwebcam=strtoupper($_POST['colwebcam']) ;
-        }else{ 
-            $colwebcam="";
-        }       
-        $inMap["colwebcam"] = $colwebcam;
+        $inMap["colbatterie"] = $colbatterie;
 
         if (array_key_exists("colecran", $_POST)) {
             $colecran=strtoupper($_POST['colecran']) ;
@@ -160,6 +134,34 @@ class TrtExcel {
         }
         $inMap["colecran"] = $colecran;
 
+        if (array_key_exists("colecranresolution", $_POST)) {
+            $colecranresolution=strtoupper($_POST['colecranresolution']) ;
+        }else{ 
+            $colecranresolution="";
+        }       
+        $inMap["colecranresolution"] = $colecranresolution;
+
+        if (array_key_exists("colchargeur", $_POST)) {
+            $colchargeur=strtoupper($_POST['colchargeur']) ;
+        }else{ 
+            $colchargeur="";
+        }       
+        $inMap["colchargeur"] = $colchargeur;
+
+        if (array_key_exists("coloperateur", $_POST)) {
+            $coloperateur=strtoupper($_POST['coloperateur']) ;
+        }else{ 
+            $coloperateur="";
+        }
+        $inMap["coloperateur"] = $coloperateur;
+
+        if (array_key_exists("colstatut", $_POST)) {
+            $colstatut=strtoupper($_POST['colstatut']) ;
+        }else{ 
+            $colstatut="";
+        }
+        $inMap["colstatut"] = $colstatut;
+
         if (array_key_exists("colremarque", $_POST)) {
             $colremarque=strtoupper($_POST['colremarque']) ;
         }else{ 
@@ -167,6 +169,14 @@ class TrtExcel {
         }
         $inMap["colremarque"] = $colremarque;
 
+        if (array_key_exists("colcouleur", $_POST)) {
+            $colcouleur=strtoupper($_POST['colcouleur']) ;
+        }else{ 
+            $colcouleur="";
+        }
+        $inMap["colcouleur"] = $colcouleur;
+
+ 
         if (array_key_exists("colgradeesthetique", $_POST)) {
             $colgradeesthetique=strtoupper($_POST['colgradeesthetique']) ;
         }else{ 
@@ -221,16 +231,6 @@ class TrtExcel {
         }
         $inMap["unitepardefaut"] = $unitepardefaut;
 
-        if (array_key_exists("typediskpardefaut", $_POST)) {
-            $typediskpardefaut=$_POST['typediskpardefaut'];
-        }
-        if ($typediskpardefaut == 'yes') {
-            $typediskpardefaut = "HDD";
-        }else{ 
-            $typediskpardefaut = "";
-        }
-        $inMap["typediskpardefaut"] = $typediskpardefaut;
-
         //=========== Traitement du fichier =================================================
         $source = $_FILES["upfile"]["tmp_name"]; // D:\xampp\tmp\phpDDAB.tmp
         $horodate = time();
@@ -239,7 +239,7 @@ class TrtExcel {
         $this->logger->addLogDebugLine($fileNameInput, '==== trt du fichier ======================================');
         //$fileNameInputExt = pathinfo($fileNameInput, PATHINFO_EXTENSION);
         $fileNameOrig = $horodate.'_'.$fileNameInput;
-        $destDir  = __DIR__."/../../public/upload/";
+        $destDir  = __DIR__."/../../../public/upload/";
         $destUrl  = "upload/";
         $destFileOrg = $destDir.$fileNameOrig;
         //$progressId=$_POST['id'];
@@ -301,7 +301,7 @@ class TrtExcel {
                     null, $coldebug.$ligneentete);
             }
 
-            $cePC      = PC::getInstance();
+            //$ceSM      = Smartphone::getInstance();
             $firstLine = $ligneentete + 1;
 
             // ***********************************************************************************
@@ -310,70 +310,70 @@ class TrtExcel {
             $lineTrt   = 0;
             for($i=$firstLine; $i<=$nbrows; $i++){
                 ++$lineTrt;
-                $this->logger->addLogDebugLine('début PC '.$i. "=============================================================");
-                $cePC->resetPc();
-                $cePC->setUniteParDefaut($unitepardefaut);
-                $cePC->setTypeDiskParDefaut($typediskpardefaut);
+                $this->logger->addLogDebugLine('début SM '.$i. "=============================================================");
+                //$ceSM->resetPc();
+                $ceSM = Smartphone::getInstance();
+                $ceSM->setUniteParDefaut($unitepardefaut);
                 if ($recalculcategorie or $xls_data[$i][$colcategorie] == "") {
-                    if ($xls_data[$i][$colcpu] != "" And $xls_data[$i][$colcpu] != null) {
+                    if ($xls_data[$i][$colconstructeur] != "" And $xls_data[$i][$colconstructeur] != null) {
                         // on vérifie que les champs importants ne sont pas des formules
                         $msg =''; // messages d'erreur
-                        if (($colpcmodel != "" and static::isFormula($xls_data[$i][$colpcmodel]))
-                                or (static::isFormula($xls_data[$i][$colcpu]))
-                                or (static::isFormula($xls_data[$i][$coltailleram]))
-                                or (static::isFormula($xls_data[$i][$coltailledisk]))
-                                or (static::isFormula($xls_data[$i][$coltypedisk]))
-                                or ($coltailledisk2 != "" and static::isFormula($xls_data[$i][$coltailledisk2]))
-                                or ($coltypedisk2   != "" and static::isFormula($xls_data[$i][$coltypedisk2]))
+                        //$a = 
+
+
+                        if (($colmodel != "" and static::isFormula($xls_data[$i][$colmodel]))
+                                or (static::isFormula($xls_data[$i][$colmodel]))
+                                or (static::isFormula($xls_data[$i][$coltaillestockage]))
+                                or (static::isFormula($xls_data[$i][$coltaillestockage]))
                                 ) {
                             $categoriePCToPrint = "erreur";
-                            $msg ="[Une des colonnes du tableau inital contient une formule : $i]";
+                            $msg ="[Une des colonnes du tableau inital contient une formule ou RAM ou STOCKAGE ne pont pas numérique: $i]";
                             $this->logger->addLogDebugLine($msg, 'Erreur  ');
                         }else{
-                            if ($colpcmodel != "") {
-                                $cePC->setPcModel(            "".$xls_data[$i][$colpcmodel]);
+                            $ceSM->setMarque(  "".$xls_data[$i][$colconstructeur]);
+                            $ceSM->setModele(  "".$xls_data[$i][$colmodel]);
+                            $ceSM->setRam(     "".$xls_data[$i][$coltailleram]);
+                            $ceSM->setStockage("".$xls_data[$i][$coltaillestockage]) ;
+
+                            $this->logger->addLogDebugLine($ceSM->toString(), 'ceSM '.$i. "=========================================");
+                            $evaluationSmClInstance = EvaluationSm::getInstance($ceSM);
+                            $evaluationSmCl         = $evaluationSmClInstance->evalSmartphone();
+                            if ($evaluationSmCl->getErrMsg() == "" ) {
+                                $categorieSm            = $evaluationSmCl->getCategoriePondereAlpha();
+                            }else{
+                                $categorieSm            = 'err';
                             }
-                            $cePC->setCpuTextInputArray(array("".$xls_data[$i][$colcpu]));
-                            $cePC->setTailleRam(              "".$xls_data[$i][$coltailleram]);
-                            $cePC->setDisk(                1, "".$xls_data[$i][$coltailledisk],"".$xls_data[$i][$coltypedisk]) ;
-                            if ($coltailledisk2 != "") {
-                                $cePC->setDisk(            2, "".$xls_data[$i][$coltailledisk2],"".$xls_data[$i][$coltypedisk2]) ;
-                            }
-                            $this->logger->addLogDebugLine($cePC->toString(), 'cePC '.$i. "=========================================");
-                            $evaluationPcClInstance = EvaluationPc::getInstance($cePC);
-                            $evaluationPcCl         = $evaluationPcClInstance->getEvalPc();
-                            $categoriePC            = $evaluationPcCl->getCategoriePC();
-                            $categoriePCToPrint     = $categoriePC;
+                            $categorieSmToPrint     = $categorieSm;
                             if ($g_environnement != 'PROD') {
-                                $categoriePCToPrint .= " test";
+                                $categorieSmToPrint .= " test";
                             }
-                            $msg = $evaluationPcCl->getEvaluationErrorsCl()->getErrorsMsgAsString();
+                            $msg = $evaluationSmCl->getErrMsg();
 
                             if ($coldebug != "") {
-                                $evaluationPcClasArray=$evaluationPcCl->convertToArray();
+                                $evaluationSmClasArray=$evaluationSmCl->convertToArray();
                                 $arrayDebug = 
                                     [
-                                        $evaluationPcClasArray["cpuTextInput"],
-                                        $evaluationPcClasArray["cputextnorm"],
-                                        $evaluationPcClasArray["cpuWebName"],
-                                        $evaluationPcClasArray["indiceCPU"],
-                                        $evaluationPcClasArray["origine"],
-                                        $evaluationPcClasArray["categorieCPU"],
-                                        $evaluationPcClasArray["tailleDisk01"],
-                                        $evaluationPcClasArray["typeDisk01"],
-                                        $evaluationPcClasArray["categorieDisk01"],
-                                        $evaluationPcClasArray["tailleDisk02"],
-                                        $evaluationPcClasArray["typeDisk02"],
-                                        $evaluationPcClasArray["categorieDisk02"],
-                                        $evaluationPcClasArray["categorieDisk"],
-                                        $evaluationPcClasArray["tailleRam"],
-                                        $evaluationPcClasArray["categorieRam"],
-                                        $evaluationPcClasArray["categorieTotal"],
-                                        $evaluationPcClasArray["categoriePCcodeNormal"],
-                                        $evaluationPcClasArray["categoriePCnormale"],
-                                        $evaluationPcClasArray["categoriePCcodeMaxi"],
-                                        $evaluationPcClasArray["categoriePCcode"],
-                                        $evaluationPcClasArray["categoriePCCorrigée"]
+                                        $evaluationSmClasArray["cpuTextInput"],
+                                        $evaluationSmClasArray["cputextnorm"],
+                                        $evaluationSmClasArray["cpuWebName"],
+                                        $evaluationSmClasArray["indiceCPU"],
+                                        $evaluationSmClasArray["origine"],
+                                        $evaluationSmClasArray["categorieCPU"],
+                                        $evaluationSmClasArray["tailleDisk01"],
+                                        $evaluationSmClasArray["typeDisk01"],
+                                        $evaluationSmClasArray["categorieDisk01"],
+                                        $evaluationSmClasArray["tailleDisk02"],
+                                        $evaluationSmClasArray["typeDisk02"],
+                                        $evaluationSmClasArray["categorieDisk02"],
+                                        $evaluationSmClasArray["categorieDisk"],
+                                        $evaluationSmClasArray["tailleRam"],
+                                        $evaluationSmClasArray["categorieRam"],
+                                        $evaluationSmClasArray["categorieTotal"],
+                                        $evaluationSmClasArray["categoriePCcodeNormal"],
+                                        $evaluationSmClasArray["categoriePCnormale"],
+                                        $evaluationSmClasArray["categoriePCcodeMaxi"],
+                                        $evaluationSmClasArray["categoriePCcode"],
+                                        $evaluationSmClasArray["categoriePCCorrigée"]
                                     ];
     
                                 try {
@@ -389,11 +389,11 @@ class TrtExcel {
                             }
                         }
                         $spreadsheet->setActiveSheetIndex(0)
-                            ->setCellValue($colcategorie.$i, $categoriePCToPrint);
+                            ->setCellValue($colcategorie.$i, $categorieSmToPrint);
                         
                         if ($colerreur == $colcategorie) {
                             $spreadsheet->setActiveSheetIndex(0)
-                                ->setCellValue($colcategorie.$i, $categoriePC . $msg );
+                                ->setCellValue($colcategorie.$i, $categorieSm . $msg );
                         }else{
                             $spreadsheet->setActiveSheetIndex(0)
                                 ->setCellValue($colerreur.$i, $msg);
@@ -415,10 +415,10 @@ class TrtExcel {
             // ***********************************************************************************
             // ********* Crt d'un Excel au format BOLC *******************************************
             // ***********************************************************************************
-            $spreadsheetNorm = \PhpOffice\PhpSpreadsheet\IOFactory::load(__DIR__."/../data/modele_BOLC_v2.xlsx");
+            $spreadsheetNorm = \PhpOffice\PhpSpreadsheet\IOFactory::load(__DIR__."/../../data/sm_modele_BOLC_v1.xlsx");
             //spreadsheetNorm = new Spreadsheet();
             $sheetNorm       = $spreadsheetNorm->getActiveSheet();
-            $fileNorm        = __DIR__."/../data/exceltemplatescstpc.json";
+            $fileNorm        = __DIR__."/../../data/exceltemplatescstsm.json";
             $dataNorm        = file_get_contents($fileNorm);
             $dataNormJson    = json_decode($dataNorm, true);
             $xlsNormJsonCol     = $dataNormJson['*BOLC']['data'];
@@ -490,8 +490,6 @@ class TrtExcel {
             // ***********************************************************************************
             // ********* envoi de la réponse avec le statut du résultat **************************
             // ***********************************************************************************
-            $cpuRamCache = CpuIndiceRamCache::getInstance();
-
             $retour = array(
                 'status' => "OK",
                 "url"    => $destUrl.$fileResultName,
@@ -503,10 +501,7 @@ class TrtExcel {
                 'highestColumn'    => $highestColumn,
                 'nbrows'           => $nbrows,
                 'entetecpu'        => $xls_data[$ligneentete][$colcpu],
-                'entetetailleram'  => $xls_data[$ligneentete][$coltailleram],
-                'entetetailledisk' => $xls_data[$ligneentete][$coltailledisk],
-                'entetetypedisk'   => $xls_data[$ligneentete][$coltypedisk],
-                'cpuramcache'      => $cpuRamCache->__toString()
+                'entetetailleram'  => $xls_data[$ligneentete][$coltailleram]
                 );
             if ($uploadType ==  "1") {
                 $this->logger->addLogDebugLine("envoi de la réponse Json ".__LINE__);

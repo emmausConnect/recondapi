@@ -1,11 +1,15 @@
 <?php
 declare(strict_types=1);
-
+require_once __DIR__.'/../util01.class.php';
 class Smartphone {
     private string $marque ="";
     private string $modele ="";
-    private int    $ram =0;
-    private int    $stockage = 0;
+    private string $ram = "";
+    private string $ramUniteSetParDefaut = "N";
+    private float  $ramGo = 0;
+    private string $stockage = "";
+    private string $stockageUniteSetParDefaut = "N";
+    private float  $stockageGo = 0;
     private string $ponderationKey ="";
     private int    $ponderationValue =0;
     private string $idEc ="";
@@ -14,6 +18,7 @@ class Smartphone {
     private string $imei ="";
     private string $os ="";
     private string $batterieStatut ="";
+    private string $uniteParDefaut = "GB";
 
     private function __construct() {}
 
@@ -23,7 +28,14 @@ class Smartphone {
         return $c;
     }
 
-
+	public function toString() : string {
+        $retour = "marque =[$this->marque] |";
+        $retour = "modele =[$this->modele] |";
+        $retour = "ram =[$this->ram] |";
+        $retour = "stockage =[$this->stockage] |";
+        $retour = "ponderationValue =[$this->ponderationValue] |";
+        return $retour;
+    }
 
 
     /**
@@ -40,7 +52,6 @@ class Smartphone {
     public function setMarque(string $marque): self
     {
         $this->marque = $marque;
-
         return $this;
     }
 
@@ -58,14 +69,13 @@ class Smartphone {
     public function setModele(string $modele): self
     {
         $this->modele = $modele;
-
         return $this;
     }
 
     /**
      * Get the value of ram
      */
-    public function getRam(): int
+    public function getRam(): string
     {
         return $this->ram;
     }
@@ -73,17 +83,29 @@ class Smartphone {
     /**
      * Set the value of ram
      */
-    public function setRam(int $ram): self
+    public function setRam(string $ram): self
     {
-        $this->ram = $ram;
-
+        $ram = Util01::cleanString($ram);
+		if (is_numeric($ram) && $this->uniteParDefaut!= '') {
+			$ram .= $this->uniteParDefaut;
+			$this->ramUniteSetParDefaut = "Y";
+		}
+        $this->ram   = $ram;
         return $this;
+    }
+
+    /**
+     * Get the value of ramGo
+     */
+    public function getRamGo(): string | float
+    {
+        return Util01::convertUnit($this->ram, "g", $this->uniteParDefaut);
     }
 
     /**
      * Get the value of stockage
      */
-    public function getStockage(): int
+    public function getStockage(): string
     {
         return $this->stockage;
     }
@@ -91,11 +113,23 @@ class Smartphone {
     /**
      * Set the value of stockage
      */
-    public function setStockage(int $stockage): self
+    public function setStockage(string $stockage): self
     {
+        $stockage = Util01::cleanString($stockage);
+        if (is_numeric($stockage) && $this->uniteParDefaut!= '') {
+			$stockage .= $this->uniteParDefaut;
+			$this->stockageUniteSetParDefaut = "Y";
+		}
         $this->stockage = $stockage;
-
         return $this;
+    }
+
+    /**
+     * Get the value of stockageGo
+     */
+    public function getStockageGo(): string | float
+    {
+        return Util01::convertUnit($this->stockage, "g", $this->uniteParDefaut);
     }
 
     /**
@@ -112,7 +146,6 @@ class Smartphone {
     public function setPonderationKey(string $ponderationKey): self
     {
         $this->ponderationKey = $ponderationKey;
-
         return $this;
     }
 
@@ -130,7 +163,6 @@ class Smartphone {
     public function setPonderationValue(int $ponderationValue): self
     {
         $this->ponderationValue = $ponderationValue;
-
         return $this;
     }
 
@@ -148,7 +180,6 @@ class Smartphone {
     public function setIdEc(string $idEc): self
     {
         $this->idEc = $idEc;
-
         return $this;
     }
 
@@ -166,7 +197,6 @@ class Smartphone {
     public function setStatutKey(string $statutKey): self
     {
         $this->statutKey = $statutKey;
-
         return $this;
     }
 
@@ -184,7 +214,6 @@ class Smartphone {
     public function setStatutText(string $statutText): self
     {
         $this->statutText = $statutText;
-
         return $this;
     }
 
@@ -202,7 +231,6 @@ class Smartphone {
     public function setImei(string $imei): self
     {
         $this->imei = $imei;
-
         return $this;
     }
 
@@ -220,7 +248,6 @@ class Smartphone {
     public function setOs(string $os): self
     {
         $this->os = $os;
-
         return $this;
     }
 
@@ -243,6 +270,24 @@ class Smartphone {
         return $this;
     }
 
+    /**
+     * Get the value of unitepardefaut
+     */
+    public function getUniteParDefaut(): string
+    {
+        return $this->uniteParDefaut;
+    }
+
+    /**
+     * Set the value of unitepardefaut
+     */
+    public function setUniteParDefaut(string $uniteParDefaut): self
+    {
+        $this->uniteParDefaut = $uniteParDefaut;
+
+        return $this;
+    }
+    
     //******************************************************************* */
 	function __call($name, $arguments)
     {
@@ -263,4 +308,5 @@ class Smartphone {
     {
         throw new Exception("Get d'une propriété inconnue : $name");
     }
+
 }

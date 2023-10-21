@@ -140,7 +140,6 @@ if ($debug != "1") {
         if (! array_key_exists("forceexec", $_GET) ) {
             exit();
         }
-
     }
 }
 // Extraction des paramètres
@@ -153,9 +152,9 @@ $actiontodo = [
     "exapieval.php"      => '../private/php/apieval.php',    
     "exformtableau.php"  => '../private/php/formtableau.php',
 
-    "exformexcel.php"    => '../private/php/formexcel.php',
+    "exformexcel.php"         => '../private/php/formexcel.php',
     //"excalculexcel.php"  => '../private/php/formexcel.php', // pour rétro compatibilité
-    "extrtexcel.php"     => '../private/php/trtexcel.php',
+    "extrtexcelpc.php"        => '../private/php/trtexcelpc.php',
     "extemplatesupdate.php"   => '../private/php/templatesupdate.php',
     "extemplatesget.php"      => '../private/php/templatesget.php',
 
@@ -173,7 +172,9 @@ $actiontodo = [
     "exloadsmartphonesexcel.php"  => '../private/php/smartphones/loadsmartphonesexcel.php',
     "exdisplaysmartphonebd.php"   => '../private/php/smartphones/displaysmartphonebd.php',
     'exgetsmartphoneslist.php'    => '../private/php/smartphones/getsmartphoneslist.php',
-    'exaddindb.php'               => '../private/php/smartphones/addindb.php'
+    'exaddindb.php'               => '../private/php/smartphones/addindb.php',
+    'exformexcelsm.php'           => '../private/php/smartphones/formexcelsm.php',
+    'extrtexcelsm.php'            => '../private/php/smartphones/trtexcelsm.php'
 ];
 
 // echo "<pre>";

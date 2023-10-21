@@ -18,7 +18,7 @@ function getPostValue(string $htmlName, null|string $default = Null): null|strin
     return $retour;
 }
 
-function getGetText(string $htmlName, null|string $default = Null): null|string {
+function getGetValue(string $htmlName, null|string $default = Null): null|string {
     $retour = "";
     if (array_key_exists($htmlName, $_GET)) {
         $retour = $_GET[$htmlName];

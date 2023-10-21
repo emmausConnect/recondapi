@@ -79,13 +79,13 @@ EOT;
 			</div>
 			<h3 class="menutitre">Smartphone</h2>
 			<div class="menuoption" style="padding:0px 0px 5px 20px;">
-				<a class="ec-btn" data-goto="exsearchsmartphone.php">Recherche d'un smartphone</a><br>
-			</div>
-			<div class="menuoption" style="padding:0px 0px 5px 20px;">
+				<a class="ec-btn" data-goto="exformexcelsm.php">Traitement d'Excel</a><br>
+				<br>
+				<a class="ec-btn" data-goto="exsearchsmartphone.php">Catégorisation d'un smartphone</a><br>
+				<br>
 				<a class="ec-btn" data-goto="exdisplaysmartphonebd.php" target="_blank">Afficher la BDD smartphones</a><br>
-			</div>
-			<div class="menuoption" style="padding:0px 0px 5px 20px;">
-				<a class="ec-btn" data-goto="exdisplayvideoaidesm.htm" target="_blank">Vidéo de présentation</a><br>
+				<br>
+				<a class="ec-btn" data-goto="exdisplayvideoaidesm.htm" target="_blank">Vidéo d'aide'</a><br>
 			</div>
 		</article>
 		<article>

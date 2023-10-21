@@ -13,8 +13,24 @@ if(array_key_exists('emmaususerconnected',$_SESSION) && $_SESSION['emmaususercon
     $emailConnected = $_SESSION['email'];
 }
 
+$errParm = false;
+if (! array_key_exists('typemat', $_GET)) {
+    $errParm = true;
+    $reponse['msg']    = "templateupdate : param [typemat] non trouvé";
+}else{
+    if ( $_GET['typemat'] != 'pc' && $_GET['typemat'] != 'sm') {
+        $errParm = true;
+        $reponse['msg'] = "templateupdate : param [typemat] invalide [".$_GET['typemat']."]";
+    }
+}
+if ($errParm) {
+    $reponse['status'] = 'KO';
+    echo json_encode($reponse);
+    exit(0);
+}
+$typeMat = strtolower($_GET['typemat']);
 
-$filename = $_SERVER['DOCUMENT_ROOT']."/../work/workingfiles/exceltemplates.json";
+$filename = $_SERVER['DOCUMENT_ROOT']."/../work/workingfiles/exceltemplates$typeMat.json";
 $template = file_get_contents('php://input');
 $templateJson = json_decode($template, true);
 

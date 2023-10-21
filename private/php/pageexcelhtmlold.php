@@ -14,11 +14,8 @@ EOT;
 }
 
 /** =========== PAGE de Upload ================== */
-function getHtmlExcel(string $typeMat = "pc") {
+function getHtmlExcel() {
 	GLOBAL $debug;
-	$typeMat = strtolower($typeMat);
-	$typeMatText = "PC";
-	if ($typeMat == 'sm') {$typeMatText = "Smartphone"; }
 	$menuInitial = "/?".$_SERVER['QUERY_STRING'];
 	$isConnected = false;
 	$extention   = "";
@@ -43,11 +40,10 @@ function getHtmlExcel(string $typeMat = "pc") {
 	 *  container global
 	 */
 	varglobal = [];
-	varglobal['templates'] = {}; // colonnage du template sélectionné
-	varglobal['type'] = "$typeMat"; // type "pc" ou "sm"
+	varglobal['templates'] = {};
 
 	/** ***************************************************************************
-	 * body onload : charge les noms de templates
+	 * body onload : charge les nom de templates
 	 */
 	async function execInitPage() {
 		document.getElementById("waitsavetemplate").style.display = 'none';
@@ -182,59 +178,29 @@ function getHtmlExcel(string $typeMat = "pc") {
 		let config1 = getConfigCol(version);
 		let config = config1['data'];
 		if (config != "") {
-			switch (varglobal['type']) {
-				case 'pc' :
-					document.getElementById("ligneentete").value          =  config["ligneentete"];
-					document.getElementById("colnumlot").value            =  config["colnumlot"];
-					document.getElementById("colidentifiantunique").value =  config["colidentifiantunique"];
-					document.getElementById("coltypemateriel").value      =  config["coltypemateriel"];
-					document.getElementById("colconstructeur").value      =  config["colconstructeur"];
-					document.getElementById("colpcmodel").value           =  config["colpcmodel"];
-					document.getElementById("colnumserie").value          =  config["colnumserie"];
-					document.getElementById("colcpu").value               =  config["colcpu"];
-					document.getElementById("coltypedisk").value          =  config["coltypedisk"];
-					document.getElementById("coltailledisk").value        =  config["coltailledisk"];
-					document.getElementById("coltypedisk2").value         =  config["coltypedisk2"];
-					document.getElementById("coltailledisk2").value       =  config["coltailledisk2"];
-					document.getElementById("coltailleram").value         =  config["coltailleram"];
-					document.getElementById("coldvd").value               =  config["coldvd"];
-					document.getElementById("colwebcam").value            =  config["colwebcam"];
-					document.getElementById("colecran").value             =  config["colecran"];
-					document.getElementById("colremarque").value          =  config["colremarque"]
-					document.getElementById("colgradeesthetique").value   =  config["colgradeesthetique"]
-					document.getElementById("colcategorie").value         =  config["colcategorie"];
-					document.getElementById("colerreur").value            =  config["colerreur"];
-					document.getElementById("saveastemplatename").value   =  config1["templatename"];
-					document.getElementById("saveastemplatedesc").value   =  config1["templatedesc"];
-					break;
-				case 'sm' :
-				// smartphone
-					document.getElementById("ligneentete").value          =  config["ligneentete"]; 
-					document.getElementById("colnumlot").value            =  config["colnumlot"]; 
-					document.getElementById("colidentifiantunique").value =  config["colidentifiantunique"]; 
-					document.getElementById("coltypemateriel").value      =  config["coltypemateriel"]; 
-					document.getElementById("colconstructeur").value      =  config["colconstructeur"]; 
-					document.getElementById("colmodel").value             =  config["colmodel"]; 
-					document.getElementById("colimei").value              =  config["colimei"]; 
-					document.getElementById("colcpu").value               =  config["colcpu"]; 
-					document.getElementById("colos").value                =  config["colos"]; 
-					document.getElementById("coltaillestockage").value    =  config["coltaillestockage"]; 
-					document.getElementById("coltailleram").value         =  config["coltailleram"]; 
-					document.getElementById("colbatterie").value          =  config["colbatterie"]; 
-					document.getElementById("colecran").value             =  config["colecran"]; 
-					document.getElementById("colecranresolution").value   =  config["colecranresolution"]; 
-					document.getElementById("colchargeur").value          =  config["colchargeur"]; 
-					document.getElementById("coloperateur").value         =  config["coloperateur"]; 
-					document.getElementById("colstatut").value            =  config["colstatut"]; 
-					document.getElementById("colremarque").value          =  config["colremarque"]; 
-					document.getElementById("colcouleur").value           =  config["colcouleur"]; 
-					document.getElementById("colgradeesthetique").value   =  config["colgradeesthetique"]; 
-					document.getElementById("colcategorie").value         =  config["colcategorie"]; 
-					document.getElementById("colerreur").value            =  config["colerreur"];
-					break;
-			}
+			document.getElementById("ligneentete").value          =  config["ligneentete"];
+			document.getElementById("colnumlot").value            =  config["colnumlot"];
+			document.getElementById("colidentifiantunique").value =  config["colidentifiantunique"];
+			document.getElementById("coltypemateriel").value      =  config["coltypemateriel"];
+			document.getElementById("colconstructeur").value      =  config["colconstructeur"];
+			document.getElementById("colpcmodel").value           =  config["colpcmodel"];
+			document.getElementById("colnumserie").value          =  config["colnumserie"];
+			document.getElementById("colcpu").value               =  config["colcpu"];
+			document.getElementById("coltypedisk").value          =  config["coltypedisk"];
+			document.getElementById("coltailledisk").value        =  config["coltailledisk"];
+			document.getElementById("coltypedisk2").value         =  config["coltypedisk2"];
+			document.getElementById("coltailledisk2").value       =  config["coltailledisk2"];
+			document.getElementById("coltailleram").value         =  config["coltailleram"];
+			document.getElementById("coldvd").value               =  config["coldvd"];
+			document.getElementById("colwebcam").value            =  config["colwebcam"];
+			document.getElementById("colecran").value             =  config["colecran"];
+			document.getElementById("colremarque").value          =  config["colremarque"]
+			document.getElementById("colgradeesthetique").value   =  config["colgradeesthetique"]
+			document.getElementById("colcategorie").value         =  config["colcategorie"];
+			document.getElementById("colerreur").value            =  config["colerreur"];
+			document.getElementById("saveastemplatename").value   =  config1["templatename"];
+			document.getElementById("saveastemplatedesc").value   =  config1["templatedesc"];
 		}
-
 	}
 	//*************************************************************************************
 	// gestion des CONTINUER et RETOUR ====================================================
@@ -378,8 +344,7 @@ function getHtmlExcel(string $typeMat = "pc") {
 	 * envoie du JSON du template vers le serveur
 	 */
 	async function sendTemplatePost(dataJson) {
-		dataJson["templatetype"]  = varglobal['type'];
-		let response = await fetch('/extemplatesupdate.php?typemat='+varglobal['type'], {
+		let response = await fetch('/extemplatesupdate.php', {
 			method: 'POST',
 			headers: {
 			  'Content-Type': 'application/json;charset=utf-8'
@@ -388,6 +353,7 @@ function getHtmlExcel(string $typeMat = "pc") {
 		  });
 
 		  let responseJson = await response.json();
+		  //let responseJson = JSON.parse(result);
 		  if (responseJson['status'] !== 'OK') {
 			  displayErrMsg1(responseJson['msg'])
 		  }else{
@@ -396,8 +362,33 @@ function getHtmlExcel(string $typeMat = "pc") {
 	}
 
 	/**
+	 * envoie du JSON du template vers le serveur
+	 */
+	async function sendTemplatePostOLD(dataJson) {
+		let xhr = new XMLHttpRequest();
+		xhr.open("POST", "/extemplatesupdate.php?a=b");
+		
+		xhr.setRequestHeader("Accept", "application/json", true);
+		xhr.setRequestHeader('Content-Type', 'application/json');
+		
+		xhr.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				let responseJson = JSON.parse(xhr.responseText);
+				if (responseJson['status'] !== 'OK') {
+					displayErrMsg1(responseJson['msg'])
+				}else{
+					displaySuccessMsg1(responseJson['msg'])
+				}
+			}
+		};
+		
+		let data = JSON.stringify(dataJson)
+		
+		xhr.send(data);
+	}
+
+	/**
 	 * lit les templates sur le serveur et les stocke dans varglobal['templates']
-	 * la variable varglobal['type'] permet de travailler avec les template'pc' ou 'sm'
 	 * 
 	 * {
 	 *   "operation": "update",
@@ -405,12 +396,30 @@ function getHtmlExcel(string $typeMat = "pc") {
 	 *   "templatedesc": "descrip",
 	 *   "data": {
 	 *     "ligneentete": "4",
-	 *     ...
+	 *     "colnumlot": "xt",
+	 *     "colidentifiantunique": "B",
+	 *     "coltypemateriel": "C",
+	 *     "colconstructeur": "D",
+	 *     "colpcmodel": "E",
+	 *     "colnumserie": "F",
+	 *     "colcpu": "G",
+	 *     "coltypedisk": "H",
+	 *     "coltailledisk": "I",
+	 *     "coltypedisk2": "J",
+	 *     "coltailledisk2": "K",
+	 *     "coltailleram": "L",
+	 *     "coldvd": "M",
+	 *     "colwebcam": "N",
+	 *     "colecran": "O",
+	 *     "colremarque"
+	 *     "colgradeesthetique"
+	 *     "colcategorie": "P",
+	 *     "colerreur": "S"
 	 *   }
 	 * }
 	 */
 	async function getConfigColFromSrv() {
-		const responseJson = await getTextFile("/extemplatesget.php?typemat="+varglobal['type']);
+		const responseJson = await getTextFile("/extemplatesget.php");
 		const t1 = JSON.parse(responseJson['data'])
 		const t2 = t1['data']; // tableau nnom => 
 		varglobal['templates'] = t2;
@@ -424,7 +433,7 @@ function getHtmlExcel(string $typeMat = "pc") {
 	 *   errmsg : text
 	 *   data   : la réponse
 	 * 
-	 * @ url url du fichier à lire (contient déjà la distinction 'pc'' / 'sm'')
+	 * @ url url du fichier à lire
 	 */
 	function getTextFile(url) {
 		return new Promise((resolve) => {
@@ -454,61 +463,34 @@ function getHtmlExcel(string $typeMat = "pc") {
 	 */
 	function buildJsonsTemplateFromForm() {
 		var retour = {};
-		switch (varglobal['type']) {
-			case 'pc' :
-				retour["ligneentete"]          = document.getElementById("ligneentete").value;
-				retour["colnumlot"]            = document.getElementById("colnumlot").value;
-				retour["colidentifiantunique"] = document.getElementById("colidentifiantunique").value;
-				retour["coltypemateriel"]      = document.getElementById("coltypemateriel").value;
-				retour["colconstructeur"]      = document.getElementById("colconstructeur").value;
-				retour["colpcmodel"]           = document.getElementById("colpcmodel").value;
-				retour["colnumserie"]          = document.getElementById("colnumserie").value;
-				retour["colcpu"]               = document.getElementById("colcpu").value;
-				retour["coltypedisk"]          = document.getElementById("coltypedisk").value;
-				retour["coltailledisk"]        = document.getElementById("coltailledisk").value;
-				retour["coltypedisk2"]         = document.getElementById("coltypedisk2").value;
-				retour["coltailledisk2"]       = document.getElementById("coltailledisk2").value;
-				retour["coltailleram"]         = document.getElementById("coltailleram").value;
-				retour["coldvd"]               = document.getElementById("coldvd").value;
-				retour["colwebcam"]            = document.getElementById("colwebcam").value;
-				retour["colecran"]             = document.getElementById("colecran").value;
-				retour["colremarque"]          = document.getElementById("colremarque").value;
-				retour["colgradeesthetique"]   = document.getElementById("colgradeesthetique").value;
-				retour["colcategorie"]         = document.getElementById("colcategorie").value;
-				retour["colerreur"]            = document.getElementById("colerreur").value;
-			case 'sm' :
-				retour["ligneentete"]          = document.getElementById("ligneentete").value; 
-				retour["colnumlot"]            = document.getElementById("colnumlot").value; 
-				retour["colidentifiantunique"] = document.getElementById("colidentifiantunique").value; 
-				retour["coltypemateriel"]      = document.getElementById("coltypemateriel").value; 
-				retour["colconstructeur"]      = document.getElementById("colconstructeur").value; 
-				retour["colmodel"]             = document.getElementById("colmodel").value; 
-				retour["colimei"]              = document.getElementById("colimei").value; 
-				retour["colcpu"]               = document.getElementById("colcpu").value; 
-				retour["colos"]                = document.getElementById("colos").value; 
-				retour["coltaillestockage"]    = document.getElementById("coltaillestockage").value; 
-				retour["coltailleram"]         = document.getElementById("coltailleram").value; 
-				retour["colbatterie"]          = document.getElementById("colbatterie").value; 
-				retour["colecran"]             = document.getElementById("colecran").value; 
-				retour["colecranresolution"]   = document.getElementById("colecranresolution").value; 
-				retour["colchargeur"]          = document.getElementById("colchargeur").value; 
-				retour["coloperateur"]         = document.getElementById("coloperateur").value; 
-				retour["colstatut"]            = document.getElementById("colstatut").value; 
-				retour["colremarque"]          = document.getElementById("colremarque").value; 
-				retour["colcouleur"]           = document.getElementById("colcouleur").value; 
-				retour["colgradeesthetique"]   = document.getElementById("colgradeesthetique").value; 
-				retour["colcategorie"]         = document.getElementById("colcategorie").value; 
-				retour["colerreur"]            = document.getElementById("colerreur").value; 
-		}
+		retour["ligneentete"]          = document.getElementById("ligneentete").value;
+		retour["colnumlot"]            = document.getElementById("colnumlot").value;
+		retour["colidentifiantunique"] = document.getElementById("colidentifiantunique").value;
+		retour["coltypemateriel"]      = document.getElementById("coltypemateriel").value;
+		retour["colconstructeur"]      = document.getElementById("colconstructeur").value;
+		retour["colpcmodel"]           = document.getElementById("colpcmodel").value;
+		retour["colnumserie"]          = document.getElementById("colnumserie").value;
+		retour["colcpu"]               = document.getElementById("colcpu").value;
+		retour["coltypedisk"]          = document.getElementById("coltypedisk").value;
+		retour["coltailledisk"]        = document.getElementById("coltailledisk").value;
+		retour["coltypedisk2"]         = document.getElementById("coltypedisk2").value;
+		retour["coltailledisk2"]       = document.getElementById("coltailledisk2").value;
+		retour["coltailleram"]         = document.getElementById("coltailleram").value;
+		retour["coldvd"]               = document.getElementById("coldvd").value;
+		retour["colwebcam"]            = document.getElementById("colwebcam").value;
+		retour["colecran"]             = document.getElementById("colecran").value;
+		retour["colremarque"]          = document.getElementById("colremarque").value;
+		retour["colgradeesthetique"]   = document.getElementById("colgradeesthetique").value;
+		retour["colcategorie"]         = document.getElementById("colcategorie").value;
+		retour["colerreur"]            = document.getElementById("colerreur").value;
 		return retour
-
 	}
 
 
 	</script>
 
 	<article id="divexcel" >
-	<h2>Traitement d'un Excel $typeMatText</h2>
+	<h2>Traitement d'un Excel</h2>
 
 	<div id="excelsaisie">
 		<!-- CHOIX DE LA VERSION -->
@@ -517,25 +499,13 @@ function getHtmlExcel(string $typeMat = "pc") {
 				<h3>Introduction
 				<img src="images/icones/aide.png" onclick="parent.open('exdisplayvideoaidecolonne.htm')" style="position: relative;
 				left: 50px;top: 0px; " height=20px></h3>
-				<p>Ce site permet de calculer la catégorie de matériel listés dans un Excel.<br>
+				<p>Ce site permet de calculer la catégorie des PC listés dans un Excel.<br>
 				<span style="color:red">La feuille à analyser doit être la première du fichier.<br>
 				Il se peut que certaines formules fassent échouer le traitement</span></p>
 
 				<h3>Choix du modèle</h3>
 				Cliquez sur l'image du modèle d'Excel que vous voulez traiter :<br><br>
-				<img src="
-EOT;
-				switch ($typeMat) {
-					case 'pc' :
-						$retour .= "images\xlspc_v2.jpg";
-						break;
-					case 'sm' :
-						$retour .= "images\smartphones\xlssm_v1.png";
-						break;
-				}
-
-				$retour .= <<<"EOT"
-				" alt="version 2" width="820px" class="img-border overborder" onclick="choixVersion('*BOLC')"><br>
+				<img src="images\xls_v2.jpg" alt="version 2" width="820px" class="img-border overborder" onclick="choixVersion('*BOLC')"><br>
 				<br>
 EOT;
 
@@ -571,15 +541,12 @@ $retour .= <<<'EOT'
 			</select> 
 			<hr>
 			<form id="fileChoice">
-EOT;
-	switch ($typeMat) {	
-		case "pc" :
-			$retour .= <<<'EOT'
+
 				<p><label for="ligneentete">N° ligne en-tête de colonne *</label>
 				  <input id="ligneentete" name="ligneentete" type='number' class="colinputcollection" size="4"  min="1" max="1000" required ></p>
 	
 				<p><label for="colnumlot">Numéro Lot</label>
-				  <input id="colnumlot" name="colnumlot" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
+				  <input id="colnumlot" name="colnumlot"type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
 
 				<p><label for="colidentifiantunique">Identifiant unique</label>
 				  <input id="colidentifiantunique" name="colidentifiantunique"type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
@@ -591,26 +558,26 @@ EOT;
 				  <input id="colconstructeur" name="colconstructeur"type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
 
 				<p><label for="colpcmodel">Colonne modèle du PC</label>
-				  <input id="colpcmodel" name="colpcmodel" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
-				                                           
+				  <input id="colpcmodel" name="colpcmodel" type='text' class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
+
 				<p><label for="colnumserie">N° Serie</label>
-				  <input id="colnumserie" name="colnumserie" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
+				  <input id="colnumserie" name="colnumserie"type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
 
 				<p><label for="colcpu">Colonne cpu *</label>
-				  <input id="colcpu" name="colcpu" type="text" class="colinputcollection" size="2" required pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
+				  <input id="colcpu" name="colcpu" type='text' class="colinputcollection" size="2" required pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
 
 				<p><label for="coltypedisk">Colonne type disque 1 *</label>
-				  <input id="coltypedisk" name="coltypedisk" type="text" class="colinputcollection" size="2" required pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
+				  <input id="coltypedisk" name="coltypedisk" type='text' class="colinputcollection" size="2" required pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
 				<p><label for="coltailledisk">Colonne taille disque 1 *</label>
-				  <input id="coltailledisk" name="coltailledisk" type="text" class="colinputcollection" size="2" required pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
+				  <input id="coltailledisk" name="coltailledisk" type='text' class="colinputcollection" size="2" required pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
 
 				<p><label for="coltypedisk2">Colonne type disque 2</label>
-				  <input id="coltypedisk2" name="coltypedisk2" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
+				  <input id="coltypedisk2" name="coltypedisk2" type='text' class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
 				<p><label for="coltailledisk2">Colonne taille disque 2</label>
-				  <input id="coltailledisk2" name="coltailledisk2" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
+				  <input id="coltailledisk2" name="coltailledisk2" type='text' class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
 
 				<p><label for="coltailleram">Colonne taille RAM *</label>
-				  <input id="coltailleram" name="coltailleram" type="text" class="colinputcollection" size="2" required pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
+				  <input id="coltailleram" name="coltailleram" type='text' class="colinputcollection" size="2" required pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
 
 				<p><label for="coldvd">DVD</label>
 				  <input id="coldvd" name="coldvd"type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
@@ -632,83 +599,13 @@ EOT;
 
 				<p><label for="colerreur">Colonne erreur</label>
 				  <input id="colerreur" name="colerreur" type='text' class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"> (si à blanc, les erreurs seront placées dans la colonne catégorie)</p>
-				EOT;
-				break;
-		case 'sm' :
-			$retour .= <<<'EOT'
-			<p><label for="ligneentete"> N° ligne entete</label>
-			 <input id="ligneentete" name="ligneentete"  type='number' class="colinputcollection" size="4"  min="1" max="1000" required ></p>></p> 
-			
-			<p><label for="colnumlot"> Numéro Lot</label>
-			 <input id="colnumlot" name="colnumlot" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
-			<p><label for="colidentifiantunique">Identifiant unique</label>
-			 <input id="colidentifiantunique" name="colidentifiantunique" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
-			<p><label for="coltypemateriel"> Type matériel</label>
-			 <input id="coltypemateriel" name="coltypemateriel" type="text" class="colinputcollection" size="2" require pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
-			<p><label for="colconstructeur"> Constructeur</label>
-			 <input id="colconstructeur" name="colconstructeur" type="text" class="colinputcollection" size="2" require pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
-			<p><label for="colmodel"> Modèle</label>
-			 <input id="colmodel" name="colmodel" type="text" class="colinputcollection" size="2" require pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
-			<p><label for="colimei"> IMEI</label>
-			 <input id="colimei" name="colimei" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
-			<p><label for="colcpu"> Processeur</label>
-			 <input id="colcpu" name="colcpu" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
-			<p><label for="colos"> OS</label>
-			 <input id="colos" name="colos" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
-			<p><label for="coltaillestockage"> Taille stockage</label>
-			 <input id="coltaillestockage" name="coltaillestockage" type="text" class="colinputcollection" size="2" require pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
-			<p><label for="coltailleram"> RAM</label>
-			 <input id="coltailleram" name="coltailleram" type="text" class="colinputcollection" size="2" require pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
-			<p><label for="colbatterie"> État Batterie</label>
-			 <input id="colbatterie" name="colbatterie" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
-			<p><label for="colecran"> Taille écran</label>
-			 <input id="colecran" name="colecran" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
-			<p><label for="colecranresolution"> Résolution</label>
-			 <input id="colecranresolution" name="colecranresolution" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-
-			<p><label for="colchargeur"> Chargeur</label>
-			 <input id="colchargeur" name="colchargeur" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
-			<p><label for="coloperateur"> Opérateur</label>
-			 <input id="coloperateur" name="coloperateur" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
-			<p><label for="colstatut"> Statut</label>
-			 <input id="colstatut" name="colstatut" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
-			<p><label for="colremarque"> Commentaire</label>
-			 <input id="colremarque" name="colremarque" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
-			<p><label for="colcouleur"> Couleur</label>
-			 <input id="colcouleur" name="colcouleur" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
-			<p><label for="colgradeesthetique"> Grade esth.</label>
-			 <input id="colgradeesthetique" name="colgradeesthetique" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
-			<p><label for="colcategorie"> Catégorie</label>
-			 <input id="colcategorie" name="colcategorie" type="text" class="colinputcollection" size="2" require pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
-			<p><label for="colerreur"> Erreur</label>
-			 <input id="colerreur" name="colerreur" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			EOT;
-			break;
-		}
-
+EOT;
 	if ($isConnected) {
 		$retour .= <<< EOT
 				<p><label for="coldebug">Colonne debug</label>
+					<!-- <input id="coldebug" name="coldebug" type="checkbox" value="Y" checked="no"/> -->
 					<input id="coldebug" name="coldebug" type='text' class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2">
+
 					si renseignée, met le détail du calcul dans l'Excel (réservé à @emmaus-connect)
 				</p>
 EOT;
@@ -744,7 +641,7 @@ EOT;
 				<h3>Options avancées</h3>
 				<h4>Recalcul des catégories</h4>
 				<p>
-					Votre Excel contient peut-être des lignes avec des catégories déjà renseignées,<br><span id="excelrecalculerreur"> indiquez si vous voulez les recalculer</span>.<br>
+					Votre Excel contient peut-être des lignes avec des catégories de PC déjà renseignées,<br><span id="excelrecalculerreur"> indiquez si vous voulez les recalculer</span>.<br>
 					<p>
 					<input type="radio" id="recalculcategorieyes" name="recalculcategorie" value="yes" onclick("excelrecalculclick();")>
 					<label for="recalculcategorieyes">Ecraser les catégories de l'excel par les nouvelles valeurs</label><br>
@@ -753,7 +650,7 @@ EOT;
 					</p>
 				</p>
 EOT;
-				if ($isConnected && $typeMat == 'pc') {
+				if ($isConnected) {
 					$retour .= '<div>';
 					
 				}else {

@@ -2,8 +2,11 @@
 declare(strict_types=1);
 require_once 'smartphone.class.php';
 $path_private_class = $g_contexte_instance->getPath('private/class');
+$path_private       = $g_contexte_instance->getPath('private');
 require_once $path_private_class.'/paramini.class.php';
 require_once $path_private_class.'/db/dbmanagement.class.php';
+require_once $path_private_class.'/util01.class.php';
+require_once $path_private.'/php/smartphones/utilsm.php';
 
 class EvaluationSm {
 
@@ -16,7 +19,7 @@ class EvaluationSm {
     private int    $noteTotale;
     private int    $categorie;
     private string $categorieApha;
-    private int    $ponderation;
+    private int    $ponderation = 0;
     private int    $notePondere;
     private int    $categoriePondere;
     private string $categoriePondereAlpha;
@@ -30,76 +33,126 @@ class EvaluationSm {
     public static function getInstance(Smartphone $sm = null, bool $supressSpacesBool = true) : EvaluationSm
     {
         $c = new EvaluationSm();
-        $c->sm = $sm;
+        if ($sm != null) {
+            $c->sm = $sm;
+        }
         $c->supressSpacesBool = $supressSpacesBool;
         $paramArray = ParamIni::getInstance(__DIR__.'/../../config/param.ini')->getParam();
         $c->paramArray = $paramArray;
         return $c;
     }
     
-    function evalSmartphone() {
+    function evalSmartphone()  : self {
         $errMsg = "";
-        if ($this->sm->getMarque() != "EMMAUSCONNECT") {
-            // recherhce dans la BBD
-            $dbInstance = DbManagement::getInstance();
-            $db = $dbInstance->openDb();
-            $tableName = $dbInstance->tableName('smartphones');
-            $sqlQuery = "SELECT * from $tableName 
-                where marque=:marque and modele=:modele and ram=:ram and stockage=:stockage;";
-            $stmt = $db->prepare($sqlQuery);
-            $stmt->execute([
-                'marque'    =>formatKey($this->sm->getMarque(),$this->supressSpacesBool),
-                'modele'   => formatKey($this->sm->getModele(),$this->supressSpacesBool),
-                'ram'      => formatKey($this->sm->getRam(),$this->supressSpacesBool),
-                'stockage' => formatKey($this->sm->getStockage(),$this->supressSpacesBool)
-                ]);
-            $smRow = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($smRow) {
-                $this->smRowFound  = true;
-                $this->smRow = $smRow;
-                $indice      = $smRow['indice'];
-                $this->calculCategorie($this->sm->getRam(), $this->sm->getStockage(), $indice, $this->sm->getPonderationValue() );
-            }else{
-                $errMsg .= "Il n'y a aucun modèle dans la base avec les critères spécifiés<br>.";
-                $errMsg .= "Pensez à cocher la case 'Supprimer les espaces en trop<br>";
-                $errMsg .= "Pensez aussi à changer les chiffres romains en chiffres arabes.";
-            }
+        $tailleRamCvt      = $this->sm->getRamGo();
+        $tailleStockageCvt = $this->sm->getStockageGo();
+        if(is_string($tailleRamCvt) || is_string($tailleStockageCvt)) {
+            $errMsg = "Ram ou Stockahe incorrect";
         }else{
-            // on utilise un indice en constante qui est dans le modèle
-            $this->simulation = true;
-            $this->smRowFound = true;
-            $indice = $this->sm->modele;
-            $smRow['marque']   = $this->sm->marque;
-            $smRow['modele']   = $this->sm->modele;
-            $smRow['ram']      = $this->sm->ram;
-            $smRow['stockage'] = $this->sm->stockage;
-            $smRow['indice']   = $this->sm->modele;
-            $smRow['os'] = '';
-            $smRow['url'] = '';
-            $smRow['crtorigine'] = '';
-            $smRow['crtby'] = '';
-            $smRow['crtdate'] = '';
-            $smRow['crttype'] = '';
-            $smRow['updorigine'] = '';
-            $smRow['updby'] = '';
-            $smRow['upddate'] = '';
-            $smRow['updtype'] = '';
-            $this->smRow = $smRow;
-            $this->calculCategorie($this->sm->ram, $this->sm->stockage, $this->sm->indice, $this->sm->ponderationValue );
+            if ($this->sm->getMarque() != "EMMAUSCONNECT") {
+                // recherche dans la BBD
+                $dbInstance = DbManagement::getInstance();
+                $db = $dbInstance->openDb();
+                $tableName = $dbInstance->tableName('smartphones');
+                $sqlQuery = "SELECT * from $tableName 
+                    where marque=:marque and modele=:modele and ram=:ram and stockage=:stockage;";
+                $stmt = $db->prepare($sqlQuery);
+                $stmt->execute([
+                    'marque'   => formatKey($this->sm->getMarque(),$this->supressSpacesBool),
+                    'modele'   => formatKey($this->sm->getModele(),$this->supressSpacesBool),
+                    'ram'      => formatKey($tailleRamCvt,$this->supressSpacesBool),
+                    'stockage' => formatKey($this->sm->getStockage(),$this->supressSpacesBool)
+                    ]);
+                $smRow = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($smRow) {
+                    $this->smRowFound  = true;
+                    $this->smRow = $smRow;
+                    $indice      = $smRow['indice'];
+                    $this->calculCategorie($this->sm->getRam(), $this->sm->getStockage(), $indice, $this->sm->getPonderationValue() );
+                }else{
+                    $errMsg .= "Il n'y a aucun modèle dans la base avec les critères spécifiés<br>.";
+                    $errMsg .= 'marque ['.$this->sm->getMarque().'] modele ['.$this->sm->getModele().'] ram ['.$tailleRamCvt.'] stockage ['.$tailleStockageCvt.']<br>';
+                    $errMsg .= "Pensez à cocher la case 'Supprimer les espaces en trop<br>";
+                    $errMsg .= "Pensez aussi à changer les chiffres romains en chiffres arabes.";
+                }
+            }else{
+                // on utilise un indice en constante qui est dans le modèle
+                $this->simulation = true;
+                $this->smRowFound = true;
+                $indice = $this->sm->getModele();
+                $smRow['marque']   = $this->sm->getMarque();
+                $smRow['modele']   = $this->sm->getModele();
+                $smRow['ram']      = $this->sm->getRam();
+                $smRow['stockage'] = $this->sm->getStockage();
+                $smRow['indice']   = $this->sm->getModele();
+                $smRow['os'] = '';
+                $smRow['url'] = '';
+                $smRow['crtorigine'] = '';
+                $smRow['crtby'] = '';
+                $smRow['crtdate'] = '';
+                $smRow['crttype'] = '';
+                $smRow['updorigine'] = '';
+                $smRow['updby'] = '';
+                $smRow['upddate'] = '';
+                $smRow['updtype'] = '';
+                $this->smRow = $smRow;
+                $this->calculCategorie($this->sm->getRam(), $this->sm->getStockage(), $this->sm->getModele(), $this->sm->getPonderationValue() );
+            }
         }
         $this->errMsg = $errMsg;
+        return $this;
     }
    
-    function calculCategorie($ram, $stockage, $indice, $ponderation = 0) {
+    /**
+     * Undocumented function
+     *
+     * @param [type] $ramIn  
+     * @param [type] $stockageIn
+     * @param [type] $indice
+     * @param integer $ponderation
+     * @param string $unitepardefaut
+     * @return void
+     */
+    function calculCategorie($ramIn, $stockageIn, $indice, int $ponderation = 0, string $unitepardefaut='G') {
         //$plages = getSmPlages($this->paramArray);
         $ramPlages            = $this->paramArray['smram'];
         $stockagePlages       = $this->paramArray['smstockage'];
         $indicePlages         = $this->paramArray['smindice'];
         $categoriePlages      = $this->paramArray['smcategorie'];
         $categorieAlphaPlages = $this->paramArray['smcategoriealpha'];
-    
-        $noteRam      = searchIndice($ramPlages, $ram);
-        $noteStockage = searchIndice($stockagePlages, $stockage);
+        
+        $erreurCalcul = false;
+        $noteRam      = (int)-9999999;
+        $ramCvt = Util01::convertUnit($ramIn, "g", $unitepardefaut);
+        if (is_string($ramCvt)){
+            $erreurCalcul = true;
+            $this->evaluationErrorsCl->addErrorMsg('', 'Taille Ram '.$ramCvt);
+        }else{
+            $ram = (int) $ramCvt;
+            if ($ram == $ramCvt) {
+                $noteRam      = searchIndice($ramPlages, $ram);
+            }else{
+                $erreurCalcul = true;
+                $this->evaluationErrorsCl->addErrorMsg('', 'Taille Ram doit être un multiple entier de Goctets "'.$ramCvt.'"');
+            }
+        }
+        //$noteRam      = searchIndice($ramPlages, $ram);
+        $noteStockage = (int)-9999999;
+        $stockageCvt = Util01::convertUnit($stockageIn, "g", $unitepardefaut);
+        if (is_string($stockageCvt)){
+            $erreurCalcul = true;
+            $this->evaluationErrorsCl->addErrorMsg('', 'stockage  : ' .$stockageCvt);
+        }else{
+            $stockage = (int) $stockageCvt;
+            if ($stockage == $stockageCvt) {
+                $noteStockage = searchIndice($stockagePlages, $stockage);
+            }else{
+                $erreurCalcul = true;
+                $this->evaluationErrorsCl->addErrorMsg('', 'Stockage doit être un multiple entier de Goctets "'.$stockageCvt.'"');
+            }
+        }
+        //$noteStockage = searchIndice($stockagePlages, $stockage);
+
         $noteIndice   = searchIndice($indicePlages, $indice);
         $noteTotale   = $noteRam + $noteStockage + $noteIndice;
         $notePondere  = round($noteTotale * ( 1 + ($ponderation/100)));

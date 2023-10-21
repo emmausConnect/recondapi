@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 $path_private_class = $g_contexte_instance->getPath('private/class');
 require_once $path_private_class .'/db/dbmanagement.class.php';
+require_once $path_private_class .'/smartphones/evaluationsm.class.php';
 require_once 'utilsm.php';
+
 
 $result = ['status' => '1', 'msg'=>[], 'data'=>[]];
 $marque         = getGetValue('marque',null);
@@ -29,8 +31,9 @@ if ( $result['status'] == "1" ){
         ]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     if (count($rows) != 0) {
+        $evaluationSm = EvaluationSm::getInstance();
         foreach($rows as $row) {
-            $categorie = calculCategorie($row['ram'], $row['stockage'], $row['indice']);
+            $categorie = $evaluationSm->calculCategorie($row['ram'], $row['stockage'], $row['indice']);
             $row['categorie'] = $categorie;
             array_push($result['data'], $row);
         }
