@@ -7,7 +7,7 @@ require_once __DIR__.'/../paramini.class.php';
 //include the file that loads the PhpSpreadsheet classes
 require __DIR__.'/../../../libraries/spreadsheet/vendor/autoload.php';
 //include the file that loads the PhpSpreadsheet classes//include the classes needed to create and write .xlsx file
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
+//use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 /**
@@ -20,6 +20,13 @@ class TrtExcelSm {
     private $debug;
     private function __construct(){ }
 
+    /**
+     * retrun a new instance
+     *
+     * @param string $uploadType
+     * @param string $debug
+     * @return TrtExcelSm
+     */
     public static function getInstance(string $uploadType, string $debug) : TrtExcelSm
     {
         $c = new TrtExcelSm();
@@ -274,9 +281,11 @@ class TrtExcelSm {
         try {
             //create directly an object instance of the IOFactory class, and load the xlsx file
             //echo "load spreadsheet     ";
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($destFileOrg);
+            //$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($destFileOrg);
+            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader('Xlsx');
+            $spreadsheet = $reader->load($destFileOrg);
+
             //read excel data and store it into an array
-            //echo "setActiveSheetIndex(0)     ";
             $spreadsheet->setActiveSheetIndex(0);
             
             // NULL,        // Value that should be returned for empty cells
@@ -408,7 +417,7 @@ class TrtExcelSm {
             // ********* MAJ de l'excel soumis ***************************************************
             // ***********************************************************************************
             $writer = new Xlsx($spreadsheet);
-            $fileResultName = $horodate.'_r_'.$fileNameInput;
+            $fileResultName = $horodate.'_r_sm_'.$fileNameInput;
             //$fileResult = $destDir. $fileResultName;
             $writer->save($destDir. $fileResultName);
  
@@ -483,7 +492,7 @@ class TrtExcelSm {
             }
 
             $writerNorm = new Xlsx($spreadsheetNorm);
-            $fileResultNameNorm = $horodate.'_n_'.$fileNameInput;
+            $fileResultNameNorm = $horodate.'_n_sm_'.$fileNameInput;
             //$fileResult = $destDir. $fileResultName;
             $writerNorm->save($destDir. $fileResultNameNorm);
 

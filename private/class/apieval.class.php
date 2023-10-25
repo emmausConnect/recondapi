@@ -219,9 +219,9 @@ class APIeval
         if ($tailledisk2 != "") {
             $cePC->setDisk(2, $tailledisk2, $typedisk2);
         }
-        logexec(basename(__FILE__), '|' .$_SERVER["QUERY_STRING"]. '|'  .json_encode($_REQUEST), "api");
+        logexec(basename(__FILE__), '|demande| |' .$_SERVER["QUERY_STRING"]. '|'  .json_encode($_REQUEST), "api");
         $evalPC = EvaluationPc::getInstance($cePC)->getEvalPc();
-        logexec(basename(__FILE__), '|' .$_SERVER["QUERY_STRING"]. '|'  .json_encode($_REQUEST). '|' .json_encode($evalPC), "api");
+        logexec(basename(__FILE__), '|result|'.$evalPC->getCategoriePC().'|' .$_SERVER["QUERY_STRING"]. '|'  .json_encode($_REQUEST). '|' .json_encode($evalPC->convertToArray()), "api");
 
         switch ($outfmt) {
             case "cat":

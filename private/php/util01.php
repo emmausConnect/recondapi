@@ -49,10 +49,10 @@ function getProtocole () {
 }
 
 /**
- * Ajoute un enreg au fichier de log des traitment
+ * Ajoute un enreg au fichier de log des traitement
  * 
  * file : chemin du fichier ayant appeler la fonction (__FILE__)
- * msg : texte à écritre
+ * msg : texte à écrire
  */
 function logexec($file, $msg="", $outputType = "") {
 	$user="";

@@ -2,8 +2,9 @@
 declare(strict_types=1);
 
 /**
- * gestion du log
+ * gestion du log détaillé (erreur et débug)
  * 
+ * le log de début et fin d'exéxcution soont gérés par la fonction dans util01.php
  * peut écrire dans un fichier
  * peut mémoriser en RAM (avec gestion d'une taille maxi)
  */

@@ -8,7 +8,7 @@ $path_private_class = $g_contexte_instance->getPath('private/class');
 require_once $path_private_class.'/db/dbmanagement.class.php';
 require_once $path_private_class.'/paramini.class.php';
 require_once $path_private_class.'/smartphones/smartphone.class.php';
-require_once $path_private_class.'/smartphones/evaluationSm.class.php';
+require_once $path_private_class.'/smartphones/evaluationsm.class.php';
 
 $path_private_config = $g_contexte_instance->getPath('private/config');
 $path_public_images  = $g_contexte_instance->getPath('public/images');
@@ -170,7 +170,7 @@ if (! $errInForm) {
 
         }else{
             // enreg non trouvé
-            // recherche des enregs sur la marque et premier mot de modèle & ram & stockage
+            // recherche des enregs sur la marque
             $dbInstance = DbManagement::getInstance();
             $db = $dbInstance->openDb();
             $tableName = $dbInstance->tableName('smartphones');
