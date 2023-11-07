@@ -131,7 +131,7 @@ class EvaluationIndiceCpu
         $this->setStatus("OK");
       }
       $this->indiceCPUCl = $indiceClRam;
-      $this->indiceCPUCl = $this->indiceCPUCl->getOrigine() . " RamCache";
+      //$this->indiceCPUCl = $this->indiceCPUCl->getOrigine() . " RamCache";
     } else {
       // EMMAUSCONNECT nnnn  : le texte contient-il l'indice ?
       $indiceKs = $this->getCpuIndiceFromConstante($cpuTextNorm);

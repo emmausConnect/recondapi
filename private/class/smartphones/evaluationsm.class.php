@@ -13,16 +13,17 @@ class EvaluationSm {
     private Smartphone $sm;
     private bool   $supressSpacesBool = true;
     private array  $paramArray;
-    private int    $noteRam;
-    private int    $noteStockage;
-    private int    $noteIndice;
-    private int    $noteTotale;
-    private int    $categorie;
-    private string $categorieApha;
+    private int    $noteRam = 0;
+    private int    $noteStockage = 0;
+    private int    $indice = 0;
+    private int    $noteIndice = 0;
+    private int    $noteTotale = 0;
+    private int    $categorie = 0;
+    private string $categorieApha = "";
     private int    $ponderation = 0;
-    private int    $notePondere;
-    private int    $categoriePondere;
-    private string $categoriePondereAlpha;
+    private int    $notePondere = 0;
+    private int    $categoriePondere = 0;
+    private string $categoriePondereAlpha = "";
     private string $errMsg;
     private bool   $simulation = false;
     private bool   $smRowFound = false;
@@ -67,8 +68,9 @@ class EvaluationSm {
                 if ($smRow) {
                     $this->smRowFound  = true;
                     $this->smRow = $smRow;
-                    $indice      = $smRow['indice'];
-                    $this->calculCategorie($this->sm->getRam(), $this->sm->getStockage(), $indice, $this->sm->getPonderationValue() );
+                    //$indice      = $smRow['indice'];
+                    $this->indice = $smRow['indice'];;
+                    $this->calculCategorie($this->sm->getRam(), $this->sm->getStockage(), $this->getIndice(), $this->sm->getPonderationValue() );
                 }else{
                     $errMsg .= "Il n'y a aucun modèle dans la base avec les critères spécifiés<br>.";
                     $errMsg .= 'marque ['.$this->sm->getMarque().'] modele ['.$this->sm->getModele().'] ram ['.$tailleRamCvt.'] stockage ['.$tailleStockageCvt.']<br>';
@@ -79,7 +81,8 @@ class EvaluationSm {
                 // on utilise un indice en constante qui est dans le modèle
                 $this->simulation = true;
                 $this->smRowFound = true;
-                $indice = $this->sm->getModele();
+                //$indice = $this->sm->getModele();
+                $this->indice      = (int) $this->sm->getModele();
                 $smRow['marque']   = $this->sm->getMarque();
                 $smRow['modele']   = $this->sm->getModele();
                 $smRow['ram']      = $this->sm->getRam();
@@ -96,7 +99,7 @@ class EvaluationSm {
                 $smRow['upddate'] = '';
                 $smRow['updtype'] = '';
                 $this->smRow = $smRow;
-                $this->calculCategorie($this->sm->getRam(), $this->sm->getStockage(), $this->sm->getModele(), $this->sm->getPonderationValue() );
+                $this->calculCategorie($this->sm->getRam(), $this->sm->getStockage(), $this->getIndice(), $this->sm->getPonderationValue() );
             }
         }
         $this->errMsg = $errMsg;
@@ -269,6 +272,23 @@ class EvaluationSm {
     public function setParamArray(array $paramArray): self
     {
         $this->paramArray = $paramArray;
+        return $this;
+    }
+
+    /**
+     * Get the value of indice
+     */
+    public function getIndice(): int
+    {
+        return $this->indice;
+    }
+
+    /**
+     * Set the value of indice
+     */
+    public function setIndice(int $indice): self
+    {
+        $this->indice = $indice;
         return $this;
     }
 
@@ -509,4 +529,5 @@ class EvaluationSm {
         $this->smRow = $smRow;
         return $this;
     }
+
 }

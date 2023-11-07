@@ -57,12 +57,12 @@ class APIeval
      *  tailleram   :   taille de la ram sous forme "4g" "4 Go" ... : default = 0g
      * 
      *  ========== type de sortie =================================
-     *  outfmt     :    "json" ou "text" ou "cat"
+     *  outfmt     :    
      *                  cat  : renvoie la catéggorie du PC ou "erreur:texte erreur"
-     *                  json : renvoie la résponse en format Json
      *                  text : renvoie la réponse en format texte
+     *                  html ; utilisé avec détail = 1 permet d'avoir le détail du calcul
      *                  val par défaut :
-     *                  si le paramètre "pc" existe => "cat", sinon "text"
+     *                     si le paramètre "pc" existe => "cat", sinon "text"
      *  seperateur :   utilisé si format "text". Normalement "\t"
      *                  dft = "\t"
      *  detail     :    1 => le détail du calcul est joint au résultat (pour debug) 
@@ -80,18 +80,18 @@ class APIeval
     {
         $debug = $this->debug;;
         $this->logger->addLogDebugLine(">>>> execGet xx");
-        $query = "pc"; // "PC" => calcul de la catégorie du pc sinon uniquement l'évaluation du CPU
-        if ((array_key_exists("query", $_GET))) {
-            // "pc" => calcul de la catégorie du pc
-            $query = strtolower($_GET["query"]);
-        }
+        // $query = "pc"; // "PC" => calcul de la catégorie du pc sinon uniquement l'évaluation du CPU
+        // if ((array_key_exists("query", $_GET))) {
+        //     // "pc" => calcul de la catégorie du pc
+        //     $query = strtolower($_GET["query"]);
+        // }
 
         $outfmt = "cat";
         if ((array_key_exists("pc", $_GET))) {
             $outfmt = "text";
         }
         if ((array_key_exists("outfmt", $_GET))) {
-            $outfmt = strtoupper($_GET["outfmt"]);
+            $outfmt = strtolower($_GET["outfmt"]);
         }
 
         $seperateur = "\t";
@@ -113,10 +113,6 @@ class APIeval
         //     }
         // }
 
-        // $trt = "xls"; // choix écran : chargement Excel ou saisie texte
-        // if ((array_key_exists("trt", $_GET))) {
-        //     $trt = strtolower($_GET["trt"]);
-        // }
 
         $tailleram   = "";
         $tailledisk1 = "";
@@ -197,8 +193,8 @@ class APIeval
                     $tailleram = strtoupper($_GET["tailleram"]);
                 }
 
-                //  ASF-AGqZr4fHJ7mo
-                //  TriRA-6QYRHwpSX6 
+                // TriRA : TRIRHO01
+                // ASF : ATELSF01
                 if ((array_key_exists("recondid", $_GET))) {
                     $recondid = strtoupper($_GET["recondid"]);
                 }
@@ -241,6 +237,12 @@ class APIeval
                 break;
             case "text":
                 echo $evalPC->convertToText($seperateur, $detail);
+                if ($debug == 1) {
+                    echo nl2br($this->logger->getLog());
+                }
+                break;
+            case "html":
+                echo $evalPC->convertToTable($detail);
                 if ($debug == 1) {
                     echo nl2br($this->logger->getLog());
                 }

@@ -18,6 +18,13 @@ class TrtExcelSm {
     private $logger; // initialisé à l'instantiation
     private $timeStampStart;
     private $debug;
+
+    private $destDir = __DIR__."/../../../public/upload/";
+    private $destUrl = "upload/";
+    private $fileNameOrig ;
+    private $fileNameInput;
+    private $destFileOrg;
+    private $horodate;
     private function __construct(){ }
 
     /**
@@ -44,10 +51,316 @@ class TrtExcelSm {
      */
     public function trtExcelSm() {
         GLOBAL $g_environnement;
+
+        //$this->getHeaderLine();
+
         $uploadType = $_GET["upload"];
         $this->logger->addLogDebugLine('>>> execUpload  uploadType = "'.$uploadType.'" __LINE__');
 
-        //=========== Traitement de $_POST =================================================
+        //======================
+        $inMap = $this->trtInputValues();
+        $ligneentete          = $inMap["ligneentete"];
+        $colnumlot            = $inMap["colnumlot"];
+        $colidentifiantunique = $inMap["colidentifiantunique"];
+        $coltypemateriel      = $inMap["coltypemateriel"];
+        $colconstructeur      = $inMap["colconstructeur"];
+        $colmodel             = $inMap["colmodel"];
+        $colimei              = $inMap["colimei"];
+        $colcpu               = $inMap["colcpu"];
+        $colos                = $inMap["colos"];
+        $coltaillestockage    = $inMap["coltaillestockage"];
+        $coltailleram         = $inMap["coltailleram"];
+        $colbatterie          = $inMap["colbatterie"];
+        $colecran             = $inMap["colecran"];
+        $colecranresolution   = $inMap["colecranresolution"];
+        $colchargeur          = $inMap["colchargeur"];
+        $coloperateur         = $inMap["coloperateur"];
+        $colstatut            = $inMap["colstatut"];
+        $colremarque          = $inMap["colremarque"];
+        $colcouleur           = $inMap["colcouleur"];
+        $colgradeesthetique   = $inMap["colgradeesthetique"];
+        $colcategorie         = $inMap["colcategorie"];
+        $colerreur            = $inMap["colerreur"];
+        $coldebug             = $inMap["coldebug"];
+        $recalculcategorie    = $inMap["recalculcategorie"];       
+        $unitepardefaut       = $inMap["unitepardefaut"];
+
+        //=========== Traitement du fichier =================================================
+
+        logexec(basename(__FILE__), $this->fileNameInput . " param =" .json_encode($inMap));
+        $debugColHeader = [
+                "marque",
+                "modèle",
+                "Ram",
+                "note",
+                "stockage",
+                "note",
+                "indice",
+                "note",
+                "total",
+                "Catégorie",
+                "Pondération",
+                "Note Pond.",
+                "Catégorie Pond"
+            ];
+        
+        try {
+            $this->loadExcelFile();
+            //create directly an object instance of the IOFactory class, and load the xlsx file
+            //$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($destFileOrg);
+            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader('Xlsx');
+            $spreadsheet = $reader->load($this->destFileOrg);
+
+            //read excel data and store it into an array
+            $spreadsheet->setActiveSheetIndex(0);
+            
+            // NULL,        // Value that should be returned for empty cells
+            // TRUE,        // Should formulas be calculated (the equivalent of getCalculatedValue() for each cell)
+            // TRUE,        // Should values be formatted (the equivalent of getFormattedValue() for each cell)
+            // TRUE         // Should the array be indexed by cell row and cell column
+            //echo "spreadsheet->getActiveSheet()->toArray(null, false, false, true)";
+            $worksheet = $spreadsheet->getActiveSheet();
+            $highestRow = $worksheet->getHighestRow(); // e.g. 10
+            $highestColumn = $worksheet->getHighestColumn(); // e.g 'F'
+            $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn); // e.g. 5
+            $xls_data  = $worksheet->toArray(null, false, false, true);
+
+            $nbrows = count($xls_data); //number of rows
+            $this->logger->addLogDebugLine("highestRow : $highestRow  highestColumn : $highestColumn     highestColumnIndex : $highestColumnIndex", 'Sheet size ');
+    
+               
+            if ($coldebug != "") {
+                $spreadsheet->setActiveSheetIndex(0)->fromArray(
+                    $debugColHeader ,
+                    null, $coldebug.$ligneentete);
+            }
+
+            //$ceSM      = Smartphone::getInstance();
+            $firstLine = $ligneentete + 1;
+
+            // ***********************************************************************************
+            // ********* Calcul de la catégorie pour chaque ligne de l'excel *********************
+            // ***********************************************************************************
+            $lineTrt   = 0;
+            for($i=$firstLine; $i<=$nbrows; $i++){
+                ++$lineTrt;
+                $this->logger->addLogDebugLine('début SM '.$i. "=============================================================");
+                //$ceSM->resetPc();
+                $ceSM = Smartphone::getInstance();
+                $ceSM->setUniteParDefaut($unitepardefaut);
+                if ($recalculcategorie or $xls_data[$i][$colcategorie] == "") {
+                    if ($xls_data[$i][$colconstructeur] != "" And $xls_data[$i][$colconstructeur] != null) {
+                        // on vérifie que les champs importants ne sont pas des formules
+                        $msg =''; // messages d'erreur
+                        //$a = 
+
+
+                        if (($colmodel != "" and static::isFormula($xls_data[$i][$colmodel]))
+                                or (static::isFormula($xls_data[$i][$colmodel]))
+                                or (static::isFormula($xls_data[$i][$coltaillestockage]))
+                                or (static::isFormula($xls_data[$i][$coltaillestockage]))
+                                ) {
+                            $categoriePCToPrint = "erreur";
+                            $msg ="[Une des colonnes du tableau inital contient une formule ou RAM ou STOCKAGE ne pont pas numérique: $i]";
+                            $this->logger->addLogDebugLine($msg, 'Erreur  ');
+                        }else{
+                            $ceSM->setMarque(  "".$xls_data[$i][$colconstructeur]);
+                            $ceSM->setModele(  "".$xls_data[$i][$colmodel]);
+                            $ceSM->setRam(     "".$xls_data[$i][$coltailleram]);
+                            $ceSM->setStockage("".$xls_data[$i][$coltaillestockage]) ;
+
+                            $this->logger->addLogDebugLine($ceSM->toString(), 'ceSM '.$i. "=========================================");
+                            $evaluationSmClInstance = EvaluationSm::getInstance($ceSM);
+                            $evaluationSmCl         = $evaluationSmClInstance->evalSmartphone();
+                            if ($evaluationSmCl->getErrMsg() == "" ) {
+                                $categorieSm            = $evaluationSmCl->getCategoriePondereAlpha();
+                            }else{
+                                $categorieSm            = 'err';
+                            }
+                            $categorieSmToPrint     = $categorieSm;
+                            if ($g_environnement != 'PROD') {
+                                $categorieSmToPrint .= " test";
+                            }
+                            $msg = $evaluationSmCl->getErrMsg();
+
+                            if ($coldebug != "") {
+                                //$evaluationSmClasArray=$evaluationSmCl->convertToArray();
+                                $arrayDebug = 
+                                    [
+                                        $evaluationSmCl->getSm()->getMarque(),
+                                        $evaluationSmCl->getSm()->getModele(),
+                                        $evaluationSmCl->getSm()->getRam(),
+                                        $evaluationSmCl->getNoteRam(),
+                                        $evaluationSmCl->getSm()->getStockage(),
+                                        $evaluationSmCl->getNoteStockage(),
+                                        $evaluationSmCl->getIndice(),
+                                        $evaluationSmCl->getNoteIndice(),
+                                        $evaluationSmCl->getNoteTotale(),
+                                        $evaluationSmCl->getCategorieApha(),
+                                        $evaluationSmCl->getPonderation(),
+                                        $evaluationSmCl->getNotePondere(),
+                                        $evaluationSmCl->getCategoriePondereAlpha()
+                                    ];
+    
+                                try {
+                                    $spreadsheet->setActiveSheetIndex(0)->fromArray(
+                                        $arrayDebug,
+                                        null, $coldebug.$i);
+                                }catch (Exception $ex) {
+                                    echo "erreur lors de l'écriture du résultat excel<br>";
+                                    echo 'Exception : '.__LINE__;
+                                    echo $ex->getMessage().'<br>';
+                                    echo $ex->getTraceAsString();
+                                }
+                            }
+                        }
+                        $spreadsheet->setActiveSheetIndex(0)
+                            ->setCellValue($colcategorie.$i, $categorieSmToPrint);
+                        
+                        if ($colerreur == $colcategorie) {
+                            $spreadsheet->setActiveSheetIndex(0)
+                                ->setCellValue($colcategorie.$i, $categorieSm . $msg );
+                        }else{
+                            $spreadsheet->setActiveSheetIndex(0)
+                                ->setCellValue($colerreur.$i, $msg);
+                        }
+    
+ 
+                    }
+                }
+            } // fin du FOR traitement des lignes de l'excel
+            
+            // ***********************************************************************************
+            // ********* MAJ de l'excel soumis ***************************************************
+            // ***********************************************************************************
+            $writer = new Xlsx($spreadsheet);
+            $fileResultName = $this->horodate.'_r_sm_'.$this->fileNameInput;
+            $writer->save($this->destDir. $fileResultName);
+ 
+            // ***********************************************************************************
+            // ********* Crt d'un Excel au format BOLC *******************************************
+            // ***********************************************************************************
+            $spreadsheetNorm = \PhpOffice\PhpSpreadsheet\IOFactory::load(__DIR__."/../../data/sm_modele_BOLC_v1.xlsx");
+            //spreadsheetNorm = new Spreadsheet();
+            $sheetNorm       = $spreadsheetNorm->getActiveSheet();
+            $fileNorm        = __DIR__."/../../data/exceltemplatescstsm.json";
+            $dataNorm        = file_get_contents($fileNorm);
+            $dataNormJson    = json_decode($dataNorm, true);
+            $xlsNormJsonCol     = $dataNormJson['*BOLC']['data'];
+            $xlsNormJsonHeader  = $dataNormJson['*BOLC']['header'];
+            $lineHeaderNorm     = $xlsNormJsonCol["ligneentete"];
+            // écriture de la ligne en-tête
+            foreach ($xlsNormJsonCol as $key => $colNorm) {
+                if (str_starts_with($key, 'col')) {
+                    $valHeader = $xlsNormJsonHeader[$key];
+                    $sheetNorm->setCellValue($colNorm.$lineHeaderNorm,$valHeader);
+                }
+            }
+            // écriture des données
+            $lineTrtNorm = $lineHeaderNorm;
+            // parcour des lignes du tableau soumis résultat
+            for($i=$firstLine; $i<=$nbrows; $i++){
+                ++$lineTrtNorm;
+                foreach ($xlsNormJsonCol as $key => $colNorm) {
+                    // xls_data est le tableau contenant la feuiile calculé
+                    if (str_starts_with($key, 'col')) {
+                        if ($inMap[$key] != "") {
+                            //on ne fait que si la colonne existe en entrée
+                            $val1 = $spreadsheet->getActiveSheet()->getCell($inMap[$key].$i)->getValue();
+                            if (static::isFormula($val1)) {
+                                $val1 = "'".$val1;
+                                $sheetNorm->getStyle($colNorm.$lineTrtNorm)->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                            }
+                            $sheetNorm->setCellValue($colNorm.$lineTrtNorm,$val1);
+                       }
+                    }
+                }
+            }
+
+            // ajout des infos de débug s'il y a lieu
+            // on écrit également l'en-tête débug si elle existe
+
+            if ($coldebug != "") {
+               // l'entête débug
+                $colIn = $coldebug;
+                $nbColDebug = count($debugColHeader); // nombre de colonnes à copier
+                $colOut = "V";
+                for ($c=1 ; $c <= $nbColDebug ; $c++) {
+                    $val1 = $spreadsheet->getActiveSheet()->getCell($colIn.$ligneentete)->getValue();
+                    $sheetNorm->setCellValue($colOut.$lineHeaderNorm,$val1);
+                    ++$colIn;
+                    ++$colOut;
+                }
+                // les données débug
+                $firstLine   = $ligneentete + 1;
+                $lineTrtNorm = $lineHeaderNorm;
+                for($l=$firstLine; $l<=$nbrows; $l++){
+                    ++$lineTrtNorm;
+                    $colIn  = $coldebug;
+                    $colOut = "V";
+                    for ($c=1 ; $c <= $nbColDebug ; $c++) {
+                        $val1 = $spreadsheet->getActiveSheet()->getCell($colIn.$l)->getValue();
+                        $sheetNorm->setCellValue($colOut.$lineTrtNorm,$val1);
+                        ++$colIn;
+                        ++$colOut;
+                    }
+                }
+            }
+
+            $writerNorm = new Xlsx($spreadsheetNorm);
+            $fileResultNameNorm = $this->horodate.'_n_sm_'.$this->fileNameInput;
+            $writerNorm->save($this->destDir. $fileResultNameNorm);
+
+            // ***********************************************************************************
+            // ********* envoi de la réponse avec le statut du résultat **************************
+            // ***********************************************************************************
+            $retour = array(
+                'status' => "OK",
+                "url"    => $this->destUrl.$fileResultName,
+                "url2"   => $this->destUrl.$fileResultNameNorm,
+                "log"    => $this->logger->getLog(),
+                "duree"  => time() - $this->timeStampStart,
+                //'progressid' => $progressId,
+                'highestRow'       => $highestRow,
+                'highestColumn'    => $highestColumn,
+                'nbrows'           => $nbrows,
+                'entetecpu'        => $xls_data[$ligneentete][$colcpu],
+                'entetetailleram'  => $xls_data[$ligneentete][$coltailleram]
+                );
+            if ($uploadType ==  "1") {
+                $this->logger->addLogDebugLine("envoi de la réponse Json ".__LINE__);
+                echo json_encode($retour);
+            }else {
+                $htmlPage  = '<!DOCTYPE html><HTML><HEAD></HEAD><body class="body_flex">';
+                $htmlPage .= 'cliquez <a href="' . $retour['url']. '">ici</a> pour charger le résultat.';
+                echo $htmlPage;
+            }
+
+        }catch (Exception $ex) {
+            $this->logger->addLogDebugLine($ex->getTrace(),'Stacktrace '.__LINE__);
+            var_dump($ex);
+            $errMsg = 'traitement du fichier ' .$this->fileNameInput. ' impossible';
+            if ($uploadType ==  "1") {
+                $retour = array(
+                    'status' => "KO",
+                    "url" => ''  ,
+                    "log" => $this->logger->getLog(),
+                    "duree" => time() - $this->timeStampStart,
+                    //'progressid' => $progressId,
+                    'errmsg'=>$errMsg);
+                echo json_encode($retour);
+            }else {
+                $htmlPage  = '<!DOCTYPE html><HTML><HEAD></HEAD><body class="body_flex">';
+                $htmlPage .= __FILE__ + " " + __LINE__ +"<br>";
+                $htmlPage .= $errMsg;
+                echo $htmlPage;
+            }
+        }
+    }
+
+
+    private function trtInputValues() : array {
+                //=========== Traitement de $_POST =================================================
         // $inMap contient contient les données du formulaire
         $inMap = [];
         if (array_key_exists("ligneentete", $_POST)) {
@@ -238,293 +551,56 @@ class TrtExcelSm {
         }
         $inMap["unitepardefaut"] = $unitepardefaut;
 
-        //=========== Traitement du fichier =================================================
+        return $inMap;
+    }
+
+    private function loadExcelFile() {
         $source = $_FILES["upfile"]["tmp_name"]; // D:\xampp\tmp\phpDDAB.tmp
-        $horodate = time();
-        $this->timeStampStart = $horodate;
-        $fileNameInput = $_FILES["upfile"]["name"];
-        $this->logger->addLogDebugLine($fileNameInput, '==== trt du fichier ======================================');
+        $this->horodate = time();
+        $this->timeStampStart = $this->horodate;
+        $this->fileNameInput = $_FILES["upfile"]["name"];
+        $this->logger->addLogDebugLine($this->fileNameInput, '==== trt du fichier ======================================');
         //$fileNameInputExt = pathinfo($fileNameInput, PATHINFO_EXTENSION);
-        $fileNameOrig = $horodate.'_'.$fileNameInput;
-        $destDir  = __DIR__."/../../../public/upload/";
-        $destUrl  = "upload/";
-        $destFileOrg = $destDir.$fileNameOrig;
-        //$progressId=$_POST['id'];
-        move_uploaded_file($source, $destFileOrg);
-        //$progressFileName =__DIR__.'/../../work/progressfiles/'.$progressId.".txt";
-        //$_SERVER['REMOTE_ADDR'].
-        //date('d/m/y H-i-s');
-        logexec(basename(__FILE__), $fileNameInput . " param =" .json_encode($inMap));
-        $debugColHeader = ["cpuTextInput",
-                "cputextnorm",
-                "cpuWebName",
-                "indiceCPU",
-                "origine",
-                "categorieCPU",
-                "tailleDisk01",
-                "typeDisk01",
-                "categorieDisk01",
-                "tailleDisk02",
-                "typeDisk02",
-                "categorieDisk02",
-                "categorieDisk",
-                "tailleRam",
-                "categorieRam",
-                "categorieTotal",
-                "categoriePCcodeNormale",
-                "categoriePCnormale",
-                "categoriePCcodeMaxi",
-                "categoriePCcode",
-                "categoriePCCorrigée"
-            ];
-        
+        $this->fileNameOrig = $this->horodate.'_o_sm_'.$this->fileNameInput;
+        $destDir  = $this->destDir;
+        $this->destFileOrg = $destDir.$this->fileNameOrig;
+        move_uploaded_file($source, $this->destFileOrg);
+    }
+
+    private function getHeaderLine() {
+        $uploadType = $_GET["upload"];
+        $this->logger->addLogDebugLine('>>> getHeaderLine  uploadType = "'.$uploadType.'" __LINE__');
+        $inMap = $this->trtInputValues();
+        $ligneentete          = $inMap["ligneentete"];
         try {
-            //create directly an object instance of the IOFactory class, and load the xlsx file
-            //echo "load spreadsheet     ";
-            //$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($destFileOrg);
+            $this->loadExcelFile();
             $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader('Xlsx');
-            $spreadsheet = $reader->load($destFileOrg);
-
-            //read excel data and store it into an array
+            $spreadsheet = $reader->load($this->destFileOrg);
             $spreadsheet->setActiveSheetIndex(0);
-            
-            // NULL,        // Value that should be returned for empty cells
-            // TRUE,        // Should formulas be calculated (the equivalent of getCalculatedValue() for each cell)
-            // TRUE,        // Should values be formatted (the equivalent of getFormattedValue() for each cell)
-            // TRUE         // Should the array be indexed by cell row and cell column
-            //echo "spreadsheet->getActiveSheet()->toArray(null, false, false, true)";
             $worksheet = $spreadsheet->getActiveSheet();
-            $highestRow = $worksheet->getHighestRow(); // e.g. 10
-            $highestColumn = $worksheet->getHighestColumn(); // e.g 'F'
-            $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn); // e.g. 5
             $xls_data  = $worksheet->toArray(null, false, false, true);
-
-            $nbrows = count($xls_data); //number of rows
-            $this->logger->addLogDebugLine("highestRow : $highestRow  highestColumn : $highestColumn     highestColumnIndex : $highestColumnIndex", 'Sheet size ');
-    
-            //$this->addProgress($progressFileName, '0', $fileNameInput);
-                
-            if ($coldebug != "") {
-                $spreadsheet->setActiveSheetIndex(0)->fromArray(
-                    $debugColHeader ,
-                    null, $coldebug.$ligneentete);
-            }
-
-            //$ceSM      = Smartphone::getInstance();
-            $firstLine = $ligneentete + 1;
-
-            // ***********************************************************************************
-            // ********* Calcul de la catégorie pour chaque ligne de l'excel *********************
-            // ***********************************************************************************
-            $lineTrt   = 0;
-            for($i=$firstLine; $i<=$nbrows; $i++){
-                ++$lineTrt;
-                $this->logger->addLogDebugLine('début SM '.$i. "=============================================================");
-                //$ceSM->resetPc();
-                $ceSM = Smartphone::getInstance();
-                $ceSM->setUniteParDefaut($unitepardefaut);
-                if ($recalculcategorie or $xls_data[$i][$colcategorie] == "") {
-                    if ($xls_data[$i][$colconstructeur] != "" And $xls_data[$i][$colconstructeur] != null) {
-                        // on vérifie que les champs importants ne sont pas des formules
-                        $msg =''; // messages d'erreur
-                        //$a = 
-
-
-                        if (($colmodel != "" and static::isFormula($xls_data[$i][$colmodel]))
-                                or (static::isFormula($xls_data[$i][$colmodel]))
-                                or (static::isFormula($xls_data[$i][$coltaillestockage]))
-                                or (static::isFormula($xls_data[$i][$coltaillestockage]))
-                                ) {
-                            $categoriePCToPrint = "erreur";
-                            $msg ="[Une des colonnes du tableau inital contient une formule ou RAM ou STOCKAGE ne pont pas numérique: $i]";
-                            $this->logger->addLogDebugLine($msg, 'Erreur  ');
-                        }else{
-                            $ceSM->setMarque(  "".$xls_data[$i][$colconstructeur]);
-                            $ceSM->setModele(  "".$xls_data[$i][$colmodel]);
-                            $ceSM->setRam(     "".$xls_data[$i][$coltailleram]);
-                            $ceSM->setStockage("".$xls_data[$i][$coltaillestockage]) ;
-
-                            $this->logger->addLogDebugLine($ceSM->toString(), 'ceSM '.$i. "=========================================");
-                            $evaluationSmClInstance = EvaluationSm::getInstance($ceSM);
-                            $evaluationSmCl         = $evaluationSmClInstance->evalSmartphone();
-                            if ($evaluationSmCl->getErrMsg() == "" ) {
-                                $categorieSm            = $evaluationSmCl->getCategoriePondereAlpha();
-                            }else{
-                                $categorieSm            = 'err';
-                            }
-                            $categorieSmToPrint     = $categorieSm;
-                            if ($g_environnement != 'PROD') {
-                                $categorieSmToPrint .= " test";
-                            }
-                            $msg = $evaluationSmCl->getErrMsg();
-
-                            if ($coldebug != "") {
-                                $evaluationSmClasArray=$evaluationSmCl->convertToArray();
-                                $arrayDebug = 
-                                    [
-                                        $evaluationSmClasArray["cpuTextInput"],
-                                        $evaluationSmClasArray["cputextnorm"],
-                                        $evaluationSmClasArray["cpuWebName"],
-                                        $evaluationSmClasArray["indiceCPU"],
-                                        $evaluationSmClasArray["origine"],
-                                        $evaluationSmClasArray["categorieCPU"],
-                                        $evaluationSmClasArray["tailleDisk01"],
-                                        $evaluationSmClasArray["typeDisk01"],
-                                        $evaluationSmClasArray["categorieDisk01"],
-                                        $evaluationSmClasArray["tailleDisk02"],
-                                        $evaluationSmClasArray["typeDisk02"],
-                                        $evaluationSmClasArray["categorieDisk02"],
-                                        $evaluationSmClasArray["categorieDisk"],
-                                        $evaluationSmClasArray["tailleRam"],
-                                        $evaluationSmClasArray["categorieRam"],
-                                        $evaluationSmClasArray["categorieTotal"],
-                                        $evaluationSmClasArray["categoriePCcodeNormal"],
-                                        $evaluationSmClasArray["categoriePCnormale"],
-                                        $evaluationSmClasArray["categoriePCcodeMaxi"],
-                                        $evaluationSmClasArray["categoriePCcode"],
-                                        $evaluationSmClasArray["categoriePCCorrigée"]
-                                    ];
-    
-                                try {
-                                    $spreadsheet->setActiveSheetIndex(0)->fromArray(
-                                        $arrayDebug,
-                                        null, $coldebug.$i);
-                                }catch (Exception $ex) {
-                                    echo "erreur lors de l'écriture du résultat excel<br>";
-                                    echo 'Exception : '.__LINE__;
-                                    echo $ex->getMessage().'<br>';
-                                    echo $ex->getTraceAsString();
-                                }
-                            }
-                        }
-                        $spreadsheet->setActiveSheetIndex(0)
-                            ->setCellValue($colcategorie.$i, $categorieSmToPrint);
-                        
-                        if ($colerreur == $colcategorie) {
-                            $spreadsheet->setActiveSheetIndex(0)
-                                ->setCellValue($colcategorie.$i, $categorieSm . $msg );
-                        }else{
-                            $spreadsheet->setActiveSheetIndex(0)
-                                ->setCellValue($colerreur.$i, $msg);
-                        }
-    
- 
-                    }
-                }
-            } // fin du FOR traitement des lignes de l'excel
-            
-            // ***********************************************************************************
-            // ********* MAJ de l'excel soumis ***************************************************
-            // ***********************************************************************************
-            $writer = new Xlsx($spreadsheet);
-            $fileResultName = $horodate.'_r_sm_'.$fileNameInput;
-            //$fileResult = $destDir. $fileResultName;
-            $writer->save($destDir. $fileResultName);
- 
-            // ***********************************************************************************
-            // ********* Crt d'un Excel au format BOLC *******************************************
-            // ***********************************************************************************
-            $spreadsheetNorm = \PhpOffice\PhpSpreadsheet\IOFactory::load(__DIR__."/../../data/sm_modele_BOLC_v1.xlsx");
-            //spreadsheetNorm = new Spreadsheet();
-            $sheetNorm       = $spreadsheetNorm->getActiveSheet();
-            $fileNorm        = __DIR__."/../../data/exceltemplatescstsm.json";
-            $dataNorm        = file_get_contents($fileNorm);
-            $dataNormJson    = json_decode($dataNorm, true);
-            $xlsNormJsonCol     = $dataNormJson['*BOLC']['data'];
-            $xlsNormJsonHeader  = $dataNormJson['*BOLC']['header'];
-            $lineHeaderNorm     = $xlsNormJsonCol["ligneentete"];
-            // écriture de la ligne en-tête
-            foreach ($xlsNormJsonCol as $key => $colNorm) {
-                if (str_starts_with($key, 'col')) {
-                    $valHeader = $xlsNormJsonHeader[$key];
-                    $sheetNorm->setCellValue($colNorm.$lineHeaderNorm,$valHeader);
+            $retourCol = [];
+            foreach ($inMap as $key => $col) {
+                if (substr($key, 0, 3) == 'col') {
+                    if (in_array($col, $xls_data[$ligneentete])) {
+                        $retourCol[$key] =  $xls_data[$ligneentete][$col];
+                    }else{
+                        $retourCol[$key] =  "";
+                    }      
                 }
             }
-            // écriture des données
-            $lineTrtNorm = $lineHeaderNorm;
-            // parcour des lignes du tableau soumis résultat
-            for($i=$firstLine; $i<=$nbrows; $i++){
-                ++$lineTrtNorm;
-                foreach ($xlsNormJsonCol as $key => $colNorm) {
-                    // xls_data est le tableau contenant la feuiile calculé
-                    if (str_starts_with($key, 'col')) {
-                        if ($inMap[$key] != "") {
-                            //on ne fait que si la colonne existe en entrée
-                            $val1 = $spreadsheet->getActiveSheet()->getCell($inMap[$key].$i)->getValue();
-                            if (static::isFormula($val1)) {
-                                $val1 = "'".$val1;
-                                $sheetNorm->getStyle($colNorm.$lineTrtNorm)->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
-                            }
-                            $sheetNorm->setCellValue($colNorm.$lineTrtNorm,$val1);
-                       }
-                    }
-                }
-            }
-
-            // ajout des infos de débug s'il y a lieu
-            // on écrit également l'en-tête débug si elle existe
-
-            if ($coldebug != "") {
-               // l'entête débug
-                $colIn = $coldebug;
-                $nbColDebug = count($debugColHeader); // nombre de colonnes à copier
-                $colOut = "V";
-                for ($c=1 ; $c <= $nbColDebug ; $c++) {
-                    $val1 = $spreadsheet->getActiveSheet()->getCell($colIn.$ligneentete)->getValue();
-                    $sheetNorm->setCellValue($colOut.$lineHeaderNorm,$val1);
-                    ++$colIn;
-                    ++$colOut;
-                }
-                // les données débug
-                $firstLine   = $ligneentete + 1;
-                $lineTrtNorm = $lineHeaderNorm;
-                for($l=$firstLine; $l<=$nbrows; $l++){
-                    ++$lineTrtNorm;
-                    $colIn  = $coldebug;
-                    $colOut = "V";
-                    for ($c=1 ; $c <= $nbColDebug ; $c++) {
-                        $val1 = $spreadsheet->getActiveSheet()->getCell($colIn.$l)->getValue();
-                        $sheetNorm->setCellValue($colOut.$lineTrtNorm,$val1);
-                        ++$colIn;
-                        ++$colOut;
-                    }
-                }
-            }
-
-            $writerNorm = new Xlsx($spreadsheetNorm);
-            $fileResultNameNorm = $horodate.'_n_sm_'.$fileNameInput;
-            //$fileResult = $destDir. $fileResultName;
-            $writerNorm->save($destDir. $fileResultNameNorm);
-
-            // ***********************************************************************************
-            // ********* envoi de la réponse avec le statut du résultat **************************
-            // ***********************************************************************************
+            echo json_encode($retourCol);
             $retour = array(
                 'status' => "OK",
-                "url"    => $destUrl.$fileResultName,
-                "url2"   => $destUrl.$fileResultNameNorm,
-                "log"    => $this->logger->getLog(),
-                "duree"  => time() - $this->timeStampStart,
-                //'progressid' => $progressId,
-                'highestRow'       => $highestRow,
-                'highestColumn'    => $highestColumn,
-                'nbrows'           => $nbrows,
-                'entetecpu'        => $xls_data[$ligneentete][$colcpu],
-                'entetetailleram'  => $xls_data[$ligneentete][$coltailleram]
-                );
-            if ($uploadType ==  "1") {
-                $this->logger->addLogDebugLine("envoi de la réponse Json ".__LINE__);
-                echo json_encode($retour);
-            }else {
-                $htmlPage  = '<!DOCTYPE html><HTML><HEAD></HEAD><body class="body_flex">';
-                $htmlPage .= 'cliquez <a href="' . $retour['url']. '">ici</a> pour charger le résultat.';
-                echo $htmlPage;
-            }
+                "log" => $this->logger->getLog(),
+                'col' => $retourCol,
+                'filename' => $this->destFileOrg
+            );
 
         }catch (Exception $ex) {
             $this->logger->addLogDebugLine($ex->getTrace(),'Stacktrace '.__LINE__);
             var_dump($ex);
-            $errMsg = 'traitement du fichier ' .$fileNameInput. ' impossible';
+            $errMsg = 'traitement du fichier ' .$this->fileNameInput. ' impossible';
             if ($uploadType ==  "1") {
                 $retour = array(
                     'status' => "KO",
@@ -547,15 +623,6 @@ class TrtExcelSm {
         return (!is_null($cellValue) and  is_string($cellValue) and str_starts_with($cellValue,"="));
     }
 
-    // **********************************************
-    // *** MAJ progression
-    // **********************************************
-    // function addProgress($progressFileName, $value, $msg) {
-    //     $progressFile = fopen($progressFileName, "w") or die("Unable to open progress file : [$progressFileName]");
-    //     fwrite($progressFile, $value."\t".$msg.PHP_EOL);
-    //     fclose($progressFile);
-    // }
-	//******************************************************************* */
 	function __call($name, $arguments)
     {
         throw new Exception("Appel de la méthode non statique inconnue : $name, param : ". implode(', ', $arguments). "\n");

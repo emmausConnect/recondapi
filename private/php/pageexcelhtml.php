@@ -580,28 +580,36 @@ EOT;
 	
 				<p><label for="colnumlot">Numéro Lot</label>
 				  <input id="colnumlot" name="colnumlot" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
+				  <span  id="colnumlotheader"></span>
 
 				<p><label for="colidentifiantunique">Identifiant unique</label>
 				  <input id="colidentifiantunique" name="colidentifiantunique"type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
+				  <span id="colidentifiantuniqueheader"></span>
 
 				<p><label for="coltypemateriel">Type matériel</label>
 				  <input id="coltypemateriel" name="coltypemateriel"type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
+				  <span  id="coltypematerielheader"></span>
 
 				<p><label for="colconstructeur">Constructeur</label>
 				  <input id="colconstructeur" name="colconstructeur"type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
+				  <span  id="colconstructeurheader"></span>
 
 				<p><label for="colpcmodel">Colonne modèle du PC</label>
 				  <input id="colpcmodel" name="colpcmodel" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
-				                                           
+				  <span  id="colconstructeurheader"></span>     
+				  
 				<p><label for="colnumserie">N° Serie</label>
 				  <input id="colnumserie" name="colnumserie" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
+				  <span  id="colnumserieheader"></span>
 
 				<p><label for="colcpu">Colonne cpu *</label>
 				  <input id="colcpu" name="colcpu" type="text" class="colinputcollection" size="2" required pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
+				  <span  id="colcpuheader"></span>
 
 				<p><label for="coltypedisk">Colonne type disque 1 *</label>
 				  <input id="coltypedisk" name="coltypedisk" type="text" class="colinputcollection" size="2" required pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
-				<p><label for="coltailledisk">Colonne taille disque 1 *</label>
+				  <span  id="coltypediskheader"></span>
+				  <p><label for="coltailledisk">Colonne taille disque 1 *</label>
 				  <input id="coltailledisk" name="coltailledisk" type="text" class="colinputcollection" size="2" required pattern="[a-zA-Z]{1,2}" maxlength="2"></p>
 
 				<p><label for="coltypedisk2">Colonne type disque 2</label>
@@ -638,69 +646,90 @@ EOT;
 			$retour .= <<<'EOT'
 			<p><label for="ligneentete"> N° ligne entete</label>
 			 <input id="ligneentete" name="ligneentete"  type='number' class="colinputcollection" size="4"  min="1" max="1000" required ></p>></p> 
-			
+			 
 			<p><label for="colnumlot"> Numéro Lot</label>
 			 <input id="colnumlot" name="colnumlot" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
+			 <span  id="colnumlotheader"></span>
+
 			<p><label for="colidentifiantunique">Identifiant unique</label>
 			 <input id="colidentifiantunique" name="colidentifiantunique" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
+			 <span  id="colidentifiantuniqueheader"></span>
+
 			<p><label for="coltypemateriel"> Type matériel</label>
 			 <input id="coltypemateriel" name="coltypemateriel" type="text" class="colinputcollection" size="2" require pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
+			 <span  id="coltypematerielheader"></span>
+
 			<p><label for="colconstructeur"> Constructeur</label>
 			 <input id="colconstructeur" name="colconstructeur" type="text" class="colinputcollection" size="2" require pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
+			 <span  id="colconstructeurheader"></span>			
+
 			<p><label for="colmodel"> Modèle</label>
 			 <input id="colmodel" name="colmodel" type="text" class="colinputcollection" size="2" require pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
+			 <span  id="colmodelheader"></span>
+
 			<p><label for="colimei"> IMEI</label>
 			 <input id="colimei" name="colimei" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
+			 <span  id="colimeiheader"></span>
+			 
 			<p><label for="colcpu"> Processeur</label>
 			 <input id="colcpu" name="colcpu" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
+			 <span  id="colcpuheader"></span>
+
 			<p><label for="colos"> OS</label>
 			 <input id="colos" name="colos" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
+			 <span  id="colosheader"></span>
+
 			<p><label for="coltaillestockage"> Taille stockage</label>
 			 <input id="coltaillestockage" name="coltaillestockage" type="text" class="colinputcollection" size="2" require pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
+			 <span  id="coltaillestockageheader"></span>
+			 
 			<p><label for="coltailleram"> RAM</label>
 			 <input id="coltailleram" name="coltailleram" type="text" class="colinputcollection" size="2" require pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
+			 <span  id="coltailleramheader"></span>
+
 			<p><label for="colbatterie"> État Batterie</label>
 			 <input id="colbatterie" name="colbatterie" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
+			 <span  id="colbatterieheader"></span>
+
 			<p><label for="colecran"> Taille écran</label>
 			 <input id="colecran" name="colecran" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
+			 <span  id="colecranheader"></span>
+
 			<p><label for="colecranresolution"> Résolution</label>
 			 <input id="colecranresolution" name="colecranresolution" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
+			 <span  id="colecranresolutionheader"></span>
 
 			<p><label for="colchargeur"> Chargeur</label>
 			 <input id="colchargeur" name="colchargeur" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
+			 <span  id="colchargeurheader"></span>
+
 			<p><label for="coloperateur"> Opérateur</label>
 			 <input id="coloperateur" name="coloperateur" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
+			 <span  id="coloperateurheader"></span>
+
 			<p><label for="colstatut"> Statut</label>
 			 <input id="colstatut" name="colstatut" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
+			 <span  id="colstatutheader"></span>
+
 			<p><label for="colremarque"> Commentaire</label>
 			 <input id="colremarque" name="colremarque" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
+			 <span  id="colremarqueheader"></span>
+
 			<p><label for="colcouleur"> Couleur</label>
 			 <input id="colcouleur" name="colcouleur" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
+			 <span  id="colcouleurheader"></span>
+
 			<p><label for="colgradeesthetique"> Grade esth.</label>
 			 <input id="colgradeesthetique" name="colgradeesthetique" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
+			 <span  id="colgradeesthetiqueheader"></span>
+
 			<p><label for="colcategorie"> Catégorie</label>
 			 <input id="colcategorie" name="colcategorie" type="text" class="colinputcollection" size="2" require pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
-			
+			 <span  id="colcategorieheader"></span>
+
 			<p><label for="colerreur"> Erreur</label>
 			 <input id="colerreur" name="colerreur" type="text" class="colinputcollection" size="2" pattern="[a-zA-Z]{1,2}" maxlength="2"></p> 
+			 <span  id="colerreurheader"></span>
 			EOT;
 			break;
 		}

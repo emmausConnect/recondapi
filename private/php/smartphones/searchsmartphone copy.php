@@ -102,7 +102,7 @@ if ($statutKey == 0) {
     $errmsg    .= "<br>Préciser le statut";
     $errInForm  = true;
 }
-if ($batterieStatut != "OK" && $batterieStatut != "KO" && $batterieStatut != "NC") {
+if ($batterieStatut != "OK" && $batterieStatut != "KO") {
     $batterieMsg = '<span style="color: red">faire un choix</span>';
     $errmsg    .= "<br>Préciser le statut de la batterie";
     $errInForm  = true;
@@ -168,9 +168,7 @@ if (! $errInForm) {
                 $colorErrStockage = "red";
             }
 
-        }//else{
-    }
-}
+        }else{
             // enreg non trouvé
             // recherche des enregs sur la marque
             $dbInstance = DbManagement::getInstance();
@@ -236,9 +234,9 @@ if (! $errInForm) {
                 array_push($listeMarque, $row['marque']);
             }
         
-        //}
-    //}
-//}
+        }
+    }
+}
 $cvt = 'cvtTextToCsv';
 $htmlentities = 'cvtToHtmlentities';
 $supressSpaces = ($supressSpacesBool ? "checked" : "");
@@ -253,84 +251,85 @@ $htmlpage .= <<<"EOT"
 <link rel="stylesheet" href="style/stylesm.css" />
 <script>
     $(document).ready( function () {
-        // initialisation des champs de DATATABLE
-        if (document.getElementById('sm_modele_table') != null) {
-            let table_sm_modele_table = $('#sm_modele_table').DataTable( {
-                searching: true,
-                ordering:  true,
-                "aLengthMenu": [[10, 25, 50, 75, -1], [10, 25, 50, 75, "All"]],
-                "pageLength": 10
-            } );
+    if (document.getElementById('sm_modele_table') != null) {
+        let table_sm_modele_table = $('#sm_modele_table').DataTable( {
+            searching: true,
+            ordering:  true,
+            "aLengthMenu": [[10, 25, 50, 75, -1], [10, 25, 50, 75, "All"]],
+            "pageLength": 10
+        } );
 
-            table_sm_modele_table.columns()
-                .every(function () {
-                    let column = this;
-                    let title = column.footer().textContent;
+        table_sm_modele_table.columns()
+            .every(function () {
+                let column = this;
+                let title = column.footer().textContent;
 
-                    // Create input element
-                    //let input = document.createElement('input');
-                    let children = column.footer().children;
-                    let columnName = column.header().innerText;
-                    if (children.length >0) {
-                        let input = column.footer().children[0];
-                        input.placeholder = title;
+                // Create input element
+                //let input = document.createElement('input');
+                let children = column.footer().children;
+                let columnName = column.header().innerText;
+                if (children.length >0) {
+                    let input = column.footer().children[0];
+                    input.placeholder = title;
 
 
-                        if (columnName == 'Modele') {
-                            let debutModele = document.getElementById('modele').value.split(" ")[0] // premier mot
-                            column.search(debutModele, false, false).draw();
-                            input.value = debutModele;
-                        }
-                        if (columnName == 'Ram') {
-                            //column.search('^'+document.getElementById('ram').value+'$', true, false).draw();
-                            input.value = document.getElementById('ram').value;
-                        }
-                        if (columnName == 'Stockage') {
-                            //column.search('^'+document.getElementById('stockage').value+'$', true, false).draw();
-                            input.value = document.getElementById('stockage').value;
-                        }
-                        // Event listener for user input
-                        input.addEventListener('keyup', () => {
-                            if (column.search() !== this.value) {
-                                column.search(input.value).draw();
-                            }
-                        });
-
+                    if (columnName == 'Modele') {
+                        let debutModele = document.getElementById('modele').value.split(" ")[0] // premier mot
+                        column.search(debutModele, false, false).draw();
+                        input.value = debutModele;
                     }
+                    if (columnName == 'Ram') {
+                        column.search('^'+document.getElementById('ram').value+'$', true, false).draw();
+                        input.value = document.getElementById('ram').value;
+                    }
+                    if (columnName == 'Stockage') {
+                        column.search('^'+document.getElementById('stockage').value+'$', true, false).draw();
+                        input.value = document.getElementById('stockage').value;
+                    }
+                    // Event listener for user input
+                    input.addEventListener('keyup', () => {
+                        if (column.search() !== this.value) {
+                            column.search(input.value).draw();
+                        }
+                    });
+
+                }
+        });
+        $('#table').DataTable().search("value").draw();
+
+
+    }
+
+    // =================
+    if (document.getElementById('sm_marque_table') != null) {
+        let table_sm_marque_table = $('#sm_marque_table').DataTable( {
+            searching: true,
+            ordering:  true,
+            "aLengthMenu": [[10, 25, 50, 75, -1], [10, 25, 50, 75, "All"]],
+            "pageLength": 10
+        } );
+
+        table_sm_marque_table.columns()
+            .every(function () {
+                let column = this;
+                let title = column.footer().textContent;
+                let children = column.footer().children;
+                if (children.length >0) {
+                    let input = column.footer().children[0];
+                    input.placeholder = title;
+                    //input.classList.add('searchInput');
+                    //column.footer().replaceChildren(input);
+
+                    // Event listener for user input
+                    input.addEventListener('keyup', () => {
+                        if (column.search() !== this.value) {
+                            column.search(input.value).draw();
+                        }
+                    });
+                }
             });
-            $('#table').DataTable().search("value").draw();
-        }
-
-        // =================
-        if (document.getElementById('sm_marque_table') != null) {
-            let table_sm_marque_table = $('#sm_marque_table').DataTable( {
-                searching: true,
-                ordering:  true,
-                "aLengthMenu": [[10, 25, 50, 75, -1], [10, 25, 50, 75, "All"]],
-                "pageLength": 10
-            } );
-
-            table_sm_marque_table.columns()
-                .every(function () {
-                    let column = this;
-                    let title = column.footer().textContent;
-                    let children = column.footer().children;
-                    if (children.length >0) {
-                        let input = column.footer().children[0];
-                        input.placeholder = title;
-                        //input.classList.add('searchInput');
-                        //column.footer().replaceChildren(input);
-
-                        // Event listener for user input
-                        input.addEventListener('keyup', () => {
-                            if (column.search() !== this.value) {
-                                column.search(input.value).draw();
-                            }
-                        });
-                    }
-                });
-        }
-    } );
+    }
+} );
 </script>
 
 <script>
@@ -358,15 +357,6 @@ $htmlpage .= <<<"EOT"
         document.getElementById('osf').value = '';
         document.getElementById('batterieok').checked = false;
         document.getElementById('batterieko').checked = false;
-        document.getElementById('batterienc').checked = false;
-    }
-
-    function searchKimovil() {
-        let url = 'https://www.kimovil.com/fr/ou-acheter-';
-        url    += document.getElementById('marque').value.replace(/\s\s+/g, ' ').replace(' ','-');
-        url    += '-';
-        url    += document.getElementById('modele').value.replace(/\s\s+/g, ' ').replace(' ','-');
-        window.open(url, '_blank');
     }
 
     function displayDetailModele(bouton, marque, modele) {
@@ -663,8 +653,7 @@ Les espaces/blancs en début et fin de critère sont supprimés.
 <label class="shortLabel" for="marque">Marque</label>
 <input type="text" id="marque" name="marque" value="{$htmlentities($marque)}">&nbsp;$marqueMsg<br>
 <label class="shortLabel" for="modele">Modèle</label>
-<input type="text" id="modele" name="modele" value="{$htmlentities($modele)}">&nbsp;$modeleMsg
-<button id ="btnKimovil" type="button" onclick="searchKimovil()">Kimovil</button><br>
+<input type="text" id="modele" name="modele" value="{$htmlentities($modele)}">&nbsp;$modeleMsg<br>
 <label class="shortLabel" for="ram">Ram Go</label>
 <input type="number" min="0" step="1" id="ram" name="ram" value="{$htmlentities($ram)}">&nbsp;$ramMsg<br>
 <label class="shortLabel" for="stockage">Stockage Go</label>
@@ -701,7 +690,7 @@ if ($batterieStatut == "OK") {
 }
 $htmlpage .= <<<"EOT"
 >
-&nbsp;&nbsp;&nbsp;&nbsp;ko
+ko
 <input type="radio" id="batterieko" name="batterie" style="width:30px" value="KO"
 EOT;
 if ($batterieStatut == "KO") {
@@ -709,15 +698,6 @@ if ($batterieStatut == "KO") {
 }
 $htmlpage .= <<<"EOT"
 >
-&nbsp;&nbsp;&nbsp;&nbsp;Non connu 
-<input type="radio" id="batterienc" name="batterie" style="width:30px" value="NC"
-EOT;
-if ($batterieStatut == "NC") {
-    $htmlpage .=" checked";
-}
-$htmlpage .= <<<"EOT"
->
-
 &nbsp;$batterieMsg<br>
 </span>
 
@@ -725,7 +705,7 @@ $htmlpage .= <<<"EOT"
 
 </div>
 <div style="border:1px solid;padding: 10px;width: 600px;display: none;" class="input">
-Utilisé si le champ "Marque " n'est pas renseigné.<br>
+Utilisé si le champ "titre" n'est pas renseigné.<br>
 <label class="shortLabel" for="incsv">csv</label>
 <input type="text" id="incsv" name="incsv" size="60" value="{$htmlentities($incsv)}"><br>
 (séparateur = virgule. Ne marche pas si les textes contiennent une virgule
@@ -869,7 +849,7 @@ $htmlpage .= '</div>';
     //=========================================================
     //=== smartphone NON trouvé
     //=========================================================
-    //if (! $errInForm) {
+    if (! $errInForm) {
         // la recherche a échouée affichage des modèles 
         $marqueGrey = setSpaceGrey($marque);
         $htmlpage .= '<hr><h3>Smartphones de la marque <span style="text-decoration: underline;">'.$marque.'</span>';
@@ -877,7 +857,6 @@ $htmlpage .= '</div>';
         //$htmlpage .= ' et stockage = <span style="text-decoration: underline;">'.$stockage.'</span>';
         //$htmlpage .= ' dont le modèle contient <span style="text-decoration: underline;">'.$debutModele.'</span>';
         $htmlpage .= '</h3>';
-
         if (count($rowsForMarqueLikeModel) == 0) {
             $htmlpage .= "... il n'y a aucun smartphone dans la base sur ce seul critère";
         }else{
@@ -1021,12 +1000,11 @@ $htmlpage .= '</div>';
             $htmlpage .= "</tbody></table>";
             $htmlpage .= '</div>';
       
-    //}
+    }
 
 }
 // div duplication d'un smartphone
 $htmlpage .= <<<"EOT"
-
 <div id="chooseSm_div" class="modal">
     <!-- Modal content -->
     <div  class="modal-content">
@@ -1094,7 +1072,6 @@ $htmlpage .= <<<"EOT"
     </div>
 
 </div>
-
 </body>
 </html>
 EOT;

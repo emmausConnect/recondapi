@@ -5,7 +5,7 @@ require_once __DIR__.'/util01.class.php';
 require_once __DIR__.'/evaluationerrors.class.php';
 require_once __DIR__.'/pc.class.php';
 require_once __DIR__.'/paramini.class.php';
-//require_once 'loggerrec.class.php';
+require_once 'loggerrec.class.php';
 
 /**
  * Calcul le code catégorie d'un objet Pc
@@ -19,7 +19,7 @@ class EvaluationPc
     /** n'est plus utilisé */
     private string  $fmtCpu = "";
     /** si un PC contient 2 disques, indiquele max de catégorie disque à prendre */
-    private array   $maxCatDisk; // config/param.ini
+    //private array   $maxCatDisk; // config/param.ini
     /**  contient "err" si une erreur est survenue */
     private ?string $status = null;
     /** contient les erreurs rencontrées */
@@ -50,7 +50,7 @@ class EvaluationPc
     private ?string $categoriePCcode = null;
     private ?string $categoriePC = null;
     private $paramArray;
-    //private ?LoggerRec $logger;
+    private ?LoggerRec $logger;
 
     private function __construct()
     {
@@ -63,11 +63,11 @@ class EvaluationPc
         $c->categorieDiskArr = [];
         $c->setEvaluationErrorsCl(EvaluationErrors::getInstance());
         $c->paramArray = ParamIni::getInstance(__DIR__.'/../config/param.ini')->getParam();
-        $c->maxCatDisk = [];
-        $c->maxCatDisk["HDD"]  = self::getItemNoteMax($c->paramArray["seuilsHDD"]);
-        $c->maxCatDisk["SSD"]  = self::getItemNoteMax($c->paramArray["seuilsSSD"]);
-        $c->maxCatDisk["NVME"] = self::getItemNoteMax($c->paramArray["seuilsNVME"]);
-        //$c->logger = LoggerRec::getInstance();
+        // $c->maxCatDisk = [];
+        // $c->maxCatDisk["HDD"]  = self::getItemNoteMax($c->paramArray["seuilsHDD"]);
+        // $c->maxCatDisk["SSD"]  = self::getItemNoteMax($c->paramArray["seuilsSSD"]);
+        // $c->maxCatDisk["NVME"] = self::getItemNoteMax($c->paramArray["seuilsNVME"]);
+        $c->logger = LoggerRec::getInstance();
         return $c;
     }
 
@@ -112,17 +112,20 @@ class EvaluationPc
         $categorieDisk="";
         $catDiskTotal = $catDisk01;
         if ($catDisk01 != "-1" and $catDisk02 != "-1") {
-            $typeDisk = $this->pc->getDisk(1)["type"];
-            $maxCategorieDisk01 = $this->maxCatDisk[$typeDisk];
-            $maxCategorieDisk02 = null;
-            if ($this->pc->getDisk(2) !=  null) {
-                $typeDisk = $this->pc->getDisk(2)["type"];
-                $maxCategorieDisk02 = $this->maxCatDisk[$typeDisk];
-            }
+            // 2 disques
+            // $typeDisk = $this->pc->getDisk(1)["type"];
+            // $maxCategorieDisk01 = $this->maxCatDisk[$typeDisk];
+            // $maxCategorieDisk02 = null;
+            // if ($this->pc->getDisk(2) !=  null) {
+            //     $typeDisk = $this->pc->getDisk(2)["type"];
+            //     $maxCategorieDisk02 = $this->maxCatDisk[$typeDisk];
+            // }
             $catDiskTotal = $catDisk01 + $catDisk02;
-            $maxCategorieDisk = max($maxCategorieDisk01, $maxCategorieDisk02);    // max("1", null) = 1
-            $categorieDisk    = min($maxCategorieDisk , $catDisk01 + $catDisk02); // 1 + null = 1
+            //$maxCategorieDisk = max($maxCategorieDisk01, $maxCategorieDisk02);    // max("1", null) = 1
+            //$categorieDisk    = min($maxCategorieDisk , $catDisk01 + $catDisk02); // 1 + null = 1
         }
+        // La note est plafonnée à 4 (version de novmebre 2023)
+        $categorieDisk    = min((int) $this->paramArray["seuilsMaxi"]["disks"] , $catDiskTotal);
         $this->setCategorieDiskTotal("".$catDiskTotal);
         $this->setCategorieDisk("".$categorieDisk);
 
@@ -156,7 +159,8 @@ class EvaluationPc
             if ($categorieCPU > 1) {
                 $categoriePCcode = $categoriePCcodeNormale;
             } else {
-                if ($this->pc->getDisk(1)["type"] != "HDD" or ($this->pc->getDisk(2) != null and $this->pc->getDisk(2)["type"] != "HDD")) {
+                if ($this->pc->getDisk(1)["type"] != "HDD" 
+                    or ($this->pc->getDisk(2) != null and $this->pc->getDisk(2)["type"] != "HDD")) {
                     // SSD ou NVME
                     $categoriePCcodeMaxi = "4"; // cat "B"
                 }else{
@@ -390,17 +394,75 @@ class EvaluationPc
 
         if ($detail) {
             $temp = $this->convertToArray();
-            $result = $result . $sep . $temp["cpuTextInput"];
-            $result = $result . $sep . $temp["cputextnorm"];
-            $result = $result . $sep . $temp["indiceCPU"];
-            $result = $result . $sep . $temp["origine"];
-            $result = $result . $sep . $temp["categorieCPU"];
-            $result = $result . $sep . $temp["tailleRam"];
-            $result = $result . $sep . $temp["categorieRam"];
-            $result = $result . $sep . $temp["tailleDisk"];
-            $result = $result . $sep . $temp["typeDisk"];
-            $result = $result . $sep . $temp["categorieDisk"];
-            $result = $result . $sep . $temp["categorieTotal"];
+            $result .=  $sep . 'cpuTextInput = "' . $temp["cpuTextInput"] .'"';
+            $result .=  $sep . 'cputextnorm = "' . $temp["cputextnorm"] .'"';
+            $result .=  $sep . 'indiceCPU = "' . $temp["indiceCPU"] .'"';
+            $result .=  $sep . 'origine = "' . $temp["origine"] .'"';
+            $result .=  $sep . 'cpuWebName = "' . $temp["cpuWebName"] .'"';
+            $result .=  $sep . 'categorieCPU = "' . $temp["categorieCPU"] .'"';
+            $result .=  $sep . 'tailleDisk01 = "' . $temp["tailleDisk01"] .'"';
+            $result .=  $sep . 'typeDisk01 = "' . $temp["typeDisk01"] .'"';
+            $result .=  $sep . 'categorieDisk01 = "' . $temp["categorieDisk01"] .'"';
+            $result .=  $sep . 'tailleDisk02 = "' . $temp["tailleDisk02"] .'"';
+            $result .=  $sep . 'typeDisk02 = "' . $temp["typeDisk02"] .'"';
+            $result .=  $sep . 'categorieDisk02 = "' . $temp["categorieDisk02"] .'"';
+            $result .=  $sep . 'categorieDiskTotal = "' . $temp["categorieDiskTotal"] .'"';
+            $result .=  $sep . 'categorieDisk = "' . $temp["categorieDisk"] .'"';
+            $result .=  $sep . 'tailleRam = "' . $temp["tailleRam"] .'"';
+            $result .=  $sep . 'categorieRam = "' . $temp["categorieRam"] .'"';
+            $result .=  $sep . 'categorieTotal = "' . $temp["categorieTotal"] .'"';
+            $result .=  $sep . 'categoriePCcodeNormal = "' . $temp["categoriePCcodeNormal"] .'"';
+            $result .=  $sep . 'categoriePCnormale = "' . $temp["categoriePCnormale"] .'"';
+            $result .=  $sep . 'categoriePCcodeMaxi = "' . $temp["categoriePCcodeMaxi"] .'"';
+            $result .=  $sep . 'categoriePCcode = "' . $temp["categoriePCcode"] .'"';
+            $result .=  $sep . 'categoriePCCorrigée = "' . $temp["categoriePCCorrigée"] .'"';
+            //print_r($temp);
+        }
+        $this->logger->addLogDebugLine($result, '<<<< convertReponseToText : $result');
+        return $result;
+    }
+
+        /**
+     * @param string $sep
+     * @param bool   $detail
+     * @return string : contenant les caratéristiques séparées par $sep
+     */
+    public function convertToTable(bool $detail) : String
+    {
+        $this->logger->addLogDebugLine('>>>> convertReponseToText : $evalPC');
+        $result = '';
+        if ($this->hasErrors()) {
+            $result .= $this->getEvaluationErrorsCl()->getErrorsMsgAsString();
+        } else {
+            $result .= $result . $this->getCategoriePC();
+        }
+
+        if ($detail) {
+            $temp = $this->convertToArray();
+            $result .= "<table>";
+            $result .=  '<tr><td>' . 'cpuTextInput</td><td>' . $temp["cpuTextInput"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'cputextnorm</td><td>' . $temp["cputextnorm"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'indiceCPU</td><td>' . $temp["indiceCPU"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'origine</td><td>' . $temp["origine"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'cpuWebName</td><td>' . $temp["cpuWebName"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'categorieCPU</td><td>' . $temp["categorieCPU"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'tailleDisk01</td><td>' . $temp["tailleDisk01"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'typeDisk01</td><td>' . $temp["typeDisk01"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'categorieDisk01</td><td>' . $temp["categorieDisk01"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'tailleDisk02</td><td>' . $temp["tailleDisk02"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'typeDisk02</td><td>' . $temp["typeDisk02"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'categorieDisk02</td><td>' . $temp["categorieDisk02"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'categorieDiskTotal</td><td>' . $temp["categorieDiskTotal"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'categorieDisk</td><td>' . $temp["categorieDisk"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'tailleRam</td><td>' . $temp["tailleRam"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'categorieRam</td><td>' . $temp["categorieRam"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'categorieTotal</td><td>' . $temp["categorieTotal"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'categoriePCcodeNormal</td><td>' . $temp["categoriePCcodeNormal"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'categoriePCnormale</td><td>' . $temp["categoriePCnormale"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'categoriePCcodeMaxi</td><td>' . $temp["categoriePCcodeMaxi"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'categoriePCcode</td><td>' . $temp["categoriePCcode"] . '</td></tr>';
+            $result .=  '<tr><td>' . 'categoriePCCorrigée</td><td>' . $temp["categoriePCCorrigée"] . '</td></tr>';
+            $result .=  '</table>';
         }
         $this->logger->addLogDebugLine($result, '<<<< convertReponseToText : $result');
         return $result;
