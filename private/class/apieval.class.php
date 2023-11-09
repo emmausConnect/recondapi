@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/pc.class.php';
 require_once __DIR__ . '/evaluationpc.class.php';
 require_once __DIR__ . '/util01.class.php';
+require_once __DIR__ .'/contexte.class.php';
 
 /**
  * gère une requête API
@@ -12,15 +13,15 @@ class APIeval
 {
     private string    $debug;    // init à l'instanciation
     private LoggerRec $logger;   // init à l'instanciation
+    private Contexte  $contexte;
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     public static function getInstance(string $debug): APIeval
     {
         $c = new APIeval();
         $c->logger = LoggerRec::getInstance();
+        $c->contexte = Contexte::getInstance();
         $c->debug  = $debug;
         return $c;
     }
@@ -206,8 +207,8 @@ class APIeval
     }
 
     private function exec($cpu, $tailledisk1, $typedisk1, $tailledisk2, $typedisk2, $tailleram, $outfmt, $seperateur, $detail, $debug, $recondid="") {
-        GLOBAL $g_environnement;
-        $this->logger->addLogDebugLine(">>>> exec    environnement = '$g_environnement'");
+        //GLOBAL $g_environnement;
+        $this->logger->addLogDebugLine(">>>> exec");
         $cePC =  PC::getInstance();;
         $cePC->setCpuTextInputArray($cpu);
         $cePC->setTailleRam($tailleram);
@@ -223,9 +224,9 @@ class APIeval
             case "cat":
                 if (!$evalPC->getStatus() == "err") {
                     $categoriePCToSend = $evalPC->getCategoriePC();
-                    if ($g_environnement != 'PROD') {
-                        $categoriePCToSend = $categoriePCToSend ." test";
-                    }
+                    // if (! $this->contexte->environnementIsProd()) {
+                    //     $categoriePCToSend = $categoriePCToSend ." test";
+                    // }
                     echo $categoriePCToSend;
 
                     if ($debug == 1) {

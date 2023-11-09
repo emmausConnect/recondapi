@@ -69,7 +69,12 @@ class EvaluationSm {
                     $this->smRowFound  = true;
                     $this->smRow = $smRow;
                     //$indice      = $smRow['indice'];
-                    $this->indice = $smRow['indice'];;
+                    // print_r($smRow);
+                    // var_dump($smRow);
+                    // echo $smRow['indice'];
+                    // echo gettype($smRow['indice']);
+                    $this->indice = $smRow['indice'];
+                    //exit(1);
                     $this->calculCategorie($this->sm->getRam(), $this->sm->getStockage(), $this->getIndice(), $this->sm->getPonderationValue() );
                 }else{
                     $errMsg .= "Il n'y a aucun modèle dans la base avec les critères spécifiés<br>.";

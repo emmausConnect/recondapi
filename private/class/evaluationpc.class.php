@@ -63,10 +63,7 @@ class EvaluationPc
         $c->categorieDiskArr = [];
         $c->setEvaluationErrorsCl(EvaluationErrors::getInstance());
         $c->paramArray = ParamIni::getInstance(__DIR__.'/../config/param.ini')->getParam();
-        // $c->maxCatDisk = [];
-        // $c->maxCatDisk["HDD"]  = self::getItemNoteMax($c->paramArray["seuilsHDD"]);
-        // $c->maxCatDisk["SSD"]  = self::getItemNoteMax($c->paramArray["seuilsSSD"]);
-        // $c->maxCatDisk["NVME"] = self::getItemNoteMax($c->paramArray["seuilsNVME"]);
+        
         $c->logger = LoggerRec::getInstance();
         return $c;
     }

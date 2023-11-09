@@ -54,6 +54,10 @@ class DbManagement {
             "$this->username",
             "$this->password"
         );
+        // pour éviter que tout soit en string
+        // https://write.corbpie.com/how-to-return-integers-and-floats-from-mysql-with-php-pdo/
+        $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        $db->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, false);
         return $db;
     }
 
@@ -146,7 +150,9 @@ class DbManagement {
     //******************************************************************* */
 	function __call($name, $arguments)
     {
-        throw new Exception("Appel de la méthode non statique inconnue : $name, param : ". implode(', ', $arguments). "\n");
+        //$msg = "Appel de la méthode non statique inconnue : $name, param : ". implode(', ', $arguments). "\n";
+        $msg = "Appel de la méthode non statique inconnue : $name";
+        throw new Exception($msg);
     }
 
     static function __callStatic($name, $arguments)

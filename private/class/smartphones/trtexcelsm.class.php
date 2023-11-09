@@ -3,6 +3,7 @@ declare(strict_types=1);
 require_once __DIR__.'/smartphone.class.php';
 require_once __DIR__.'/evaluationsm.class.php';
 require_once __DIR__.'/../paramini.class.php';
+require_once __DIR__.'/../contexte.class.php';
 
 //include the file that loads the PhpSpreadsheet classes
 require __DIR__.'/../../../libraries/spreadsheet/vendor/autoload.php';
@@ -17,6 +18,7 @@ class TrtExcelSm {
     private $log=""; // 1 => le log est joint à la réponse (pour debug)
     private $logger; // initialisé à l'instantiation
     private $timeStampStart;
+    private Contexte $context;
     private $debug;
 
     private $destDir = __DIR__."/../../../public/upload/";
@@ -40,6 +42,7 @@ class TrtExcelSm {
         $c->logger = LoggerRec::getInstance();
         //$c->uploadType = $uploadType;
         $c->debug = $debug;
+        $c->contexte = Contexte::getInstance();
         return $c;
     }
 
@@ -178,7 +181,7 @@ class TrtExcelSm {
                                 $categorieSm            = 'err';
                             }
                             $categorieSmToPrint     = $categorieSm;
-                            if ($g_environnement != 'PROD') {
+                            if ($this->context != 'PROD') {
                                 $categorieSmToPrint .= " test";
                             }
                             $msg = $evaluationSmCl->getErrMsg();

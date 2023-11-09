@@ -3,6 +3,7 @@ declare(strict_types=1);
 require_once __DIR__.'/pc.class.php';
 require_once __DIR__.'/evaluationpc.class.php';
 require_once __DIR__.'/paramini.class.php';
+require_once __DIR__.'/contexte.class.php';
 
 //include the file that loads the PhpSpreadsheet classes
 require __DIR__.'/../../libraries/spreadsheet/vendor/autoload.php';
@@ -13,18 +14,19 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 /**
  * Traitement d'un fichier Excel
  */
-class TrtExcel {
+class TrtExcelPc {
     private $log=""; // 1 => le log est joint à la réponse (pour debug)
     private $logger; // initialisé à l'instantiation
     private $timeStampStart;
+    private Contexte $contexte;
     private $debug;
     private function __construct(){ }
 
-    public static function getInstance(string $uploadType, string $debug) : TrtExcel
+    public static function getInstance(string $uploadType, string $debug) : TrtExcelPc
     {
-        $c = new TrtExcel();
+        $c = new TrtExcelPc();
         $c->logger = LoggerRec::getInstance();
-        //$c->uploadType = $uploadType;
+        $c->contexte = Contexte::getInstance();
         $c->debug = $debug;
         return $c;
     }
@@ -43,7 +45,6 @@ class TrtExcel {
      *  recalculcategorie
      */
     public function trtExcel() {
-        GLOBAL $g_environnement;
         $uploadType = $_GET["upload"];
         $this->logger->addLogDebugLine('>>> execUpload  uploadType = "'.$uploadType.'" __LINE__');
 
@@ -344,9 +345,9 @@ class TrtExcel {
                             $evaluationPcCl         = $evaluationPcClInstance->getEvalPc();
                             $categoriePC            = $evaluationPcCl->getCategoriePC();
                             $categoriePCToPrint     = $categoriePC;
-                            if ($g_environnement != 'PROD') {
-                                $categoriePCToPrint .= " test";
-                            }
+                            // if (! $this->contexte->environnementIsProd()) {
+                            //     $categoriePCToPrint .= " test";
+                            // }
                             $msg = $evaluationPcCl->getEvaluationErrorsCl()->getErrorsMsgAsString();
 
                             if ($coldebug != "") {

@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/../class/paramini.class.php';
+require_once __DIR__ . '/../class/contexte.class.php';
 
 /** **********************************************
  *  page HTML
@@ -20,7 +21,7 @@ EOT;
 }
 
 function getHtmlHeader() {
-	GLOBAL $g_environnement;
+	$contexte = Contexte::getInstance();
 	$isConnected = false;
 	if(array_key_exists('emmaususerconnected',$_SESSION) && $_SESSION['emmaususerconnected'] == 'Y') {
 		$isConnected = true;
@@ -28,7 +29,7 @@ function getHtmlHeader() {
 	$paramPhpArray = ParamIni::getInstance(__DIR__.'/../config/paramphp.ini')->getParam();
 	$menuInitial = "/?".$_SERVER['QUERY_STRING'];
 	$retour = '<!-- debut getHtmlHeader( -->';
-	if ($g_environnement != 'PROD') {
+	if (! $contexte->environnementIsProd()) {
 		$retour .= '<div style="background-color:red; text-align:center; font-size:150%;">Environnement de test<br>Les résultats peuvent être faux car des tests y sont en cours</div>';
 	}
 	$retour .=  '<header>';

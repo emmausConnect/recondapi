@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__.'/../class/trtexcel.class.php';
+require_once __DIR__.'/../class/trtexcelpc.class.php';
 $uploadType = "";
 if (array_key_exists("upload", $_GET)) {
     $uploadType=$_GET['upload'] ;
@@ -9,6 +9,6 @@ if (array_key_exists("upload", $_GET)) {
     exit();
 }
 
-$trt = TrtExcel::getInstance($uploadType, $debug);
+$trt = TrtExcelPc::getInstance($uploadType, $debug);
 $trt->trtExcel();
 ?>
