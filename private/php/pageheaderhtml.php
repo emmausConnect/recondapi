@@ -50,7 +50,7 @@ function getHtmlHeader() {
 	$retour .=  ' </div>';
 	$retour .=  ' <div style="display:inline; margin-left:10px;">';
 	$retour .=  '  <span style="text-align:left;font-size:small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (version : ' 
-					.$paramPhpArray["version"]["num"]. " du " .$paramPhpArray["version"]["date"]. ")</span>" ;
+					.$paramPhpArray["version"]["num"]. " du " .$paramPhpArray["version"]["date"]. " - " .$paramPhpArray["version"]["text"].")</span>" ;
 	$retour .=  ' </div>';					
 	if ($isConnected) {
 		$retour .=  ' <div style="display:inline; margin-right:10px;">';
