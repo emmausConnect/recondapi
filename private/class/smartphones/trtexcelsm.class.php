@@ -2,7 +2,7 @@
 declare(strict_types=1);
 require_once __DIR__.'/smartphone.class.php';
 require_once __DIR__.'/evaluationsm.class.php';
-require_once __DIR__.'/../paramini.class.php';
+//require_once __DIR__.'/../paramini.class.php';
 require_once __DIR__.'/../contexte.class.php';
 
 //include the file that loads the PhpSpreadsheet classes
@@ -18,7 +18,7 @@ class TrtExcelSm {
     private $log=""; // 1 => le log est joint à la réponse (pour debug)
     private $logger; // initialisé à l'instantiation
     private $timeStampStart;
-    private Contexte $context;
+    private Contexte $contexte;
     private $debug;
 
     private $destDir = __DIR__."/../../../public/upload/";
@@ -181,9 +181,9 @@ class TrtExcelSm {
                                 $categorieSm            = 'err';
                             }
                             $categorieSmToPrint     = $categorieSm;
-                            if ($this->context != 'PROD') {
-                                $categorieSmToPrint .= " test";
-                            }
+                            // if ($this->contexte->getEnvironnement() != 'PROD') {
+                            //     $categorieSmToPrint .= " test";
+                            // }
                             $msg = $evaluationSmCl->getErrMsg();
 
                             if ($coldebug != "") {
@@ -243,7 +243,8 @@ class TrtExcelSm {
             // ***********************************************************************************
             // ********* Crt d'un Excel au format BOLC *******************************************
             // ***********************************************************************************
-            $spreadsheetNorm = \PhpOffice\PhpSpreadsheet\IOFactory::load(__DIR__."/../../data/sm_modele_BOLC_v1.xlsx");
+            $xlsModelFile    = $this->contexte->getParamPhpIniCls()->getParam()['fichiers']['sm_modele_BOLC_xlsx_gen'];
+            $spreadsheetNorm = \PhpOffice\PhpSpreadsheet\IOFactory::load($xlsModelFile);
             //spreadsheetNorm = new Spreadsheet();
             $sheetNorm       = $spreadsheetNorm->getActiveSheet();
             $fileNorm        = __DIR__."/../../data/exceltemplatescstsm.json";
@@ -327,7 +328,7 @@ class TrtExcelSm {
                 'highestRow'       => $highestRow,
                 'highestColumn'    => $highestColumn,
                 'nbrows'           => $nbrows,
-                'entetecpu'        => $xls_data[$ligneentete][$colcpu],
+                // 'entetecpu'        => $xls_data[$ligneentete][$colcpu],
                 'entetetailleram'  => $xls_data[$ligneentete][$coltailleram]
                 );
             if ($uploadType ==  "1") {

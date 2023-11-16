@@ -112,16 +112,16 @@ class EvaluationSm {
     }
    
     /**
-     * Undocumented function
+     * calculCategorie
      *
      * @param [type] $ramIn  
      * @param [type] $stockageIn
      * @param [type] $indice
      * @param integer $ponderation
      * @param string $unitepardefaut
-     * @return void
+     * @return array
      */
-    function calculCategorie($ramIn, $stockageIn, $indice, int $ponderation = 0, string $unitepardefaut='G') {
+    function calculCategorie($ramIn, $stockageIn, $indice, int $ponderation = 0, string $unitepardefaut='G'): array {
         //$plages = getSmPlages($this->paramArray);
         $ramPlages            = $this->paramArray['smram'];
         $stockagePlages       = $this->paramArray['smstockage'];

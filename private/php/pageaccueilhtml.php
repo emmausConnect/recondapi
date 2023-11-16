@@ -5,6 +5,7 @@ require_once __DIR__.'/pageheaderhtml.php';
  * HTML page Accueil
 **************************************************************************** */
 function getHtmlAccueil() {
+	$paramPhpArray = ParamIni::getInstance(__DIR__.'/../config/paramphp.ini')->getParam();
 	$isConnected = false;
 	if(array_key_exists('emmaususerconnected',$_SESSION) && $_SESSION['emmaususerconnected'] == 'Y') {
 		$isConnected = true;
@@ -66,37 +67,37 @@ EOT;
 EOT;
 	$retour .= getHtmlHeader();
 
-	$retour .= <<<'EOT'
+	$retour .= <<<"EOT"
 		<article>
 			<h3 class="menutitre">PC</h2>
 			<div class="menuoption" style="padding:0px 0px 5px 20px;">
 				<a class="ec-btn" data-goto="exformtableau.php">Catégorisation d'un PC</a><br>
 				<br>
-				<a class="ec-btn" data-goto="exformexcel.php">Traitement d'un Excel</a><br>
+				<a class="ec-btn" data-goto="exformexcel.php">Traitement d'un Excel PC</a><br>
 				<br>
-				<a class="ec-btn" href="files/modele_import_pc_v2.xlsx">Télécharger l'Excel modèle</a><br>
+				<a class="ec-btn" href="{$paramPhpArray['fichiers']['pc_modele_BOLC_xlsx_download']}">Télécharger l'Excel PC BOLC modèle</a><br>
 				<br>			
 				<a class="ec-btn" href="exdisplayvideoaide.htm">Vidéo d'aide</a><br>
 
 			</div>
 		</article>
 EOT;
-// 	$retour .= <<<'EOT'
-// 		<article>
-// 			<h3 class="menutitre">Smartphone</h2>
-// 			<div class="menuoption" style="padding:0px 0px 5px 20px;">
-// 				<a class="ec-btn" data-goto="exsearchsmartphone.php">Catégorisation d'un smartphone</a><br>
-// 				<br>
-// 				<a class="ec-btn" data-goto="exformexcelsm.php">Traitement d'un Excel</a><br>
-// 				<br>
-// 				<a class="ec-btn" data-goto="exdisplaysmartphonebd.php" target="_blank">Afficher la BDD smartphones</a><br>
-// 				<br>
-// 				<a class="ec-btn" href="files/modele_import_sm_v1.xlsx">Télécharger l'Excel modèle</a><br>
-// 				<br>
-// 				<a class="ec-btn" data-goto="exdisplayvideoaidesm.htm" target="_blank">Vidéo d'aide'</a><br>
-// 			</div>
-// 		</article>
-// EOT;
+	$retour .= <<<"EOT"
+		<article>
+			<h3 class="menutitre">Smartphone</h2>
+			<div class="menuoption" style="padding:0px 0px 5px 20px;">
+				<a class="ec-btn" data-goto="exsearchsmartphone.php">Catégorisation d'un Smartphone</a><br>
+				<br>
+				<a class="ec-btn" data-goto="exformexcelsm.php">Traitement d'un Excel SM</a><br>
+				<br>
+				<a class="ec-btn" data-goto="exdisplaysmartphonebd.php" target="_blank">Afficher la BDD smartphones</a><br>
+				<br>
+				<a class="ec-btn" href="{$paramPhpArray['fichiers']['sm_modele_BOLC_xlsx_download']}">Télécharger l'Excel SM BOLC modèle</a><br>
+				<br>
+				<a class="ec-btn" data-goto="exdisplayvideoaidesm.htm" target="_blank">Vidéo d'aide'</a><br>
+			</div>
+		</article>
+EOT;
 	$retour .= <<<'EOT'
  		<article>
  			<h2 class="menutitre">Menu gestionnaires</h2>
@@ -105,7 +106,6 @@ EOT;
 		$retour .= <<<'EOT'
 			<div class="menuoption" style="padding:0px 5px 0px 20px;">
 				<a class="ec-btn" data-goto="exgestion.php">Menu de gestion</a><br><br>
-				
 			</div>
 		</article>
 EOT;
@@ -122,7 +122,7 @@ EOT;
 			<div class="menuoption" style="padding:0px 5px 0px 20px;">
 				<p>Pour accéder aux options avancées, veuillez vous connecter avec votre compte <strong>@Emmaus-Connect.org</strong><br>
 				vous pourrez :<br>
-					* utiliser des Excels autres que le format BOLC  <img src="images/icones/new.png" alt="Nouveau" height="15"> <br>
+					* choisir le colonnage des Excels<br>
 					* afficher les différents fichiers de paramètres<br>
 				</p>
 				<a class="ec-btn menuoption" href="exgoogleconnectscreen.php">Ecran de connexion</a>

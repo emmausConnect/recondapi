@@ -11,7 +11,7 @@ class ParamIni
      */
     private static array $paramCl = array();
     private string $paramFileName;
-    private array $param = array();
+    private array $param = array(); // tableau 2 dim du fichier ini
 
 
     private function __construct() { }
@@ -21,8 +21,8 @@ class ParamIni
      */
     public static function getInstance(string $file): ParamIni
     {
-        if ($file == '*paramphp.ini') {
-            $file = $_SERVER["DOCUMENT_ROOT"].'/../private/config/paramphp.ini';
+        if ($file == '*param.ini') {
+            $file = $_SERVER["DOCUMENT_ROOT"].'/../private/config/param.ini';
         }
         if ($file == '*paramphp.ini') {
             $file = $_SERVER["DOCUMENT_ROOT"].'/../private/config/paramphp.ini';
@@ -54,10 +54,68 @@ class ParamIni
     // **********************************************
     // *** gestion du fichier PARAM
     // **********************************************
-    public function getParam()
+
+    /**
+     * retourne le contenu du fichier ini sous fprme de tableau 2 dim
+     *
+     * @return array
+     */
+    public function getParam() : array
     {
         return $this->param;
     }
+
+    /**
+     * retour la valeur associée ou null si non trouvé 
+     *
+     * @param string $titre : titre
+     * @param string $paramName : paramètre
+     * @return void
+     */
+    public function getValue(string $titre, string $paramName) : null | string
+    {
+        $param = $this->getParam();
+        $retour = null;
+        if (array_key_exists($titre, $param)) {
+            if (array_key_exists($paramName, $param[$titre])) {
+                $retour = $param[$titre][$paramName];
+            }
+        }
+        return $retour;
+    }
+    /**
+     * retourne le paramname ou null si non trouvé
+     *
+     * ex : 
+     *     $c = $g_contexte_instance->getParamIniCls();
+     *     $b = $c->getParamName('seuilsCPU','1');
+     * 
+     * @param string $titre
+     * @param string $value
+     * @param boolean $caseSensitive
+     * @return void
+     */
+    public function getParamName(string $titre, string $value, $caseSensitive = false) : null | string | int
+    {
+        $param = $this->getParam();
+        $retour = null;
+        if (! $caseSensitive) {
+            $value = strtolower($value);
+        }
+        if (array_key_exists($titre, $param)) {
+            foreach($param[$titre] as $paramName => $val) {
+                if (! $caseSensitive) {
+                    $val = strtolower($val);
+                }
+                if ($val == $value) {
+                    $retour = $paramName;
+                    break;
+                }
+            }
+        }
+        return $retour;
+    }
+
 	//******************************************************************* */
 	function __call($name, $arguments)
     {

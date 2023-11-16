@@ -15,7 +15,15 @@ $path_public_images  = $g_contexte_instance->getPath('public/images');
 
 require_once 'utilsm.php';
 
-$paramArray = ParamIni::getInstance($path_private_config.'/param.ini')->getParam();
+function fct($data) {
+    return $data;
+}
+$fct = 'fct';
+
+//$paramArray    = ParamIni::getInstance($path_private_config.'/param.ini')->getParam();
+//$paramPhpArray = ParamIni::getInstance($path_private_config.'/paramphp.ini')->getParam();
+$paramArray    = $g_contexte_instance->getParamIniCls()->getParam();
+$paramPhpArray = $g_contexte_instance->getParamPhpIniCls()->getParam();
 
 $supressSpaces = "on";
 $marque        = trim(getPostValue('marque',' '));
@@ -63,12 +71,57 @@ $helpHtml = ""; // texte qui sera placé dans la div_help
 
 if ($marque == "") {
     if ($incsv != null) {
-        $explodeCsv = explode(",", $incsv);
-        if (count($explodeCsv) == 4) {
+        // 0 Marque
+        // 1 Modèle
+        // 2 Part Number  => IMEI
+        // 3 MEM
+        // 4 Stockage
+        // 5 Indice Antutu
+        // 6 Val A
+        // 7 Val M
+        // 8 Val S
+        // 9 Total
+        // 10 Pondération 
+        // 11 Total Pondéré
+        // 12 Catégorie
+        // 13 Prix EC
+        // 14 Identifiant EC
+        // 15 Etat    // = statut
+        // 16 IMEI
+        // 17 OS
+        // 18 Batterie
+        $incsv2 = str_replace("\r","",$incsv);
+        //$incsv2 = str_replace("\n","|",$incsv2);
+        $explodeCsv = explode("\n", $incsv2);
+        if (count($explodeCsv) == 19) {
             $marque   = $explodeCsv[0] ;
             $modele   = $explodeCsv[1] ;
-            $ram      = $explodeCsv[2] ;
-            $stockage = $explodeCsv[3] ;
+            $ram      = $explodeCsv[3] ;
+            $stockage = $explodeCsv[4] ;
+
+            // pondératiion est sous la forme -50.00%
+            $ponderationValue = $explodeCsv[10] ;
+            $ponderationValue = str_replace('%', "", $ponderationValue);
+            if (is_numeric($ponderationValue)) {
+                $ponderationValue = (int) $ponderationValue;
+                $ponderationValue = (string) $ponderationValue;
+                $ponderationKey   = (string) $g_contexte_instance->getParamIniCls()->getParamName('smselectponderation',$ponderationValue);
+            }
+
+            $imei     = $explodeCsv[2] ;
+            $idec     = $explodeCsv[14] ;
+
+            $statutValue = $explodeCsv[15] ;
+            if ($statutValue != "") {
+                $statutKey = (string) $g_contexte_instance->getParamIniCls()->getParamName('smselectstatut',$statutValue);
+            }
+
+            $osf =  $explodeCsv[17] ;
+
+            $batterieStatut = strtoupper($explodeCsv[18]) ;
+            // if ($batterieStatut != "") {
+            //     $statutKey = (string) $g_contexte_instance->getParamIniCls()->getParamName('smselectstatut',$statutValue);
+            // }
         }else{
             $errmsg .= "<hr>le champ csv contient " .count($explodeCsv). " postes. Il devrait en contenir 4. Il y a peut être des virgules dans les valeurs :";
             $tempcsv = str_replace(",", '<span style="background-color: red;">,</span>', $incsv );
@@ -80,6 +133,7 @@ if ($marque == "") {
 // *****************************************************************
 // **** Contrôle des valeurs entrées
 // *****************************************************************
+
 if ($marque != removeMultipleSpace($marque)) {
     $marqueMsg = 'contient des espaces en double';
 }
@@ -97,6 +151,9 @@ if (! ctype_digit($stockage)) {
     $errmsg   .= "<br>Stockage : uniquement  des chiffres";
     $errInForm = true;
 }
+if ($idec != removeMultipleSpace($idec)) {
+    $idecMsg = 'contient des espaces en double';
+}
 if ($statutKey == 0) {
     $statutKeyMsg = '<span style="color: red">faire un choix</span>';
     $errmsg    .= "<br>Préciser le statut";
@@ -109,13 +166,14 @@ if ($batterieStatut != "OK" && $batterieStatut != "KO" && $batterieStatut != "NC
 }
 
 
-$statutText      = getStatutText($statutKey);
+$statutText       = getStatutText($statutKey);
 $ponderationValue = getPonderationValue($ponderationKey);
 
+//$calculCatPossible = true;
+//if ($marque == "" || $modele == "" ||
 
-
-if (! $errInForm) {
-    if (! $errInForm && $marque != null && $marque != "") {
+//if (! $errInForm) {
+    if ($marque != "" && $modele != "" && $ram != "" && $stockage != "") {
         $smObj = Smartphone::getInstance();
         $smObj->setMarque($marque);
         $smObj->setModele($modele);
@@ -168,73 +226,73 @@ if (! $errInForm) {
                 $colorErrStockage = "red";
             }
 
-        }//else{
+        }
+    }
+//}
+// enreg non trouvé
+// recherche des enregs sur la marque
+$dbInstance = DbManagement::getInstance();
+$db = $dbInstance->openDb();
+$tableName = $dbInstance->tableName('smartphones');
+$debutModele = '';
+if ($modele != '') {
+    $debutModele = trim(strtok($modele.' ', ' '));
+}
+$sqlQuery  = "SELECT * FROM $tableName ";
+//$sqlQuery .= " where marque = :marque and modele like :debutModele "; // and ram = :ram and stockage = :stockage ";
+$sqlQuery .= " where marque = :marque "; // and ram = :ram and stockage = :stockage ";
+$sqlQuery .= " ORDER BY modele, ram, stockage;";
+
+$stmt = $db->prepare($sqlQuery);
+$stmt->execute([
+    'marque' =>formatKey($marque,true),
+    //'debutModele' => '%'.$debutModele.'%',
+//    'ram' =>$ram,
+//    'stockage' =>$stockage
+    ]);
+$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if (count($rows) != 0) {
+    foreach($rows as $row) {
+        array_push($rowsForMarqueLikeModel, $row);
     }
 }
-            // enreg non trouvé
-            // recherche des enregs sur la marque
-            $dbInstance = DbManagement::getInstance();
-            $db = $dbInstance->openDb();
-            $tableName = $dbInstance->tableName('smartphones');
-            $debutModele = '';
-            if ($modele != '') {
-                $debutModele = trim(strtok($modele.' ', ' '));
-            }
-            $sqlQuery  = "SELECT * FROM $tableName ";
-            //$sqlQuery .= " where marque = :marque and modele like :debutModele "; // and ram = :ram and stockage = :stockage ";
-            $sqlQuery .= " where marque = :marque "; // and ram = :ram and stockage = :stockage ";
-            $sqlQuery .= " ORDER BY modele, ram, stockage;";
 
-            $stmt = $db->prepare($sqlQuery);
-            $stmt->execute([
-                'marque' =>formatKey($marque,true),
-                //'debutModele' => '%'.$debutModele.'%',
-            //    'ram' =>$ram,
-            //    'stockage' =>$stockage
-                ]);
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (count($rows) != 0) {
-                foreach($rows as $row) {
-                    array_push($rowsForMarqueLikeModel, $row);
-                }
-            }
+//========= recherche des enregs sur la marque ram stockage
+$sqlQuery = "SELECT DISTINCT * FROM $tableName where marque =:marque and ram =:ram and stockage =:stockage ORDER BY modele; ";
 
-            //========= recherche des enregs sur la marque ram stockage
-            $sqlQuery = "SELECT DISTINCT * FROM $tableName where marque =:marque and ram =:ram and stockage =:stockage ORDER BY modele; ";
+$stmt = $db->prepare($sqlQuery);
+$stmt->execute([
+    'marque' =>formatKey($marque,$supressSpacesBool),
+    'ram' =>formatKey($ram,$supressSpacesBool),
+    'stockage' =>formatKey($stockage,$supressSpacesBool)
+    ]);
+$modelesForMarqueRamStk = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            $stmt = $db->prepare($sqlQuery);
-            $stmt->execute([
-                'marque' =>formatKey($marque,$supressSpacesBool),
-                'ram' =>formatKey($ram,$supressSpacesBool),
-                'stockage' =>formatKey($stockage,$supressSpacesBool)
-                ]);
-            $modelesForMarqueRamStk = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//========= recherche des enregs sur la marque
+$sqlQuery = "SELECT DISTINCT modele FROM $tableName where marque =:marque ORDER BY modele; ";
+//$sqlQuery = "SELECT DISTINCT * FROM $tableName where marque =:marque and ram =:ram and stockage =:stockage ORDER BY modele; ";
 
-            //========= recherche des enregs sur la marque
-            $sqlQuery = "SELECT DISTINCT modele FROM $tableName where marque =:marque ORDER BY modele; ";
-            //$sqlQuery = "SELECT DISTINCT * FROM $tableName where marque =:marque and ram =:ram and stockage =:stockage ORDER BY modele; ";
+$stmt = $db->prepare($sqlQuery);
+$stmt->execute([
+    'marque' =>formatKey($marque,$supressSpacesBool)
+    ]);
+$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if (count($rows) != 0) {
+    // il existe des modèle pour cette marque
+    foreach($rows as $row) {
+        array_push($modelesForMarque, $row['modele']);
+    }
+}
 
-            $stmt = $db->prepare($sqlQuery);
-            $stmt->execute([
-                'marque' =>formatKey($marque,$supressSpacesBool)
-                ]);
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (count($rows) != 0) {
-                // il existe des modèle pour cette marque
-                foreach($rows as $row) {
-                    array_push($modelesForMarque, $row['modele']);
-                }
-            }
+// ===== la marque n'a pas été trouvée, recherche des marques existante
+$sqlQuery = "SELECT DISTINCT marque FROM $tableName ORDER BY marque; ";
 
-            // ===== la marque n'a pas été trouvée, recherche des marques existante
-            $sqlQuery = "SELECT DISTINCT marque FROM $tableName ORDER BY marque; ";
-
-            $stmt = $db->prepare($sqlQuery);
-            $stmt->execute();
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            foreach($rows as $row) {
-                array_push($listeMarque, $row['marque']);
-            }
+$stmt = $db->prepare($sqlQuery);
+$stmt->execute();
+$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+foreach($rows as $row) {
+    array_push($listeMarque, $row['marque']);
+}
         
         //}
     //}
@@ -250,6 +308,7 @@ $htmlpage .= <<<"EOT"
   
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
 
+<link rel="stylesheet" href="style/stylesm.css" />
 <link rel="stylesheet" href="style/stylesm.css" />
 <script>
     $(document).ready( function () {
@@ -284,10 +343,12 @@ $htmlpage .= <<<"EOT"
                         if (columnName == 'Ram') {
                             //column.search('^'+document.getElementById('ram').value+'$', true, false).draw();
                             input.value = document.getElementById('ram').value;
+                            column.search(document.getElementById('ram').value, false, false).draw();
                         }
                         if (columnName == 'Stockage') {
                             //column.search('^'+document.getElementById('stockage').value+'$', true, false).draw();
                             input.value = document.getElementById('stockage').value;
+                            column.search(document.getElementById('stockage').value, false, false).draw();
                         }
                         // Event listener for user input
                         input.addEventListener('keyup', () => {
@@ -298,7 +359,7 @@ $htmlpage .= <<<"EOT"
 
                     }
             });
-            $('#table').DataTable().search("value").draw();
+            table_sm_modele_table.search("").draw();
         }
 
         // =================
@@ -362,11 +423,18 @@ $htmlpage .= <<<"EOT"
     }
 
     function searchKimovil() {
-        let url = 'https://www.kimovil.com/fr/ou-acheter-';
-        url    += document.getElementById('marque').value.replace(/\s\s+/g, ' ').replace(' ','-');
-        url    += '-';
-        url    += document.getElementById('modele').value.replace(/\s\s+/g, ' ').replace(' ','-');
+        //let url = 'https://www.kimovil.com/fr/ou-acheter-';
+        let url = 'https://www.kimovil.com/fr/comparatif-smartphone/name.'
+        url    += document.getElementById('marque').value.replace(/\s\s+/g, ' '); //.replace(' ','-');
+        url    += ' ';
+        url    += document.getElementById('modele').value.replace(/\s\s+/g, ' '); //.replace(' ','-');
         window.open(url, '_blank');
+    }
+
+    function copyToMarque(m, r, s) {
+        document.getElementById('modele').value = m;
+        document.getElementById('ram').value = r;
+        document.getElementById('stockage').value = s;
     }
 
     function displayDetailModele(bouton, marque, modele) {
@@ -517,13 +585,7 @@ $htmlpage .= <<<"EOT"
         dataArray['os']        = document.getElementById(modalPrefix+'_os').value;
         dataArray['url']       = document.getElementById(modalPrefix+'_url').value;
         dataArray['username']  = document.getElementById(modalPrefix+'_username').value;
-        dataArray['origine']   = 
-EOT;
-
-
-    $htmlpage .= "'".  basename(__FILE__) ."';";
-
-    $htmlpage .= <<<"EOT"
+        dataArray['origine']   = '{$fct(basename(__FILE__))}';
         realCopyInDb(dataArray, modalPrefix);
     }
 
@@ -557,7 +619,7 @@ EOT;
      */
     function setDuplicationModal(marque2, modele2, ram2, stockage2, indice2, categorie2) {
         const modalPrefix = 'chooseSm';
-        let   tableDiv = document.getElementById(modalPrefix + '_tab');
+        let   tableDiv = document.getElementById( modalPrefix + '_tab');
         const marque   = document.getElementById('marque').value;
         const modele   = document.getElementById('modele').value;
         const ram      = document.getElementById('ram').value;
@@ -565,9 +627,9 @@ EOT;
 
         // check si les valeurs sont identiques
         let colorMarque = "#000000";
-        if (marque != marque2) {colorMarque = "#FF0000"}
+        if (marque.toLowerCase() != marque2.toLowerCase()) {colorMarque = "#FF0000"}
         let colorModele = "#000000";
-        if (modele != modele2) {colorModele = "#FF0000"}
+        if (modele.toLowerCase() != modele2.toLowerCase()) {colorModele = "#FF0000"}
         let colorRam = "#000000";
         if (ram != ram2) {colorRam = "#FF0000"}
         let colorStockage = "#000000";
@@ -578,30 +640,31 @@ EOT;
         html += '<tr><th>&nbsp;</th><th>Marque</th><th>Modèle</th><th>Ram</th><th>Stockage</th><th>Indice</th><th>Catégorie</th></tr>';
         html += '</thead>';
         html += '<tbody>';
-        html += '<tr>';
-        html += '<td>cherché</td>';
-        html += '<td class="marqueWidth"><b>'+marque+'</b></td>';
-        html += '<td class="modeleWidth">'+modele+'</td>';
-        html += '<td class="ramWidth"><b>'+ram+'</b></td>';
-        html += '<td class="stockageWidth"><b>'+stockage+'</b></td>';
-        html += '<td>&nbsp;</td><td>&nbsp;</td>';
-        html += '</tr>';
         
         html += '<tr>';
-        html += '<td>choisi </td>';
-        html += '<td id="'+modalPrefix+'_marque2"   style="color:' +colorMarque+ '">'+marque2+'</td>';
-        html += '<td id="'+modalPrefix+'_modele2"   style="color:' +colorModele+ '">'+modele2+'</td>';
-        html += '<td id="'+modalPrefix+'_ram2"      style="color:' +colorRam+ '">'+ram2+'</td>';
-        html += '<td id="'+modalPrefix+'_stockage2" style="color:' +colorStockage+ '">'+stockage2+'</td>';
+        html += '<td>Modèle </td>';
+        html += '<td id="'+modalPrefix+'_marque2"   >'+marque2+'</td>';
+        html += '<td id="'+modalPrefix+'_modele2"   >'+modele2+'</td>';
+        html += '<td id="'+modalPrefix+'_ram2"      >'+ram2+'</td>';
+        html += '<td id="'+modalPrefix+'_stockage2" >'+stockage2+'</td>';
         html += '<td id="'+modalPrefix+'_indice2">'+indice2+'</td>';
         html += '<td style="background-color: #74992e">'+categorie2[4]+'</td></td>';
+        html += '</tr>';
+        html += '<tr>';
+        html += '<td>Créer</td>';
+        html += '<td class="marqueWidth">'+marque+'</td>';
+        html += '<td class="modeleWidth">'+modele+'</td>';
+        html += '<td class="ramWidth">'+ram+'</td>';
+        html += '<td class="stockageWidth">'+stockage+'</td>';
+        html += '<td>&nbsp;</td><td>&nbsp;</td>';
+        html += '</tr>';
     
         html += '</tbody>';
         html += '</table>';
+        html += '<br>';
         tableDiv.innerHTML = html;
         let   buttonDiv = document.getElementById(modalPrefix + '_button');
-        if (marque != marque2 || ram != ram2 || stockage != stockage2) {
-            
+        if (marque.toLowerCase() != marque2.toLowerCase() || ram != ram2 || stockage != stockage2) {
             buttonDiv.innerHTML = '<span style="color: red">Copie impossible : marque, ram et stockage doivent être identiques</span><br>';
         }else{
             let innerHTML = 'Voulez-vous ajouter ce nouveau modèle de '+marque+' dans la base<br>';
@@ -637,120 +700,104 @@ EOT;
         const modal = document.getElementById(modalPrefix + '_div');
         modal.style.display = "none";
     }
+
+    function displayHelp(adresse) {
+        window.open(adresse, '_blank'); 
+    }
 </script>
 EOT;
 $htmlpage .= '</head>';
-$htmlpage .= '<body>';
-$htmlpage .= '<div style="width: 800px;">';
+$htmlpage .= '<body class="body_flex">';
+$htmlpage .= '<main>';
 $htmlpage .= getHtmlHeader();
-$htmlpage .= '</div>';
 $htmlpage .= <<<"EOT"
 <div id="div_00" style="display: flex;">
-<div id="div_01" style="border:1px solid;padding: 10px;width: 700px; background-color: #dddddd;">
-La recherche se fait sans tenir compte des majuscules/minuscules.
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-<a href="https://docs.google.com/document/d/1yQG_MQC-HUv2MqzjF6HPVwcgJ1D30UhvhWEiTF0Z6TQ" target="_blank">aide</a>
-<br>
-Les espaces/blancs en début et fin de critère sont supprimés.
-<button onclick="setDemoValues()">set demo values</button>
-&nbsp;&nbsp;&nbsp;&nbsp;
-<button onclick="clearValues()">effacer</button>
-
-<br>
-<form id="form_search" action="exsearchsmartphone.php"  method="post">
-<div style="border:1px solid;padding: 10px;width: 600px;" class="input">
-<label class="shortLabel" for="marque">Marque</label>
-<input type="text" id="marque" name="marque" value="{$htmlentities($marque)}">&nbsp;$marqueMsg<br>
-<label class="shortLabel" for="modele">Modèle</label>
-<input type="text" id="modele" name="modele" value="{$htmlentities($modele)}">&nbsp;$modeleMsg
-<button id ="btnKimovil" type="button" onclick="searchKimovil()">Kimovil</button><br>
-<label class="shortLabel" for="ram">Ram Go</label>
-<input type="number" min="0" step="1" id="ram" name="ram" value="{$htmlentities($ram)}">&nbsp;$ramMsg<br>
-<label class="shortLabel" for="stockage">Stockage Go</label>
-<input type="number" min="0" step="1" id="stockage" name="stockage" value="{$htmlentities($stockage)}">&nbsp;$stockageMsg<br>
-
-<label class="shortLabel" for="ponderationKey">Pondération</label>
-<select name="ponderationKey" id="ponderationKey">
+    <div id="div_01" style="border:1px solid;padding: 10px;width: 700px; background-color: #dddddd;">
+        La recherche se fait sans tenir compte des majuscules/minuscules.
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 EOT;
-$htmlpage .= getPonderationSelect($ponderationKey);
+$temp = $paramPhpArray['fichiers']['aide_sm_categorisation'];
 $htmlpage .= <<<"EOT"
-</select>&nbsp;$ponderationMsg<br>
-<label class="shortLabel" for="idec">Identifiant EC</label>
-<input type="text" id="idec" name="idec" value="{$htmlentities($idec)}">&nbsp;$idecMsg<br>
+<img src="images/icones/aide.png" style="width:20px;" onclick="displayHelp('$temp')">
+        <br>
+        Les espaces/blancs en début et fin de critère sont supprimés.
+        <button onclick="setDemoValues()">set demo values</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <button onclick="clearValues()">effacer</button>
 
-<label class="shortLabel" for="statutKey">Statut</label>
-<select name="statutKey" id="statutKey">
-EOT;
-$htmlpage .= getStatutSelect($statutKey);
-$htmlpage .= <<<"EOT"
-</select>&nbsp;$statutKeyMsg<br>
-<label class="shortLabel" for="imei">IMEI</label>
-<input type="number" id="imei" name="imei" value="{$htmlentities($imei)}">&nbsp;$imeiMsg<br>
+        <br>
+        <form id="form_search" action="exsearchsmartphone.php"  method="post">
+            <div style="border:1px solid;padding: 10px;width: 600px;" class="input">
+            <label class="shortLabel" for="marque">Marque</label>
+            <input type="text" id="marque" name="marque" class="inputForm" value="{$htmlentities($marque)}">&nbsp;$marqueMsg<br>
+            <label class="shortLabel" for="modele">Modèle</label>
+            <input type="text" id="modele" name="modele" class="inputForm" value="{$htmlentities($modele)}">&nbsp;$modeleMsg
+            <button id ="btnKimovil" type="button" onclick="searchKimovil()">Kimovil</button><br>
+            <label class="shortLabel" for="ram">Ram Go</label>
+            <input type="number" min="0" step="1" id="ram" name="ram" class="inputForm" value="{$htmlentities($ram)}">&nbsp;$ramMsg<br>
+            <label class="shortLabel" for="stockage">Stockage Go</label>
+            <input type="number" min="0" step="1" id="stockage" name="stockage" class="inputForm" value="{$htmlentities($stockage)}">&nbsp;$stockageMsg<br>
 
-<label class="shortLabel" for="osf">OS</label>
-<input type="text" id="osf" name="osf" value="{$htmlentities($osf)}">&nbsp;$osfMsg<br>
+            <label class="shortLabel" for="ponderationKey">Pondération</label>
+            <select name="ponderationKey" id="ponderationKey" class="selectForm">
+                {$fct(getPonderationSelect($ponderationKey))}
+            </select>&nbsp;$ponderationMsg<br>
 
-<label class="shortLabel" for="div_batterie">Batterie</label>
-<span id="div_batterie">
-OK
-<input type="radio" id="batterieok" name="batterie" style="width:30px" value="OK"
-EOT;
-if ($batterieStatut == "OK") {
-    $htmlpage .=" checked";
-}
-$htmlpage .= <<<"EOT"
->
-&nbsp;&nbsp;&nbsp;&nbsp;ko
-<input type="radio" id="batterieko" name="batterie" style="width:30px" value="KO"
-EOT;
-if ($batterieStatut == "KO") {
-    $htmlpage .=" checked";
-}
-$htmlpage .= <<<"EOT"
->
-&nbsp;&nbsp;&nbsp;&nbsp;Non connu 
-<input type="radio" id="batterienc" name="batterie" style="width:30px" value="NC"
-EOT;
-if ($batterieStatut == "NC") {
-    $htmlpage .=" checked";
-}
-$htmlpage .= <<<"EOT"
->
+            <label class="shortLabel" for="idec">Identifiant EC</label>
+            <input type="text" id="idec" name="idec" class="inputForm" value="{$htmlentities($idec)}">&nbsp;$idecMsg<br>
 
-&nbsp;$batterieMsg<br>
-</span>
+            <label class="shortLabel" for="statutKey">Statut</label>
+            <select name="statutKey" id="statutKey" class="selectForm">
+                {$fct(getStatutSelect($statutKey))}
+            </select>&nbsp;$statutKeyMsg<br>
+            <label class="shortLabel" for="imei">IMEI</label>
+            <input type="number" id="imei" name="imei" class="inputForm" value="{$htmlentities($imei)}">&nbsp;$imeiMsg<br>
 
+            <label class="shortLabel" for="osf">OS</label>
+            <input type="text" id="osf" name="osf" class="inputForm" value="{$htmlentities($osf)}">&nbsp;$osfMsg<br>
 
+            <!-- Batteries -->
+            <label class="shortLabel" for="div_batterie">Batterie</label>
+            <div id="div_batterie" class="inputForm" style="display: inline-block;">
+                OK
+                <input type="radio" id="batterieok" name="batterie" style="width:30px" value="OK" {$fct(checkedIfEqual($batterieStatut, 'OK'))}>
 
-</div>
-<div style="border:1px solid;padding: 10px;width: 600px;display: none;" class="input">
-Utilisé si le champ "Marque " n'est pas renseigné.<br>
-<label class="shortLabel" for="incsv">csv</label>
-<input type="text" id="incsv" name="incsv" size="60" value="{$htmlentities($incsv)}"><br>
-(séparateur = virgule. Ne marche pas si les textes contiennent une virgule
-</div>
-<div style="border:1px solid;padding: 10px;width: 600px;" class="input">
-<label for="supressSpaces" class="longLabel">Supprimer les espaces en trop des textes :</label>
-<input type="checkbox" id="supressSpaces" name="supressSpaces" $supressSpaces />
-</div>
-<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;ko
+                <input type="radio" id="batterieko" name="batterie" style="width:30px" value="KO" {$fct(checkedIfEqual($batterieStatut, 'KO'))}>
+            </div>
+            &nbsp;$batterieMsg<br>
+            </div><!-- div container du form -->
 
-<input type="submit" value="Catégoriser">
-</form>
-</div> <!-- div_01 -->
+            <div style="border:1px solid;padding: 10px;width: 600px;" class="input">
+            <b>Pour MARC V.  </b>
+            Utilisé si le champ "Marque" n'est pas renseigné.<br>
+            (copier la colonne C2:C21)
+            <label class="shortLabel" for="incsv">csv</label>
+            <textarea id="incsv" name="incsv" cols="60" value="{$htmlentities($incsv)}"></textarea><br>
+            
+            </div>
+
+            <div style="border:1px solid;padding: 10px;width: 600px;" class="input">
+                <label for="supressSpaces" class="longLabel">Supprimer les espaces en trop des textes :</label>
+                <input type="checkbox" id="supressSpaces" name="supressSpaces" $supressSpaces />
+            </div>
+            <br>
+
+            <input type="submit" value="Catégoriser/Chercher">
+        </form>
+    </div> <!-- div_01 -->
 EOT;
 if ($helpHtml != "") {
 $htmlpage .= <<<"EOT"
     <div id="div_help" style="border:1px solid;padding: 10px;width: 800px; background-color: #eeeeee;">
-    $helpHtml<hr>
-    Votre smartphone existe peut-être dans la base avec une orthographe légèrement différente.<br>
-    Pour vous aider, <b>2 extractions</b> vous sont présentées ci-dessous :<br>
+        $helpHtml<hr>
+        Votre smartphone existe peut-être dans la base avec une orthographe légèrement différente.<br>
+        Pour vous aider, <b>2 extractions</b> vous sont présentées ci-dessous :<br>
         <br>
         <b>1) Ceux de la <u>marque</u> recherchée, préfiltré sur le 1er mot du <u>modèle</u> que vous avez indiqué, sa <u>ram</u>
          et son <u>stockage</u>.</b><br>
          Si vous trouvez votre bonheur, vous pouvez :<br>
-         - utiliser le resultat du calcul de la catégorie<br>
+         - utiliser le résultat du calcul de la catégorie<br>
          - nous aider à améliorer la base en y ajoutant votre découverte :<br>
          &nbsp;- cliquez sur le bouton "<u><b>ok</b></u>" de la ligne (aucun danger)<br>
          &nbsp;- une fenêtre s'affichera, suivez ses instructions"<br>
@@ -769,17 +816,21 @@ $htmlpage .= <<<"EOT"
 </div> <!-- div_00 -->
 <hr>
 EOT;
-if ($errmsg != '') {
-    $htmlpage .= '<span style="color:red;">'.$errmsg.'</span><br>';
-}
+// if ($errmsg != '') {
+//     $htmlpage .= '<span style="color:red;">'.$errmsg.'</span><br>';
+// }
 
 //=========================================================
 //=== smartphone trouvé
 //=========================================================
 $resultCsv = "";
-if ($errmsg == '') {
-$resultCsv = <<<"EOT"
-csv pour copie dans GSheet<br>
+if ($smRowFound) {
+    if ($idec == "" || $statutKey == 0 || $imei == "" || $osf == "" || $batterieMsg != "") {
+        $resultCsv .= '<span style="color:red">un des champs IdEc, Statut, IMEI, OS ou Batterie n\'est pas renseigné<br>';
+        $resultCsv .= 'le csv ci-dessous n\'est pas peut-être pas assez complet<br></span>';
+    }
+    $resultCsv .= <<<"EOT"
+csv pour copie dans GSheet (modèle de Marc Vaneeckhoutte)<br>
 <textarea style="width:100%">
 ""\t
 {$cvt("".$idec)}\t
@@ -804,9 +855,10 @@ $resultCsv = str_replace("\n", '', $resultCsv);
 $resultCsv = str_replace("\r", '', $resultCsv);
 }
 
+// smartphone trouvé : affichage du calcul
 if($smRowFound) {
     $htmlpage .= <<<"EOT"
-<div id="div_02"style="border:1px solid;padding: 10px;width: 700px; background-color: #aaaaaa;">
+<div id="div_02" style="border:1px solid;padding: 10px;width: 700px; background-color: #aaaaaa;">
 <h2 style="text-align: center;">Résultat</h2>
 $resultCsv
 <p  style="text-align: center;">Les critères utilisés pour la recherche sont en rouge quand ils sont différents de ceux que vous avez saisis<p>.
@@ -829,8 +881,6 @@ $resultCsv
 </tbody></table>
 <br>
 EOT;
-
-
 
 if ($simulation) {
     $htmlpage .= "Il s'agit d'une simulation, les données ne viennent pas de la BDD";
@@ -873,9 +923,6 @@ $htmlpage .= '</div>';
         // la recherche a échouée affichage des modèles 
         $marqueGrey = setSpaceGrey($marque);
         $htmlpage .= '<hr><h3>Smartphones de la marque <span style="text-decoration: underline;">'.$marque.'</span>';
-        //$htmlpage .= ', ram = <span style="text-decoration: underline;">'.$ram.'</span> et';
-        //$htmlpage .= ' et stockage = <span style="text-decoration: underline;">'.$stockage.'</span>';
-        //$htmlpage .= ' dont le modèle contient <span style="text-decoration: underline;">'.$debutModele.'</span>';
         $htmlpage .= '</h3>';
 
         if (count($rowsForMarqueLikeModel) == 0) {
@@ -887,16 +934,15 @@ $htmlpage .= '</div>';
             $htmlpage .= '<div id="div_03" style="width:1000px; border-style: solid; border-width: 1px;">';
             $htmlpage .= '<table id="sm_modele_table" style="width:820px">';
             $htmlpage .= '<thead>';
-            $htmlpage .= "<tr><th>Marque</th><th>Modele</th><th>Ram</th><th>Stockage</th><th>Indice</th><th>Catégorie</th><th>URL</th><th>Choix</th></tr>";
+            $htmlpage .= "<tr><th>Modele</th><th>Ram</th><th>Stockage</th><th>Indice</th><th>Catégorie</th><th>Web</th><th>Copier</th></tr>";
             $htmlpage .= '</thead>';
             $htmlpage .= '<tfoot>';
             $htmlpage .= '<tr>';
-            $htmlpage .= '<th><input class="marqueWidth"></th>';
             $htmlpage .= '<th><input class="modeleWidth"></th>';
             $htmlpage .= '<th><input class="ramWidth"></th>';
             $htmlpage .= '<th><input class="stockageWidth"></th>';
             $htmlpage .= '<th><input class="indiceWidth"></th>';
-            $htmlpage .= '<th>&nbsp;</th>';
+            $htmlpage .= '<th><input class="indiceWidth"></th>';
             $htmlpage .= '<th>&nbsp;</th>';
             $htmlpage .= '<th>&nbsp;</th>';
             $htmlpage .= '</tr>';
@@ -906,18 +952,19 @@ $htmlpage .= '</div>';
             foreach($rowsForMarqueLikeModel as $m) {
                 $note      = $evalSmTemp->calculCategorie($m['ram'], $m['stockage'], $m['indice'], 0, 'GB' );
                 $htmlpage .= '<tr>';
-                $htmlpage .= "<td>".htmlentities($m['marque'])."</td>";
                 $htmlpage .= '<td class="marque">'.htmlentities($m['modele']);
-                $htmlpage .= '<img src="images/icones/ok01.webp" alt="ok" width="15" title="copier dans modèle"';
-                $htmlpage .= 'onclick="document.getElementById(\'modele\').value=\''.$m['modele'].'\'">';
+                $htmlpage .= '<img src="images/icones/ok01.webp" alt="ok" width="15" title="copier dans modèle, Ram & Stockage"';
+                $htmlpage .= 'onclick="copyToMarque(\'' .$m['modele']. '\', \'' .$m['ram']. '\', \'' .$m['stockage'] .'\')">';
                 $htmlpage .= '</td>';
                 $htmlpage .= '<td style="text-align: right;">'.$m['ram']."</td>";
                 $htmlpage .= '<td style="text-align: right;">'.$m['stockage']."</td>";
                 $htmlpage .= '<td style="text-align: right;">'.$m['indice']."</td>";
-                $htmlpage .= '<td style="text-align: right;">'.$note['categorieApha']."</td>";
+                $htmlpage .= '<td style="text-align: right; text-align:center">'.$note['categorieApha']."</td>";
                 $htmlpage .= '<td>'.getUrlInchor($m['url']).'</td>'; 
                 $htmlpage .= '<td>';
-                $htmlpage .=  makeSetDuplicationModalButton($m, $note);
+                if ($ram == $m['ram'] && $m['stockage'] == $stockage) {
+                    $htmlpage .=  makeSetDuplicationModalButton($m, $note);
+                }
                 $htmlpage .= '</td>';
                 $htmlpage .= '</tr>';
             }
@@ -1033,16 +1080,18 @@ $htmlpage .= <<<"EOT"
         <span id = "chooseSm_close" class="close">&times;</span>
         <hr>
         Vous avez cherché un smartphone inconnu dans la base et vous en avez sélectionné un pour remplacer votre sélection.<br>
-        Vous pouvez :
-        <ul>
-            <li>simplement utiliser l'indice et la catégorie de celui que vous avez trouvé</li>
-            <li>compléter la base en y ajoutant celui que vous avez recherché complété des infos de celui que vous avez trouvé<br>
-            la copie n'est possible que si marque, ram et stockage sont identiques</li>
-        </ul>
+        Vous pouvez simplement utiliser l'indice et la catégorie de celui que vous avez trouvé<br>
+        <br>
+        Mais si votre smartphone est un homonime de celui que vous avez sélectionne (car certains smartphone ont plusieurs nom de modèle),<br>
+        <br>
+        <b>Merci de compléter notre base de données</b> en créant une copie avec le nom de modèle de celui que vous avez en main<br>
+        Cela facilitera le travail de vos collègues et les traitements de masse automatisés (excel)<br>
+        &nbsp;&nbsp; (la copie n'est possible que si marque, ram et stockage sont identiques)<br>
+        <br>
         <div id="chooseSm_tab">
         </div>
         <div id="chooseSm_button">
-            Voulez-vous ajouter ce nouveau smartphone dans la base<br>
+            Ajouter ce nouveau smartphone dans la base<br>
             votre nom : <input type="text" id="username"><br>
             <button onclick="copyInDb()">ajouter</button><br>
         </div>
@@ -1094,7 +1143,7 @@ $htmlpage .= <<<"EOT"
     </div>
 
 </div>
-
+</main>
 </body>
 </html>
 EOT;
@@ -1111,15 +1160,18 @@ function removeMultipleSpace($text) {
 }
 
 function makeSetDuplicationModalButton($from, $note) {
-    
-    $retour = '<button  title="Utiliser ce modèle de smartphone" onclick="setDuplicationModal(' .'\'' 
-        .$from['marque']. '\', \'' 
-        .$from['modele']. '\', \'' 
-        .$from['ram']. '\', \'' 
-        .$from['stockage']. '\', \'' 
-        .$from['indice']. '\', \'' 
-        .'['.implode(',',$note).']' 
-        .'\')">ok</button>';
+    global $modele, $ram, $stockage;
+    $retour = "";
+    if ($modele != "" && $ram != "" && $stockage !="") {
+        $retour = '<button  title="Utiliser ce modèle de smartphone" onclick="setDuplicationModal(' .'\'' 
+            .$from['marque']. '\', \'' 
+            .$from['modele']. '\', \'' 
+            .$from['ram']. '\', \'' 
+            .$from['stockage']. '\', \'' 
+            .$from['indice']. '\', \'' 
+            .'['.implode(',',$note).']' 
+            .'\')">ok</button>';
+    }
     return $retour;
 }
 
@@ -1130,3 +1182,18 @@ function getUrlInchor($url) {
     }
     return $retour;
 }
+
+function checkedIfEqual($var, $val, $cassensitive = false) {
+    $retour = "";
+    if ( $cassensitive ) {
+        if ($var == $val) {
+            $retour = "checked";
+        }
+    }else{
+        if (strtolower($var) == strtolower($val)) {
+            $retour = "checked";
+        }
+    }
+    return $retour;
+}
+

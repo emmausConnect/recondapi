@@ -2,11 +2,20 @@
 
 $path_private_class = $g_contexte_instance->getPath('private/class');
 require_once $path_private_class .'/db/dbmanagement.class.php';
+require_once $path_private_class .'/smartphones/smartphone.class.php';
+require_once $path_private_class .'/smartphones/evaluationsm.class.php';
 
 $path_private_php = $g_contexte_instance->getPath('private/php');
 require_once $path_private_php .'/pageheaderhtml.php';
 
+require_once 'utilsm.php';
+
 $errmsg = "";
+
+$displayCategorie = true;
+// if (strtolower(trim(getGetValue('dspcat','n'))) == 'y') {
+//     $displayCategorie = true;
+// }
 
 $dbInstance = DbManagement::getInstance();
 $db = $dbInstance->openDb();
@@ -21,13 +30,6 @@ $rowsForTitle = $stmt->fetchAll(PDO::FETCH_ASSOC);
 if (count($rowsForTitle) == 0) {
      $errmsg = "table vide";
 }
-// if (count($rows) != 0) {
-//     foreach($rows as $row) {
-//         array_push($rowsForTitle, $row);
-//     }
-// }else{
-//     $errmsg = "table vide";
-// }
 
 $htmlpage  = getHtmlHead();;
 $htmlpage .= <<<"EOT"
@@ -133,6 +135,11 @@ Pour un texte exact, mettre entre guillemets "galaxy A01".
         <th style="font-weight: bold;">ram</th>
         <th style="font-weight: bold;">stockage</th>
         <th>indice</th>
+EOT;
+        if ($displayCategorie) {
+            $htmlpage .= '<th>categorie</th>';
+        }
+$htmlpage .= <<<"EOT"
         <th>url</th>
         <th>crtorigine</th>
         <th>crtby</th>
@@ -153,7 +160,10 @@ $htmlpage .= makeInput('modeleWidth');
 $htmlpage .= makeInput('ramWidth');
 $htmlpage .= makeInput('stockageWidth');
 $htmlpage .= makeInput('indiceWidth');
-$htmlpage .= '<th>&nbsp;</th>';
+if ($displayCategorie) {
+    $htmlpage .= makeInput('categorieWidth');
+}
+$htmlpage .= '<th>&nbsp;</th>';  // url
 $htmlpage .= makeInput('origineWidth');
 $htmlpage .= makeInput('crtbyWidth');
 $htmlpage .= makeInput('crtdateWidth');
@@ -169,13 +179,31 @@ $htmlpage .= <<<"EOT"
 </tfoot>
 <tbody>
 EOT;
-
+$evalInstance = EvaluationSm::getInstance();
 foreach($rowsForTitle as $m) {
+    // $ceSM = Smartphone::getInstance();
+    // $ceSM->setMarque(  "".$m['marque']);
+    // $ceSM->setModele(  "".$m['modele']);
+    // $ceSM->setRam(     "".$m['ram']);
+    // $ceSM->setStockage("".$m['stockage']) ;
+    // $evaluationSmClInstance = EvaluationSm::getInstance($ceSM);
+    // $evaluationSmCl         = $evaluationSmClInstance->evalSmartphone();
+    // if ($evaluationSmCl->getErrMsg() == "" ) {
+    //     $categorieSm            = $evaluationSmCl->getCategoriePondereAlpha();
+    // }else{
+    //     $categorieSm            = 'err';
+    // }
+    //                            calculCategorie($ramIn,    $stockageIn,        $indice, int $ponderation = 0, string $unitepardefaut='G')
+    $categorieSm = $evalInstance->calculCategorie($m['ram'], $m['stockage'], $m['indice'], 0, 'G');
     $htmlpage .= '<tr>';
     $htmlpage .= '<td>'.$m['marque'].'</td>';
     $htmlpage .= '<td>'.$m['modele'].'</td>';
     $htmlpage .= '<td>'.$m['ram'].'</td>';
-    $htmlpage .= '<td>'.$m['stockage']."</td><td>".$m['indice']."</td>";
+    $htmlpage .= '<td>'.$m['stockage']."</td>";
+    $htmlpage .= '<td>'.$m['indice']."</td>";
+    if ($displayCategorie) {
+        $htmlpage .= '<td>'.$categorieSm['categoriePondereAlpha']."</td>";
+    }
     $htmlpage .= '<td><a href="'.$m['url'].'" target="_blank">'.'go'.'</td>';
     $htmlpage .= '<td>'.$m['crtorigine']."</td>";
     $htmlpage .= '<td>'.$m['crtby'].'</td><td>'.$m['crtdate'].'</td><td>'.$m['crttype'].'</td>';

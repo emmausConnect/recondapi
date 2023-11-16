@@ -34,7 +34,7 @@ function getHtmlHeader() {
 	}
 	$retour .=  '<header>';
 	$retour .=  '<div class="titre">';	
-	$retour .=  ' <div style="display:inline; /* margin-left:50px;*/">';
+	$retour .=  ' <div style="display:inline; margin-left:50px;">';
 	$retour .=  '  <a href="'.$menuInitial.'" target="_self" alt="retour au menu initial">';
 	$retour .=  '   <img src="images/icones/logo.png" style="width: 100px;border-width:0px">';
 	$retour .=  '  </a>';
@@ -42,7 +42,7 @@ function getHtmlHeader() {
 	$retour .=  ' <div style="display:inline; margin-right:50px;">';
 	$retour .=  '   Emmaus-Connect Catégorisation';
 	$retour .=  ' </div>';
-if ($isConnected) {
+	if ($isConnected) {
 	$retour .= <<<EOT
 	<div class="dropdown" style="font-size: 15px;">
       <img src="images/icones/profil.webp" class="dropbtn" onclick="myFunction()">
@@ -52,33 +52,35 @@ EOT;
 		$retour .=  '<strong>'.$_SESSION['email'].'</strong>';
 		//$retour .=  '  <a class="ec-btn ec-nav menuoption" href="exgoogledisconnect.php">Déconnexion</a>';
 		$retour .=  '  <a href="exgoogledisconnect.php">Déconnexion</a>';
-	
+	}
 	$retour .= <<<EOT
      </div>
-    </div> <!-- menu -->
+    </div>
 EOT;
-}
-	$retour .=  '</div>'; // titre
+	$retour .=  '</div>';
 
-	$retour .=  '<div style="border-style: none none solid none; border-color: #00acb0;">';
 	$retour .=  '<div class="version">';
 	$retour .=  ' <div style="display:inline; margin-left:20px;">';
 	$retour .=  '  <span style="text-align:left;">'.date('d/m/Y G:i:s').'</span>';
 	$retour .=  ' </div>';
-	$retour .=  ' <div style="display:inline; margin-left:10px;">';
-	$retour .=  '  <span style="text-align:left;font-size:small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (version : ' 
-					.$paramPhpArray["version"]["num"]. " du " .$paramPhpArray["version"]["date"]. " - " .$paramPhpArray["version"]["text"].")</span>" ;
-	$retour .=  ' </div>';					
+
+	$retour .=  ' <div style="display:inline; margin-right:10px;">';				
 	if ($isConnected) {
-		$retour .=  ' <div style="display:inline; margin-right:10px;">';
 		$retour .=  '<strong>'.$_SESSION['email'].'</strong>';
-		$retour .=  ' </div>';
+	}else{
+		$retour .=  'non connecté';
 	}
+	$retour .=  ' </div>';
+
+	$retour .=  ' <div style="display:inline; margin-left:10px;">';
+	$retour .=  '  <span style="text-align:left;font-size:small;">(version : ' 
+					.$paramPhpArray["version"]["num"]. " du " .$paramPhpArray["version"]["date"]. " - " .$paramPhpArray["version"]["text"].")</span>" ;
+	$retour .=  ' </div>';
+	
 	$retour .=  '</div>';
 	$retour .=  '<div id="divcontact" class="version" style="text-align:center">';
 	$retour .=  '<span style="text-align:center; margin:auto;">pour toutes remarques/questions, envoyez un mail à <b>emmausconnect-web-recond@ab.lespages.info</b></span>';
 	$retour .=  '<div>';
-	$retour .=  '</div>';
 	$retour .=  '</header>';
 
 $retour .= <<<EOT

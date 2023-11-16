@@ -4,6 +4,13 @@ declare(strict_types=1);
 $path_private_class = $g_contexte_instance->getPath('private/class');
 require_once $path_private_class.'/paramini.class.php';
 
+/**
+ * Retourne la valeur dans le Post ou l avaleur par défaut
+ *
+ * @param string $htmlName
+ * @param [type] $default
+ * @return null|string
+ */
 function getPostValue(string $htmlName, null|string $default = Null): null|string {
     $retour = "";
     if (array_key_exists($htmlName, $_POST)) {

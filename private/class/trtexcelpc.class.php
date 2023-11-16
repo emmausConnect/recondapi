@@ -25,7 +25,7 @@ class TrtExcelPc {
     public static function getInstance(string $uploadType, string $debug) : TrtExcelPc
     {
         $c = new TrtExcelPc();
-        $c->logger = LoggerRec::getInstance();
+        $c->logger   = LoggerRec::getInstance();
         $c->contexte = Contexte::getInstance();
         $c->debug = $debug;
         return $c;
@@ -416,7 +416,9 @@ class TrtExcelPc {
             // ***********************************************************************************
             // ********* Crt d'un Excel au format BOLC *******************************************
             // ***********************************************************************************
-            $spreadsheetNorm = \PhpOffice\PhpSpreadsheet\IOFactory::load(__DIR__."/../data/modele_BOLC_v2.xlsx");
+            $xlsModelFile    = $this->contexte->getParamPhpIniCls()->getParam()['fichiers']['pc_modele_BOLC_xlsx_gen'];
+            //$spreadsheetNorm = \PhpOffice\PhpSpreadsheet\IOFactory::load(__DIR__."/../data/pc_modele_BOLC_v2.xlsx");
+            $spreadsheetNorm = \PhpOffice\PhpSpreadsheet\IOFactory::load( $xlsModelFile);
             //spreadsheetNorm = new Spreadsheet();
             $sheetNorm       = $spreadsheetNorm->getActiveSheet();
             $fileNorm        = __DIR__."/../data/exceltemplatescstpc.json";

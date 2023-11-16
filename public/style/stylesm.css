@@ -9,9 +9,14 @@
         width: 300px;
         text-align: right;
     }
-    input {
-        padding: 5px 10px;
+    .inputForm {
+        padding: 2px 2px;
         width  : 250px;
+    }
+
+    .selectForm {
+        padding: 2px 2px;
+        width  : 258px;
     }
     
     .key {

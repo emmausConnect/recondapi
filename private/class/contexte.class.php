@@ -17,7 +17,8 @@ class Contexte {
     private bool     $useDefaultDiskType;
     private string   $environnement;      // "PROD" ou autre, stocké en majuscule
     private string   $tprefix;            // prefix pour les tables de la BDD
-    private ParamIni $paramPhpIni;        // prefix pour le tables de la BDD
+    private ParamIni $paramIniCls;        // fichier param.ini
+    private ParamIni $paramPhpIniCls;     // fichier paramphp.ini
     
     private function __construct(){ }
 
@@ -52,9 +53,9 @@ class Contexte {
             //     }
             // }
             // $c->environnement = strtoupper($g_environnement);
-            $c->environnement = strtoupper(self::getEnvironnementIni());
-
-            $c->paramPhpIni = ParamIni::getInstance('*paramphp.ini');
+            $c->environnement  = strtoupper(self::getEnvironnementIni());
+            $c->paramIniCls    = ParamIni::getInstance('*param.ini');
+            $c->paramPhpIniCls = ParamIni::getInstance('*paramphp.ini');
 
             self::$instance = $c;
         }
@@ -85,7 +86,7 @@ class Contexte {
     }
 
     function getPath($pathName) {
-        $paramArray = $this->paramPhpIni->getParam();
+        $paramArray = $this->paramPhpIniCls->getParam();
         $path = $paramArray['path'][$pathName];
         $path = $_SERVER['DOCUMENT_ROOT'].$path;
         return $path;
@@ -143,12 +144,44 @@ class Contexte {
             return false;
         }
     }
-
+    /**
+     * prefix pour les tables de la BDD
+     *
+     * @param string $tprefix
+     * @return void
+     */
     function setTprefix(string $tprefix) {
         $this->tprefix = $tprefix;
     }
+    /**
+     * prefix pour les tables de la BDD
+     *
+     * @return string
+     */
     function getTprefix() :string {
         return $this->tprefix;
+    }
+
+     /**
+     * Get Class paramIni avec fichier param.ini
+     * use getparam() to retreive data
+     * 
+     * ex : context->getParamIniCls().getParam()['...']['...']
+     */
+    public function getParamIniCls(): ParamIni
+    {
+        return $this->paramIniCls;
+    }
+
+    /**
+     * Get Class paramIni avec fichier paramphp.ini
+     * use getparam() to retreive data
+     * 
+     * ex : context->getParamPhpIniCls().getParam()['fichiers']['sm_modele_BOLC_xlsx']
+     */
+    public function getParamPhpIniCls(): ParamIni
+    {
+        return $this->paramPhpIniCls;
     }
 	//******************************************************************* */
 	function __call($name, $arguments)
