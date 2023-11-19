@@ -33,33 +33,19 @@ if (!str_starts_with($_SERVER['HTTP_HOST'],'localhost')) {
     }
 }   
 
-$contexte = Contexte::getInstance();
+//$contexte = Contexte::getInstance();
 
-// le fichier environnement contient soit "PROD" soit "TEST"
-// s'il ne contient pas PROD :
-//    * une banière "!! environnement de test" est affichée
-//    * certains traitemenent ont un comportement différent
-// $fileEnvirName = '../environnement.ini';
-// $g_environnement = ""; // global : environnement prod ou test
-// if (! file_exists($fileEnvirName)) {
-//     echo "Fichier '$fileEnvirName' non trouvé";
-//     exit();
-// }else{
-//     $txt_file = fopen('../environnement.ini','r');
-//     $g_environnement = fgets($txt_file);
-//     fclose($txt_file);
-//     if ($g_environnement != 'PROD' and $g_environnement != 'TEST' and $g_environnement != 'LOCAL') {
-//         echo "Valeur environnement invalide : '$g_environnement'";
-//         exit();
-//     }
-// }
-//$contexte->setEnvironnement($g_environnement);
+$isConnected = false;
+if(array_key_exists('emmaususerconnected',$_SESSION) && $_SESSION['emmaususerconnected'] == 'Y') {
+    $g_contexte_instance->setConnected(true);
+    $g_contexte_instance->setEmailConnected($_SESSION['email']);
+}
 
 $debug = getDebugFromBrowserSessionCookie();
 if ($debug == null) {
     $debug = "0";
 }
-$contexte->setDebugLevel($debug);
+$g_contexte_instance->setDebugLevel($debug);
 
 $logger = LoggerRec::getInstance();
 $logger->setDebugLevel($debug);

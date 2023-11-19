@@ -11,6 +11,8 @@ require_once __DIR__."/paramini.class.php";
 class Contexte {
     private LoggerRec $logger;
     private static   Contexte $instance;
+    private bool     $connected;
+    private string   $emailConnected;
     private string   $debugLevel;
     private bool     $debugBool;
     private bool     $useDefaultUnit;
@@ -27,6 +29,8 @@ class Contexte {
         if (! isset(self::$instance)) {
             $c = new Contexte();
             $c->logger = LoggerRec::getInstance();
+            $c->connected            = false;
+            $c->emailConnected       = "";
             $c->debugLevel           = "";
             $c->debugBool            = false;
             $c->useDefaultUnit       = false;
@@ -90,6 +94,40 @@ class Contexte {
         $path = $paramArray['path'][$pathName];
         $path = $_SERVER['DOCUMENT_ROOT'].$path;
         return $path;
+    }
+
+    /**
+     * Get the value of connectedBool
+     */
+    public function isConnected(): bool
+    {
+        return $this->connected;
+    }
+
+    /**
+     * Set the value of connected
+     */
+    public function setConnected(bool $connected): self
+    {
+        $this->connected = $connected;
+        return $this;
+    }
+
+    /**
+     * Get the value of emailConnected
+     */
+    public function getEmailConnected(): string
+    {
+        return $this->emailConnected;
+    }
+
+    /**
+     * Set the value of emailConnected
+     */
+    public function setEmailConnected(string $emailConnected): self
+    {
+        $this->emailConnected = $emailConnected;
+        return $this;
     }
 
     /**
@@ -203,5 +241,7 @@ class Contexte {
     {
         throw new Exception("Get d'une propriété inconnue : $name");
     }
+
+
 
 }

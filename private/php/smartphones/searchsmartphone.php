@@ -108,7 +108,7 @@ if ($marque == "") {
                 $ponderationKey   = (string) $g_contexte_instance->getParamIniCls()->getParamName('smselectponderation',$ponderationValue);
             }
 
-            $imei     = $explodeCsv[2] ;
+            $imei     = $explodeCsv[16] ;
             $idec     = $explodeCsv[14] ;
 
             $statutValue = $explodeCsv[15] ;
@@ -767,16 +767,19 @@ $htmlpage .= <<<"EOT"
             </div>
             &nbsp;$batterieMsg<br>
             </div><!-- div container du form -->
-
+EOT;
+if ($g_contexte_instance->isConnected()) {
+    $htmlpage .= <<<"EOT"
             <div style="border:1px solid;padding: 10px;width: 600px;" class="input">
-            <b>Pour MARC V.  </b>
-            Utilisé si le champ "Marque" n'est pas renseigné.<br>
-            (copier la colonne C2:C21)
-            <label class="shortLabel" for="incsv">csv</label>
-            <textarea id="incsv" name="incsv" cols="60" value="{$htmlentities($incsv)}"></textarea><br>
-            
+                <b>Pour MARC V.  </b>
+                Utilisé si le champ "Marque" n'est pas renseigné.<br>
+                (copier la colonne C2:C21)
+                <label class="shortLabel" for="incsv">csv</label>
+                <textarea id="incsv" name="incsv" cols="60" value="{$htmlentities($incsv)}"></textarea><br>
             </div>
-
+EOT;
+}
+$htmlpage .= <<<"EOT"
             <div style="border:1px solid;padding: 10px;width: 600px;" class="input">
                 <label for="supressSpaces" class="longLabel">Supprimer les espaces en trop des textes :</label>
                 <input type="checkbox" id="supressSpaces" name="supressSpaces" $supressSpaces />

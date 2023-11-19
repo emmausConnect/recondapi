@@ -5,12 +5,11 @@ require_once __DIR__.'/pageheaderhtml.php';
  * HTML page Accueil
 **************************************************************************** */
 function getHtmlAccueil() {
-	$paramPhpArray = ParamIni::getInstance(__DIR__.'/../config/paramphp.ini')->getParam();
-	$isConnected = false;
-	if(array_key_exists('emmaususerconnected',$_SESSION) && $_SESSION['emmaususerconnected'] == 'Y') {
-		$isConnected = true;
-		$emailConnected = $_SESSION['email'];
-	}
+	global $g_contexte_instance;
+	$paramPhpArray  = $g_contexte_instance->getParamPhpIniCls()->getParam();
+	$isConnected    = false;
+	$isConnected    = $g_contexte_instance->isConnected();
+	$emailConnected = $g_contexte_instance->getEmailConnected();
 	$retour  = getHtmlHead();
 	$retour .= '<script src="util01.js"></script>';
 	$retour .= <<<'EOT'
