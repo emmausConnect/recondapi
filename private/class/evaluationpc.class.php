@@ -4,7 +4,8 @@ require_once __DIR__.'/evaluationindicecpu.class.php';
 require_once __DIR__.'/util01.class.php';
 require_once __DIR__.'/evaluationerrors.class.php';
 require_once __DIR__.'/pc.class.php';
-require_once __DIR__.'/paramini.class.php';
+//require_once __DIR__.'/paramini.class.php';
+require_once __DIR__.'/contexte.class.php';
 require_once 'loggerrec.class.php';
 
 /**
@@ -19,7 +20,6 @@ class EvaluationPc
     /** n'est plus utilisé */
     private string  $fmtCpu = "";
     /** si un PC contient 2 disques, indiquele max de catégorie disque à prendre */
-    //private array   $maxCatDisk; // config/param.ini
     /**  contient "err" si une erreur est survenue */
     private ?string $status = null;
     /** contient les erreurs rencontrées */
@@ -62,7 +62,9 @@ class EvaluationPc
         $c->setPc($pc);
         $c->categorieDiskArr = [];
         $c->setEvaluationErrorsCl(EvaluationErrors::getInstance());
-        $c->paramArray = ParamIni::getInstance(__DIR__.'/../config/param.ini')->getParam();
+        $ctx = Contexte::getInstance();
+        $c->paramArray = $ctx->getParamIniCls()->getParam();
+        //$c->paramArray = ParamIni::getInstance(__DIR__.'/../config/param.ini')->getParam();
         
         $c->logger = LoggerRec::getInstance();
         return $c;

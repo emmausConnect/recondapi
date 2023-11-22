@@ -30,7 +30,7 @@ use Google\Service\Eventarc\Trigger;
  * Typical usage is:
  *  <code>
  *   $eventarcService = new Google\Service\Eventarc(...);
- *   $triggers = $eventarcService->triggers;
+ *   $triggers = $eventarcService->projects_locations_triggers;
  *  </code>
  */
 class ProjectsLocationsTriggers extends \Google\Service\Resource
@@ -45,7 +45,7 @@ class ProjectsLocationsTriggers extends \Google\Service\Resource
    *
    * @opt_param string triggerId Required. The user-provided ID to be assigned to
    * the trigger.
-   * @opt_param bool validateOnly Required. If set, validate the request and
+   * @opt_param bool validateOnly Optional. If set, validate the request and
    * preview the review, but do not post it.
    * @return GoogleLongrunningOperation
    */
@@ -65,7 +65,7 @@ class ProjectsLocationsTriggers extends \Google\Service\Resource
    * the request will succeed but no action will be taken on the server.
    * @opt_param string etag If provided, the trigger will only be deleted if the
    * etag matches the current etag on the resource.
-   * @opt_param bool validateOnly Required. If set, validate the request and
+   * @opt_param bool validateOnly Optional. If set, validate the request and
    * preview the review, but do not post it.
    * @return GoogleLongrunningOperation
    */
@@ -93,8 +93,9 @@ class ProjectsLocationsTriggers extends \Google\Service\Resource
    * resource exists and does not have a policy set. (triggers.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
@@ -159,7 +160,7 @@ class ProjectsLocationsTriggers extends \Google\Service\Resource
    * @opt_param string updateMask The fields to be updated; only fields explicitly
    * provided are updated. If no field mask is provided, all provided fields in
    * the request are updated. To update all fields, provide a field mask of "*".
-   * @opt_param bool validateOnly Required. If set, validate the request and
+   * @opt_param bool validateOnly Optional. If set, validate the request and
    * preview the review, but do not post it.
    * @return GoogleLongrunningOperation
    */
@@ -175,8 +176,9 @@ class ProjectsLocationsTriggers extends \Google\Service\Resource
    * `PERMISSION_DENIED` errors. (triggers.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -195,8 +197,9 @@ class ProjectsLocationsTriggers extends \Google\Service\Resource
    * This operation may "fail open" without warning. (triggers.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

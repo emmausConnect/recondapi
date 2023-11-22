@@ -513,7 +513,11 @@ class CloudSearch extends \Google\Service
         'query',
         [
           'methods' => [
-            'search' => [
+            'removeActivity' => [
+              'path' => 'v1/query:removeActivity',
+              'httpMethod' => 'POST',
+              'parameters' => [],
+            ],'search' => [
               'path' => 'v1/query/search',
               'httpMethod' => 'POST',
               'parameters' => [],
@@ -638,6 +642,24 @@ class CloudSearch extends \Google\Service
                   'type' => 'string',
                 ],
               ],
+            ],'patch' => [
+              'path' => 'v1/settings/{+name}',
+              'httpMethod' => 'PATCH',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'debugOptions.enableDebugging' => [
+                  'location' => 'query',
+                  'type' => 'boolean',
+                ],
+                'updateMask' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
             ],'update' => [
               'path' => 'v1/settings/{+name}',
               'httpMethod' => 'PUT',
@@ -707,6 +729,20 @@ class CloudSearch extends \Google\Service
                   'type' => 'string',
                 ],
               ],
+            ],'patch' => [
+              'path' => 'v1/settings/{+name}',
+              'httpMethod' => 'PATCH',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'updateMask' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
             ],'reset' => [
               'path' => 'v1/settings/{+name}:reset',
               'httpMethod' => 'POST',
@@ -725,6 +761,10 @@ class CloudSearch extends \Google\Service
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
+                ],
+                'updateMask' => [
+                  'location' => 'query',
+                  'type' => 'string',
                 ],
               ],
             ],

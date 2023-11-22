@@ -5,11 +5,11 @@ require_once __DIR__.'/pageheaderhtml.php';
  * HTML page Accueil
 **************************************************************************** */
 function getHtmlAccueil() {
-	global $g_contexte_instance;
-	$paramPhpArray  = $g_contexte_instance->getParamPhpIniCls()->getParam();
+	$ctx = Contexte::getInstance();
+	$paramPhpArray  = $ctx->getParamPhpIniCls()->getParam();
 	$isConnected    = false;
-	$isConnected    = $g_contexte_instance->isConnected();
-	$emailConnected = $g_contexte_instance->getEmailConnected();
+	$isConnected    = $ctx->isConnected();
+	$emailConnected = $ctx->getEmailConnected();
 	$retour  = getHtmlHead();
 	$retour .= '<script src="util01.js"></script>';
 	$retour .= <<<'EOT'

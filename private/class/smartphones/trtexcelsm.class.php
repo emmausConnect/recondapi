@@ -18,7 +18,7 @@ class TrtExcelSm {
     private $log=""; // 1 => le log est joint à la réponse (pour debug)
     private $logger; // initialisé à l'instantiation
     private $timeStampStart;
-    private Contexte $contexte;
+    private Contexte $ctx;
     private $debug;
 
     private $destDir = __DIR__."/../../../public/upload/";
@@ -42,7 +42,7 @@ class TrtExcelSm {
         $c->logger = LoggerRec::getInstance();
         //$c->uploadType = $uploadType;
         $c->debug = $debug;
-        $c->contexte = Contexte::getInstance();
+        $c->ctx = Contexte::getInstance();
         return $c;
     }
 
@@ -53,9 +53,7 @@ class TrtExcelSm {
      *  recalculcategorie
      */
     public function trtExcelSm() {
-        GLOBAL $g_environnement;
-
-        //$this->getHeaderLine();
+        //GLOBAL $g_environnement;
 
         $uploadType = $_GET["upload"];
         $this->logger->addLogDebugLine('>>> execUpload  uploadType = "'.$uploadType.'" __LINE__');
@@ -96,7 +94,8 @@ class TrtExcelSm {
                 "modèle",
                 "Ram",
                 "note",
-                "stockage",
+                "stockage xls",
+                "stockage arrondi",
                 "note",
                 "indice",
                 "note",
@@ -130,7 +129,6 @@ class TrtExcelSm {
 
             $nbrows = count($xls_data); //number of rows
             $this->logger->addLogDebugLine("highestRow : $highestRow  highestColumn : $highestColumn     highestColumnIndex : $highestColumnIndex", 'Sheet size ');
-    
                
             if ($coldebug != "") {
                 $spreadsheet->setActiveSheetIndex(0)->fromArray(
@@ -145,6 +143,7 @@ class TrtExcelSm {
             // ********* Calcul de la catégorie pour chaque ligne de l'excel *********************
             // ***********************************************************************************
             $lineTrt   = 0;
+            $smArray = []; //les objets smartphones calculés
             for($i=$firstLine; $i<=$nbrows; $i++){
                 ++$lineTrt;
                 $this->logger->addLogDebugLine('début SM '.$i. "=============================================================");
@@ -155,23 +154,30 @@ class TrtExcelSm {
                     if ($xls_data[$i][$colconstructeur] != "" And $xls_data[$i][$colconstructeur] != null) {
                         // on vérifie que les champs importants ne sont pas des formules
                         $msg =''; // messages d'erreur
-                        //$a = 
-
 
                         if (($colmodel != "" and static::isFormula($xls_data[$i][$colmodel]))
                                 or (static::isFormula($xls_data[$i][$colmodel]))
                                 or (static::isFormula($xls_data[$i][$coltaillestockage]))
-                                or (static::isFormula($xls_data[$i][$coltaillestockage]))
+                                or (static::isFormula($xls_data[$i][$coltailleram]))
                                 ) {
                             $categoriePCToPrint = "erreur";
-                            $msg ="[Une des colonnes du tableau inital contient une formule ou RAM ou STOCKAGE ne pont pas numérique: $i]";
+                            $msg ="[Une des colonnes du tableau inital contient une formule ou RAM ou STOCKAGE ne sont pas numérique: $i]";
                             $this->logger->addLogDebugLine($msg, 'Erreur  ');
                         }else{
                             $ceSM->setMarque(  "".$xls_data[$i][$colconstructeur]);
                             $ceSM->setModele(  "".$xls_data[$i][$colmodel]);
                             $ceSM->setRam(     "".$xls_data[$i][$coltailleram]);
                             $ceSM->setStockage("".$xls_data[$i][$coltaillestockage]) ;
-
+                            $tdebug = $ceSM->getStockage();
+                            if ($ceSM->isArrondirStockageDone()) {
+                                if ($xls_data[$i][$coltaillestockage] != $ceSM->getStockage()) {
+                                    //$spreadsheet->getActiveSheet()->setCellValue($coltaillestockage.$i,  $ceSM->getStockage());
+                                    //$xls_data[$i][$coltaillestockage] = $ceSM->getStockage();
+                                    $spreadsheet->getActiveSheet()->getCell($coltaillestockage.$i )->getStyle()->getFill()
+                                        ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                                        ->getStartColor()->setARGB('FFFF0000');
+                                }
+                            }
                             $this->logger->addLogDebugLine($ceSM->toString(), 'ceSM '.$i. "=========================================");
                             $evaluationSmClInstance = EvaluationSm::getInstance($ceSM);
                             $evaluationSmCl         = $evaluationSmClInstance->evalSmartphone();
@@ -181,7 +187,7 @@ class TrtExcelSm {
                                 $categorieSm            = 'err';
                             }
                             $categorieSmToPrint     = $categorieSm;
-                            // if ($this->contexte->getEnvironnement() != 'PROD') {
+                            // if ($this->ctx->getEnvironnement() != 'PROD') {
                             //     $categorieSmToPrint .= " test";
                             // }
                             $msg = $evaluationSmCl->getErrMsg();
@@ -194,6 +200,7 @@ class TrtExcelSm {
                                         $evaluationSmCl->getSm()->getModele(),
                                         $evaluationSmCl->getSm()->getRam(),
                                         $evaluationSmCl->getNoteRam(),
+                                        $evaluationSmCl->getSm()->getStockageInput(),
                                         $evaluationSmCl->getSm()->getStockage(),
                                         $evaluationSmCl->getNoteStockage(),
                                         $evaluationSmCl->getIndice(),
@@ -231,6 +238,7 @@ class TrtExcelSm {
  
                     }
                 }
+                $smArray[$i] = $ceSM;
             } // fin du FOR traitement des lignes de l'excel
             
             // ***********************************************************************************
@@ -243,14 +251,15 @@ class TrtExcelSm {
             // ***********************************************************************************
             // ********* Crt d'un Excel au format BOLC *******************************************
             // ***********************************************************************************
-            $xlsModelFile    = $this->contexte->getParamPhpIniCls()->getParam()['fichiers']['sm_modele_BOLC_xlsx_gen'];
+            $xlsModelFile    = $this->ctx->getParamPhpIniCls()->getParam()['fichiers']['sm_modele_BOLC_xlsx_gen'];
             $spreadsheetNorm = \PhpOffice\PhpSpreadsheet\IOFactory::load($xlsModelFile);
-            //spreadsheetNorm = new Spreadsheet();
             $sheetNorm       = $spreadsheetNorm->getActiveSheet();
-            $fileNorm        = __DIR__."/../../data/exceltemplatescstsm.json";
+            $fileNorm        = $this->ctx->getParamPhpIniCls()->getParam()['fichiers']['exceltemplatescstsm.json'];
             $dataNorm        = file_get_contents($fileNorm);
             $dataNormJson    = json_decode($dataNorm, true);
+            /**  $xlsNormJsonCol : ex "colnumlot" : "A", */
             $xlsNormJsonCol     = $dataNormJson['*BOLC']['data'];
+            /**  $xlsNormJsonHeader : ex "colnumlot" : "Numéro Lot" */
             $xlsNormJsonHeader  = $dataNormJson['*BOLC']['header'];
             $lineHeaderNorm     = $xlsNormJsonCol["ligneentete"];
             // écriture de la ligne en-tête
@@ -262,24 +271,27 @@ class TrtExcelSm {
             }
             // écriture des données
             $lineTrtNorm = $lineHeaderNorm;
-            // parcour des lignes du tableau soumis résultat
+            // parcour des lignes du tableau soumis résultat et copie ds le Bolc
             for($i=$firstLine; $i<=$nbrows; $i++){
                 ++$lineTrtNorm;
                 foreach ($xlsNormJsonCol as $key => $colNorm) {
-                    // xls_data est le tableau contenant la feuiile calculé
+                    // $key "colnumlot" => "A"
+                    // xls_data est le tableau contenant la feuille calculée
                     if (str_starts_with($key, 'col')) {
                         if ($inMap[$key] != "") {
                             //on ne fait que si la colonne existe en entrée
                             $val1 = $spreadsheet->getActiveSheet()->getCell($inMap[$key].$i)->getValue();
-                            if (static::isFormula($val1)) {
-                                $val1 = "'".$val1;
-                                $sheetNorm->getStyle($colNorm.$lineTrtNorm)->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
-                            }
+                            // if (static::isFormula($val1)) {
+                            //     $val1 = "'".$val1;
+                            //     $sheetNorm->getStyle($colNorm.$lineTrtNorm)->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                            // }
                             $sheetNorm->setCellValue($colNorm.$lineTrtNorm,$val1);
                        }
                     }
-                }
-            }
+                } // foreach ($xlsNormJsonCol
+                // la taille de stockage a été modifiée
+                $sheetNorm->setCellValue($xlsNormJsonCol['coltaillestockage'].$lineTrtNorm,$smArray[$i]->getStockage());
+            } // for($i=$firstLine;
 
             // ajout des infos de débug s'il y a lieu
             // on écrit également l'en-tête débug si elle existe
@@ -362,9 +374,13 @@ class TrtExcelSm {
         }
     }
 
-
+    /**
+     * met dans $inMap le contenu de $_POST
+     *
+     * @return array
+     */
     private function trtInputValues() : array {
-                //=========== Traitement de $_POST =================================================
+        //=========== Traitement de $_POST =================================================
         // $inMap contient contient les données du formulaire
         $inMap = [];
         if (array_key_exists("ligneentete", $_POST)) {
@@ -499,7 +515,6 @@ class TrtExcelSm {
             $colcouleur="";
         }
         $inMap["colcouleur"] = $colcouleur;
-
  
         if (array_key_exists("colgradeesthetique", $_POST)) {
             $colgradeesthetique=strtoupper($_POST['colgradeesthetique']) ;
@@ -627,6 +642,7 @@ class TrtExcelSm {
         return (!is_null($cellValue) and  is_string($cellValue) and str_starts_with($cellValue,"="));
     }
 
+    // ============================================
 	function __call($name, $arguments)
     {
         throw new Exception("Appel de la méthode non statique inconnue : $name, param : ". implode(', ', $arguments). "\n");

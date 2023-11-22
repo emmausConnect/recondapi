@@ -26,7 +26,7 @@ use Google\Service\Monitoring\ServiceLevelObjective;
  * Typical usage is:
  *  <code>
  *   $monitoringService = new Google\Service\Monitoring(...);
- *   $serviceLevelObjectives = $monitoringService->serviceLevelObjectives;
+ *   $serviceLevelObjectives = $monitoringService->services_serviceLevelObjectives;
  *  </code>
  */
 class ServicesServiceLevelObjectives extends \Google\Service\Resource
@@ -42,7 +42,7 @@ class ServicesServiceLevelObjectives extends \Google\Service\Resource
    *
    * @opt_param string serviceLevelObjectiveId Optional. The ServiceLevelObjective
    * id to use for this ServiceLevelObjective. If omitted, an id will be generated
-   * instead. Must match the pattern [a-z0-9\-]+
+   * instead. Must match the pattern ^[a-zA-Z0-9-_:.]+$
    * @return ServiceLevelObjective
    */
   public function create($parent, ServiceLevelObjective $postBody, $optParams = [])
@@ -91,7 +91,7 @@ class ServicesServiceLevelObjectives extends \Google\Service\Resource
    * (serviceLevelObjectives.listServicesServiceLevelObjectives)
    *
    * @param string $parent Required. Resource name of the parent containing the
-   * listed SLOs, either a project or a Monitoring Workspace. The formats are:
+   * listed SLOs, either a project or a Monitoring Metrics Scope. The formats are:
    * projects/[PROJECT_ID_OR_NUMBER]/services/[SERVICE_ID]
    * workspaces/[HOST_PROJECT_ID_OR_NUMBER]/services/-
    * @param array $optParams Optional parameters.

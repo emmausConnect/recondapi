@@ -22,15 +22,13 @@ use Google\Service\DataprocMetastore\ListBackupsResponse;
 use Google\Service\DataprocMetastore\Operation;
 use Google\Service\DataprocMetastore\Policy;
 use Google\Service\DataprocMetastore\SetIamPolicyRequest;
-use Google\Service\DataprocMetastore\TestIamPermissionsRequest;
-use Google\Service\DataprocMetastore\TestIamPermissionsResponse;
 
 /**
  * The "backups" collection of methods.
  * Typical usage is:
  *  <code>
  *   $metastoreService = new Google\Service\DataprocMetastore(...);
- *   $backups = $metastoreService->backups;
+ *   $backups = $metastoreService->projects_locations_services_backups;
  *  </code>
  */
 class ProjectsLocationsServicesBackups extends \Google\Service\Resource
@@ -110,8 +108,9 @@ class ProjectsLocationsServicesBackups extends \Google\Service\Resource
    * resource exists and does not have a policy set. (backups.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See Resource names
+   * (https://cloud.google.com/apis/design/resource_names) for the appropriate
+   * value for this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
@@ -169,8 +168,9 @@ class ProjectsLocationsServicesBackups extends \Google\Service\Resource
    * errors. (backups.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See Resource names
+   * (https://cloud.google.com/apis/design/resource_names) for the appropriate
+   * value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -180,26 +180,6 @@ class ProjectsLocationsServicesBackups extends \Google\Service\Resource
     $params = ['resource' => $resource, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
     return $this->call('setIamPolicy', [$params], Policy::class);
-  }
-  /**
-   * Returns permissions that a caller has on the specified resource. If the
-   * resource does not exist, this will return an empty set of permissions, not a
-   * NOT_FOUND error.Note: This operation is designed to be used for building
-   * permission-aware UIs and command-line tools, not for authorization checking.
-   * This operation may "fail open" without warning. (backups.testIamPermissions)
-   *
-   * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
-   * @param TestIamPermissionsRequest $postBody
-   * @param array $optParams Optional parameters.
-   * @return TestIamPermissionsResponse
-   */
-  public function testIamPermissions($resource, TestIamPermissionsRequest $postBody, $optParams = [])
-  {
-    $params = ['resource' => $resource, 'postBody' => $postBody];
-    $params = array_merge($params, $optParams);
-    return $this->call('testIamPermissions', [$params], TestIamPermissionsResponse::class);
   }
 }
 

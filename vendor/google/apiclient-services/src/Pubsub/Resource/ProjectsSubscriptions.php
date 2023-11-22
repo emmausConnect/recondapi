@@ -39,7 +39,7 @@ use Google\Service\Pubsub\UpdateSubscriptionRequest;
  * Typical usage is:
  *  <code>
  *   $pubsubService = new Google\Service\Pubsub(...);
- *   $subscriptions = $pubsubService->subscriptions;
+ *   $subscriptions = $pubsubService->projects_subscriptions;
  *  </code>
  */
 class ProjectsSubscriptions extends \Google\Service\Resource
@@ -66,14 +66,15 @@ class ProjectsSubscriptions extends \Google\Service\Resource
   }
   /**
    * Creates a subscription to a given topic. See the [resource name rules]
-   * (https://cloud.google.com/pubsub/docs/admin#resource_names). If the
+   * (https://cloud.google.com/pubsub/docs/pubsub-basics#resource_names). If the
    * subscription already exists, returns `ALREADY_EXISTS`. If the corresponding
    * topic doesn't exist, returns `NOT_FOUND`. If the name is not provided in the
    * request, the server will assign a random name for this subscription on the
    * same project as the topic, conforming to the [resource name format]
-   * (https://cloud.google.com/pubsub/docs/admin#resource_names). The generated
-   * name is populated in the returned Subscription object. Note that for REST API
-   * requests, you must specify a name in the request. (subscriptions.create)
+   * (https://cloud.google.com/pubsub/docs/pubsub-basics#resource_names). The
+   * generated name is populated in the returned Subscription object. Note that
+   * for REST API requests, you must specify a name in the request.
+   * (subscriptions.create)
    *
    * @param string $name Required. The name of the subscription. It must have the
    * format `"projects/{project}/subscriptions/{subscription}"`. `{subscription}`
@@ -145,8 +146,9 @@ class ProjectsSubscriptions extends \Google\Service\Resource
    * resource exists and does not have a policy set. (subscriptions.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
@@ -176,8 +178,8 @@ class ProjectsSubscriptions extends \Google\Service\Resource
    * subscriptions. Format is `projects/{project-id}`.
    * @param array $optParams Optional parameters.
    *
-   * @opt_param int pageSize Maximum number of subscriptions to return.
-   * @opt_param string pageToken The value returned by the last
+   * @opt_param int pageSize Optional. Maximum number of subscriptions to return.
+   * @opt_param string pageToken Optional. The value returned by the last
    * `ListSubscriptionsResponse`; indicates that this is a continuation of a prior
    * `ListSubscriptions` call, and that the system should return the next page of
    * data.
@@ -250,9 +252,7 @@ class ProjectsSubscriptions extends \Google\Service\Resource
     return $this->call('patch', [$params], Subscription::class);
   }
   /**
-   * Pulls messages from the server. The server may return `UNAVAILABLE` if there
-   * are too many concurrent pull requests pending for the given subscription.
-   * (subscriptions.pull)
+   * Pulls messages from the server. (subscriptions.pull)
    *
    * @param string $subscription Required. The subscription from which messages
    * should be pulled. Format is `projects/{project}/subscriptions/{sub}`.
@@ -292,8 +292,9 @@ class ProjectsSubscriptions extends \Google\Service\Resource
    * `PERMISSION_DENIED` errors. (subscriptions.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -313,8 +314,9 @@ class ProjectsSubscriptions extends \Google\Service\Resource
    * (subscriptions.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

@@ -19,11 +19,15 @@ namespace Google\Service\Baremetalsolution;
 
 class Instance extends \Google\Collection
 {
-  protected $collection_key = 'networks';
+  protected $collection_key = 'volumes';
   /**
    * @var string
    */
   public $createTime;
+  /**
+   * @var string
+   */
+  public $firmwareVersion;
   /**
    * @var bool
    */
@@ -40,6 +44,12 @@ class Instance extends \Google\Collection
    * @var string[]
    */
   public $labels;
+  protected $logicalInterfacesType = GoogleCloudBaremetalsolutionV2LogicalInterface::class;
+  protected $logicalInterfacesDataType = 'array';
+  /**
+   * @var string
+   */
+  public $loginInfo;
   protected $lunsType = Lun::class;
   protected $lunsDataType = 'array';
   /**
@@ -50,6 +60,10 @@ class Instance extends \Google\Collection
    * @var string
    */
   public $name;
+  /**
+   * @var string
+   */
+  public $networkTemplate;
   protected $networksType = Network::class;
   protected $networksDataType = 'array';
   /**
@@ -59,11 +73,21 @@ class Instance extends \Google\Collection
   /**
    * @var string
    */
+  public $pod;
+  /**
+   * @var string
+   */
   public $state;
   /**
    * @var string
    */
   public $updateTime;
+  protected $volumesType = Volume::class;
+  protected $volumesDataType = 'array';
+  /**
+   * @var string
+   */
+  public $workloadProfile;
 
   /**
    * @param string
@@ -78,6 +102,20 @@ class Instance extends \Google\Collection
   public function getCreateTime()
   {
     return $this->createTime;
+  }
+  /**
+   * @param string
+   */
+  public function setFirmwareVersion($firmwareVersion)
+  {
+    $this->firmwareVersion = $firmwareVersion;
+  }
+  /**
+   * @return string
+   */
+  public function getFirmwareVersion()
+  {
+    return $this->firmwareVersion;
   }
   /**
    * @param bool
@@ -136,6 +174,34 @@ class Instance extends \Google\Collection
     return $this->labels;
   }
   /**
+   * @param GoogleCloudBaremetalsolutionV2LogicalInterface[]
+   */
+  public function setLogicalInterfaces($logicalInterfaces)
+  {
+    $this->logicalInterfaces = $logicalInterfaces;
+  }
+  /**
+   * @return GoogleCloudBaremetalsolutionV2LogicalInterface[]
+   */
+  public function getLogicalInterfaces()
+  {
+    return $this->logicalInterfaces;
+  }
+  /**
+   * @param string
+   */
+  public function setLoginInfo($loginInfo)
+  {
+    $this->loginInfo = $loginInfo;
+  }
+  /**
+   * @return string
+   */
+  public function getLoginInfo()
+  {
+    return $this->loginInfo;
+  }
+  /**
    * @param Lun[]
    */
   public function setLuns($luns)
@@ -178,6 +244,20 @@ class Instance extends \Google\Collection
     return $this->name;
   }
   /**
+   * @param string
+   */
+  public function setNetworkTemplate($networkTemplate)
+  {
+    $this->networkTemplate = $networkTemplate;
+  }
+  /**
+   * @return string
+   */
+  public function getNetworkTemplate()
+  {
+    return $this->networkTemplate;
+  }
+  /**
    * @param Network[]
    */
   public function setNetworks($networks)
@@ -208,6 +288,20 @@ class Instance extends \Google\Collection
   /**
    * @param string
    */
+  public function setPod($pod)
+  {
+    $this->pod = $pod;
+  }
+  /**
+   * @return string
+   */
+  public function getPod()
+  {
+    return $this->pod;
+  }
+  /**
+   * @param string
+   */
   public function setState($state)
   {
     $this->state = $state;
@@ -232,6 +326,34 @@ class Instance extends \Google\Collection
   public function getUpdateTime()
   {
     return $this->updateTime;
+  }
+  /**
+   * @param Volume[]
+   */
+  public function setVolumes($volumes)
+  {
+    $this->volumes = $volumes;
+  }
+  /**
+   * @return Volume[]
+   */
+  public function getVolumes()
+  {
+    return $this->volumes;
+  }
+  /**
+   * @param string
+   */
+  public function setWorkloadProfile($workloadProfile)
+  {
+    $this->workloadProfile = $workloadProfile;
+  }
+  /**
+   * @return string
+   */
+  public function getWorkloadProfile()
+  {
+    return $this->workloadProfile;
   }
 }
 

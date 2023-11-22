@@ -30,7 +30,7 @@ use Google\Service\BackupforGKE\TestIamPermissionsResponse;
  * Typical usage is:
  *  <code>
  *   $gkebackupService = new Google\Service\BackupforGKE(...);
- *   $backups = $gkebackupService->backups;
+ *   $backups = $gkebackupService->projects_locations_backupPlans_backups;
  *  </code>
  */
 class ProjectsLocationsBackupPlansBackups extends \Google\Service\Resource
@@ -39,15 +39,14 @@ class ProjectsLocationsBackupPlansBackups extends \Google\Service\Resource
    * Creates a Backup for the given BackupPlan. (backups.create)
    *
    * @param string $parent Required. The BackupPlan within which to create the
-   * Backup. Format:
-   * projects/{project}/locations/{location}/backupPlans/{backup_plan}
+   * Backup. Format: `projects/locations/backupPlans`
    * @param Backup $postBody
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string backupId The client-provided short name for the Backup
-   * resource. This name must: a. be between 1 and 63 characters long (inclusive)
-   * b. consist of only lower-case ASCII letters, numbers, and dashes c. start
-   * with a lower-case letter d. end with a lower-case letter or number e. be
+   * @opt_param string backupId Optional. The client-provided short name for the
+   * Backup resource. This name must: - be between 1 and 63 characters long
+   * (inclusive) - consist of only lower-case ASCII letters, numbers, and dashes -
+   * start with a lower-case letter - end with a lower-case letter or number - be
    * unique within the set of Backups in this BackupPlan
    * @return GoogleLongrunningOperation
    */
@@ -60,15 +59,15 @@ class ProjectsLocationsBackupPlansBackups extends \Google\Service\Resource
   /**
    * Deletes an existing Backup. (backups.delete)
    *
-   * @param string $name Required. Name of the Backup resource. Format: projects/{
-   * project}/locations/{location}/backupPlans/{backup_plan}/backups/{backup}
+   * @param string $name Required. Name of the Backup resource. Format:
+   * `projects/locations/backupPlans/backups`
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string etag etag, if provided, it must match the server's etag for
-   * the delete to happen.
-   * @opt_param bool force If set to true, any volumeBackups below this backup
-   * will also be deleted. Otherwise, the request will only succeed if the backup
-   * has no volumeBackups.
+   * @opt_param string etag Optional. If provided, this value must match the
+   * current value of the target Backup's etag field or the request is rejected.
+   * @opt_param bool force Optional. If set to true, any VolumeBackups below this
+   * Backup will also be deleted. Otherwise, the request will only succeed if the
+   * Backup has no VolumeBackups.
    * @return GoogleLongrunningOperation
    */
   public function delete($name, $optParams = [])
@@ -80,8 +79,8 @@ class ProjectsLocationsBackupPlansBackups extends \Google\Service\Resource
   /**
    * Retrieve the details of a single Backup. (backups.get)
    *
-   * @param string $name Required. Full name of the Backup resource. Format: proje
-   * cts/{project}/locations/{location}/backupPlans/{backup_plan}/backups/{backup}
+   * @param string $name Required. Full name of the Backup resource. Format:
+   * `projects/locations/backupPlans/backups`
    * @param array $optParams Optional parameters.
    * @return Backup
    */
@@ -96,8 +95,9 @@ class ProjectsLocationsBackupPlansBackups extends \Google\Service\Resource
    * resource exists and does not have a policy set. (backups.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
@@ -125,21 +125,21 @@ class ProjectsLocationsBackupPlansBackups extends \Google\Service\Resource
    * (backups.listProjectsLocationsBackupPlansBackups)
    *
    * @param string $parent Required. The BackupPlan that contains the Backups to
-   * list. Format:
-   * projects/{project}/locations/{location}/backupPlans/{backup_plan}
+   * list. Format: `projects/locations/backupPlans`
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string filter List filter.
-   * @opt_param string orderBy Sort results.
-   * @opt_param int pageSize The target number of results to return in a single
-   * response. If not specified, a default value will be chosen by the service.
-   * Note that the response may inclue a partial list and a caller should only
-   * rely on the response's next_page_token to determine if there are more
-   * instances left to be queried.
-   * @opt_param string pageToken The value of next_page_token received from a
-   * previous `ListBackups` call. Provide this to retrieve the subsequent page in
-   * a multi-page list of results. When paginating, all other parameters provided
-   * to `ListBackups` must match the call that provided the page token.
+   * @opt_param string filter Optional. Field match expression used to filter the
+   * results.
+   * @opt_param string orderBy Optional. Field by which to sort the results.
+   * @opt_param int pageSize Optional. The target number of results to return in a
+   * single response. If not specified, a default value will be chosen by the
+   * service. Note that the response may include a partial list and a caller
+   * should only rely on the response's next_page_token to determine if there are
+   * more instances left to be queried.
+   * @opt_param string pageToken Optional. The value of next_page_token received
+   * from a previous `ListBackups` call. Provide this to retrieve the subsequent
+   * page in a multi-page list of results. When paginating, all other parameters
+   * provided to `ListBackups` must match the call that provided the page token.
    * @return ListBackupsResponse
    */
   public function listProjectsLocationsBackupPlansBackups($parent, $optParams = [])
@@ -152,13 +152,13 @@ class ProjectsLocationsBackupPlansBackups extends \Google\Service\Resource
    * Update a Backup. (backups.patch)
    *
    * @param string $name Output only. The fully qualified name of the Backup.
-   * projects/locations/backupPlans/backups
+   * `projects/locations/backupPlans/backups`
    * @param Backup $postBody
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string updateMask This is used to specify the fields to be
-   * overwritten in the Backup targeted for update. The values for each of these
-   * updated fields will be taken from the `backup_plan` provided with this
+   * @opt_param string updateMask Optional. This is used to specify the fields to
+   * be overwritten in the Backup targeted for update. The values for each of
+   * these updated fields will be taken from the `backup_plan` provided with this
    * request. Field names are relative to the root of the resource. If no
    * `update_mask` is provided, all fields in `backup` will be written to the
    * target Backup resource. Note that OUTPUT_ONLY and IMMUTABLE fields in
@@ -177,8 +177,9 @@ class ProjectsLocationsBackupPlansBackups extends \Google\Service\Resource
    * `PERMISSION_DENIED` errors. (backups.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -197,8 +198,9 @@ class ProjectsLocationsBackupPlansBackups extends \Google\Service\Resource
    * This operation may "fail open" without warning. (backups.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

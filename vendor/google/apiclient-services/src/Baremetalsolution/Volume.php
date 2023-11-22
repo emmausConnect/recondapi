@@ -17,12 +17,21 @@
 
 namespace Google\Service\Baremetalsolution;
 
-class Volume extends \Google\Model
+class Volume extends \Google\Collection
 {
+  protected $collection_key = 'instances';
+  /**
+   * @var bool
+   */
+  public $attached;
   /**
    * @var string
    */
   public $autoGrownSizeGib;
+  /**
+   * @var bool
+   */
+  public $bootVolume;
   /**
    * @var string
    */
@@ -34,7 +43,15 @@ class Volume extends \Google\Model
   /**
    * @var string
    */
+  public $expireTime;
+  /**
+   * @var string
+   */
   public $id;
+  /**
+   * @var string[]
+   */
+  public $instances;
   /**
    * @var string[]
    */
@@ -42,7 +59,31 @@ class Volume extends \Google\Model
   /**
    * @var string
    */
+  public $maxSizeGib;
+  /**
+   * @var string
+   */
   public $name;
+  /**
+   * @var string
+   */
+  public $notes;
+  /**
+   * @var string
+   */
+  public $originallyRequestedSizeGib;
+  /**
+   * @var string
+   */
+  public $performanceTier;
+  /**
+   * @var string
+   */
+  public $pod;
+  /**
+   * @var string
+   */
+  public $protocol;
   /**
    * @var string
    */
@@ -64,16 +105,30 @@ class Volume extends \Google\Model
   /**
    * @var string
    */
-  public $snapshotSchedulePolicy;
-  /**
-   * @var string
-   */
   public $state;
   /**
    * @var string
    */
   public $storageType;
+  /**
+   * @var string
+   */
+  public $workloadProfile;
 
+  /**
+   * @param bool
+   */
+  public function setAttached($attached)
+  {
+    $this->attached = $attached;
+  }
+  /**
+   * @return bool
+   */
+  public function getAttached()
+  {
+    return $this->attached;
+  }
   /**
    * @param string
    */
@@ -87,6 +142,20 @@ class Volume extends \Google\Model
   public function getAutoGrownSizeGib()
   {
     return $this->autoGrownSizeGib;
+  }
+  /**
+   * @param bool
+   */
+  public function setBootVolume($bootVolume)
+  {
+    $this->bootVolume = $bootVolume;
+  }
+  /**
+   * @return bool
+   */
+  public function getBootVolume()
+  {
+    return $this->bootVolume;
   }
   /**
    * @param string
@@ -119,6 +188,20 @@ class Volume extends \Google\Model
   /**
    * @param string
    */
+  public function setExpireTime($expireTime)
+  {
+    $this->expireTime = $expireTime;
+  }
+  /**
+   * @return string
+   */
+  public function getExpireTime()
+  {
+    return $this->expireTime;
+  }
+  /**
+   * @param string
+   */
   public function setId($id)
   {
     $this->id = $id;
@@ -129,6 +212,20 @@ class Volume extends \Google\Model
   public function getId()
   {
     return $this->id;
+  }
+  /**
+   * @param string[]
+   */
+  public function setInstances($instances)
+  {
+    $this->instances = $instances;
+  }
+  /**
+   * @return string[]
+   */
+  public function getInstances()
+  {
+    return $this->instances;
   }
   /**
    * @param string[]
@@ -147,6 +244,20 @@ class Volume extends \Google\Model
   /**
    * @param string
    */
+  public function setMaxSizeGib($maxSizeGib)
+  {
+    $this->maxSizeGib = $maxSizeGib;
+  }
+  /**
+   * @return string
+   */
+  public function getMaxSizeGib()
+  {
+    return $this->maxSizeGib;
+  }
+  /**
+   * @param string
+   */
   public function setName($name)
   {
     $this->name = $name;
@@ -157,6 +268,76 @@ class Volume extends \Google\Model
   public function getName()
   {
     return $this->name;
+  }
+  /**
+   * @param string
+   */
+  public function setNotes($notes)
+  {
+    $this->notes = $notes;
+  }
+  /**
+   * @return string
+   */
+  public function getNotes()
+  {
+    return $this->notes;
+  }
+  /**
+   * @param string
+   */
+  public function setOriginallyRequestedSizeGib($originallyRequestedSizeGib)
+  {
+    $this->originallyRequestedSizeGib = $originallyRequestedSizeGib;
+  }
+  /**
+   * @return string
+   */
+  public function getOriginallyRequestedSizeGib()
+  {
+    return $this->originallyRequestedSizeGib;
+  }
+  /**
+   * @param string
+   */
+  public function setPerformanceTier($performanceTier)
+  {
+    $this->performanceTier = $performanceTier;
+  }
+  /**
+   * @return string
+   */
+  public function getPerformanceTier()
+  {
+    return $this->performanceTier;
+  }
+  /**
+   * @param string
+   */
+  public function setPod($pod)
+  {
+    $this->pod = $pod;
+  }
+  /**
+   * @return string
+   */
+  public function getPod()
+  {
+    return $this->pod;
+  }
+  /**
+   * @param string
+   */
+  public function setProtocol($protocol)
+  {
+    $this->protocol = $protocol;
+  }
+  /**
+   * @return string
+   */
+  public function getProtocol()
+  {
+    return $this->protocol;
   }
   /**
    * @param string
@@ -231,20 +412,6 @@ class Volume extends \Google\Model
   /**
    * @param string
    */
-  public function setSnapshotSchedulePolicy($snapshotSchedulePolicy)
-  {
-    $this->snapshotSchedulePolicy = $snapshotSchedulePolicy;
-  }
-  /**
-   * @return string
-   */
-  public function getSnapshotSchedulePolicy()
-  {
-    return $this->snapshotSchedulePolicy;
-  }
-  /**
-   * @param string
-   */
   public function setState($state)
   {
     $this->state = $state;
@@ -269,6 +436,20 @@ class Volume extends \Google\Model
   public function getStorageType()
   {
     return $this->storageType;
+  }
+  /**
+   * @param string
+   */
+  public function setWorkloadProfile($workloadProfile)
+  {
+    $this->workloadProfile = $workloadProfile;
+  }
+  /**
+   * @return string
+   */
+  public function getWorkloadProfile()
+  {
+    return $this->workloadProfile;
   }
 }
 

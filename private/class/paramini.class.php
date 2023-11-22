@@ -87,7 +87,8 @@ class ParamIni
      * retourne le paramname ou null si non trouvé
      *
      * ex : 
-     *     $c = $g_contexte_instance->getParamIniCls();
+     *     $ctx = Contexte::getInstance();
+     *     $c = $ctx->getParamIniCls();
      *     $b = $c->getParamName('seuilsCPU','1');
      * 
      * @param string $titre

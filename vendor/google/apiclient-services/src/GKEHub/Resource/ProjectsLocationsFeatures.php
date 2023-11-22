@@ -30,7 +30,7 @@ use Google\Service\GKEHub\TestIamPermissionsResponse;
  * Typical usage is:
  *  <code>
  *   $gkehubService = new Google\Service\GKEHub(...);
- *   $features = $gkehubService->features;
+ *   $features = $gkehubService->projects_locations_features;
  *  </code>
  */
 class ProjectsLocationsFeatures extends \Google\Service\Resource
@@ -111,8 +111,9 @@ class ProjectsLocationsFeatures extends \Google\Service\Resource
    * resource exists and does not have a policy set. (features.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
@@ -145,10 +146,10 @@ class ProjectsLocationsFeatures extends \Google\Service\Resource
    *
    * @opt_param string filter Lists Features that match the filter expression,
    * following the syntax outlined in https://google.aip.dev/160. Examples: -
-   * Feature with the name "servicemesh" in project "foo-proj": name = "projects
-   * /foo-proj/locations/global/features/servicemesh" - Features that have a label
-   * called `foo`: labels.foo:* - Features that have a label called `foo` whose
-   * value is `bar`: labels.foo = bar
+   * Feature with the name "servicemesh" in project "foo-proj": name =
+   * "projects/foo-proj/locations/global/features/servicemesh" - Features that
+   * have a label called `foo`: labels.foo:* - Features that have a label called
+   * `foo` whose value is `bar`: labels.foo = bar
    * @opt_param string orderBy One or more fields to compare and use to sort the
    * output. See https://google.aip.dev/132#ordering.
    * @opt_param int pageSize When requesting a 'page' of resources, `page_size`
@@ -199,8 +200,9 @@ class ProjectsLocationsFeatures extends \Google\Service\Resource
    * `PERMISSION_DENIED` errors. (features.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -219,8 +221,9 @@ class ProjectsLocationsFeatures extends \Google\Service\Resource
    * This operation may "fail open" without warning. (features.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

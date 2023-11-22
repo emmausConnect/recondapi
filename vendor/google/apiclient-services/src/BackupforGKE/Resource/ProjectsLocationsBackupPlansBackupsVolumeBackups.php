@@ -29,7 +29,7 @@ use Google\Service\BackupforGKE\VolumeBackup;
  * Typical usage is:
  *  <code>
  *   $gkebackupService = new Google\Service\BackupforGKE(...);
- *   $volumeBackups = $gkebackupService->volumeBackups;
+ *   $volumeBackups = $gkebackupService->projects_locations_backupPlans_backups_volumeBackups;
  *  </code>
  */
 class ProjectsLocationsBackupPlansBackupsVolumeBackups extends \Google\Service\Resource
@@ -38,8 +38,7 @@ class ProjectsLocationsBackupPlansBackupsVolumeBackups extends \Google\Service\R
    * Retrieve the details of a single VolumeBackup. (volumeBackups.get)
    *
    * @param string $name Required. Full name of the VolumeBackup resource. Format:
-   * projects/{project}/locations/{location}/backupPlans/{backup_plan}/backups/{ba
-   * ckup}/volumeBackups/{volume_backup}
+   * `projects/locations/backupPlans/backups/volumeBackups`
    * @param array $optParams Optional parameters.
    * @return VolumeBackup
    */
@@ -54,8 +53,9 @@ class ProjectsLocationsBackupPlansBackupsVolumeBackups extends \Google\Service\R
    * resource exists and does not have a policy set. (volumeBackups.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
@@ -83,22 +83,22 @@ class ProjectsLocationsBackupPlansBackupsVolumeBackups extends \Google\Service\R
    * (volumeBackups.listProjectsLocationsBackupPlansBackupsVolumeBackups)
    *
    * @param string $parent Required. The Backup that contains the VolumeBackups to
-   * list. Format: projects/{project}/locations/{location}/backupPlans/{backup_pla
-   * n}/backups/{backup}
+   * list. Format: `projects/locations/backupPlans/backups`
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string filter List filter.
-   * @opt_param string orderBy Sort results.
-   * @opt_param int pageSize The target number of results to return in a single
-   * response. If not specified, a default value will be chosen by the service.
-   * Note that the response may inclue a partial list and a caller should only
-   * rely on the response's next_page_token to determine if there are more
-   * instances left to be queried.
-   * @opt_param string pageToken The value of next_page_token received from a
-   * previous `ListVolumeBackups` call. Provide this to retrieve the subsequent
-   * page in a multi-page list of results. When paginating, all other parameters
-   * provided to `ListVolumeBackups` must match the call that provided the page
-   * token.
+   * @opt_param string filter Optional. Field match expression used to filter the
+   * results.
+   * @opt_param string orderBy Optional. Field by which to sort the results.
+   * @opt_param int pageSize Optional. The target number of results to return in a
+   * single response. If not specified, a default value will be chosen by the
+   * service. Note that the response may include a partial list and a caller
+   * should only rely on the response's next_page_token to determine if there are
+   * more instances left to be queried.
+   * @opt_param string pageToken Optional. The value of next_page_token received
+   * from a previous `ListVolumeBackups` call. Provide this to retrieve the
+   * subsequent page in a multi-page list of results. When paginating, all other
+   * parameters provided to `ListVolumeBackups` must match the call that provided
+   * the page token.
    * @return ListVolumeBackupsResponse
    */
   public function listProjectsLocationsBackupPlansBackupsVolumeBackups($parent, $optParams = [])
@@ -113,8 +113,9 @@ class ProjectsLocationsBackupPlansBackupsVolumeBackups extends \Google\Service\R
    * `PERMISSION_DENIED` errors. (volumeBackups.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -134,8 +135,9 @@ class ProjectsLocationsBackupPlansBackupsVolumeBackups extends \Google\Service\R
    * (volumeBackups.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

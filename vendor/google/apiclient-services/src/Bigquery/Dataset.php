@@ -41,6 +41,10 @@ class Dataset extends \Google\Collection
   /**
    * @var string
    */
+  public $defaultRoundingMode;
+  /**
+   * @var string
+   */
   public $defaultTableExpirationMs;
   /**
    * @var string
@@ -50,6 +54,8 @@ class Dataset extends \Google\Collection
    * @var string
    */
   public $etag;
+  protected $externalDatasetReferenceType = ExternalDatasetReference::class;
+  protected $externalDatasetReferenceDataType = '';
   /**
    * @var string
    */
@@ -85,11 +91,15 @@ class Dataset extends \Google\Collection
   /**
    * @var bool
    */
-  public $satisfiesPZS;
+  public $satisfiesPzs;
   /**
    * @var string
    */
   public $selfLink;
+  /**
+   * @var string
+   */
+  public $storageBillingModel;
   protected $tagsType = DatasetTags::class;
   protected $tagsDataType = 'array';
 
@@ -180,6 +190,20 @@ class Dataset extends \Google\Collection
   /**
    * @param string
    */
+  public function setDefaultRoundingMode($defaultRoundingMode)
+  {
+    $this->defaultRoundingMode = $defaultRoundingMode;
+  }
+  /**
+   * @return string
+   */
+  public function getDefaultRoundingMode()
+  {
+    return $this->defaultRoundingMode;
+  }
+  /**
+   * @param string
+   */
   public function setDefaultTableExpirationMs($defaultTableExpirationMs)
   {
     $this->defaultTableExpirationMs = $defaultTableExpirationMs;
@@ -218,6 +242,20 @@ class Dataset extends \Google\Collection
   public function getEtag()
   {
     return $this->etag;
+  }
+  /**
+   * @param ExternalDatasetReference
+   */
+  public function setExternalDatasetReference(ExternalDatasetReference $externalDatasetReference)
+  {
+    $this->externalDatasetReference = $externalDatasetReference;
+  }
+  /**
+   * @return ExternalDatasetReference
+   */
+  public function getExternalDatasetReference()
+  {
+    return $this->externalDatasetReference;
   }
   /**
    * @param string
@@ -334,16 +372,16 @@ class Dataset extends \Google\Collection
   /**
    * @param bool
    */
-  public function setSatisfiesPZS($satisfiesPZS)
+  public function setSatisfiesPzs($satisfiesPzs)
   {
-    $this->satisfiesPZS = $satisfiesPZS;
+    $this->satisfiesPzs = $satisfiesPzs;
   }
   /**
    * @return bool
    */
-  public function getSatisfiesPZS()
+  public function getSatisfiesPzs()
   {
-    return $this->satisfiesPZS;
+    return $this->satisfiesPzs;
   }
   /**
    * @param string
@@ -358,6 +396,20 @@ class Dataset extends \Google\Collection
   public function getSelfLink()
   {
     return $this->selfLink;
+  }
+  /**
+   * @param string
+   */
+  public function setStorageBillingModel($storageBillingModel)
+  {
+    $this->storageBillingModel = $storageBillingModel;
+  }
+  /**
+   * @return string
+   */
+  public function getStorageBillingModel()
+  {
+    return $this->storageBillingModel;
   }
   /**
    * @param DatasetTags[]

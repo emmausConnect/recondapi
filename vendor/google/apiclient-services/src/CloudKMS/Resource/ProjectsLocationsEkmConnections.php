@@ -23,13 +23,14 @@ use Google\Service\CloudKMS\Policy;
 use Google\Service\CloudKMS\SetIamPolicyRequest;
 use Google\Service\CloudKMS\TestIamPermissionsRequest;
 use Google\Service\CloudKMS\TestIamPermissionsResponse;
+use Google\Service\CloudKMS\VerifyConnectivityResponse;
 
 /**
  * The "ekmConnections" collection of methods.
  * Typical usage is:
  *  <code>
  *   $cloudkmsService = new Google\Service\CloudKMS(...);
- *   $ekmConnections = $cloudkmsService->ekmConnections;
+ *   $ekmConnections = $cloudkmsService->projects_locations_ekmConnections;
  *  </code>
  */
 class ProjectsLocationsEkmConnections extends \Google\Service\Resource
@@ -71,8 +72,9 @@ class ProjectsLocationsEkmConnections extends \Google\Service\Resource
    * resource exists and does not have a policy set. (ekmConnections.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
@@ -148,8 +150,9 @@ class ProjectsLocationsEkmConnections extends \Google\Service\Resource
    * `PERMISSION_DENIED` errors. (ekmConnections.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -169,8 +172,9 @@ class ProjectsLocationsEkmConnections extends \Google\Service\Resource
    * (ekmConnections.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse
@@ -180,6 +184,24 @@ class ProjectsLocationsEkmConnections extends \Google\Service\Resource
     $params = ['resource' => $resource, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
     return $this->call('testIamPermissions', [$params], TestIamPermissionsResponse::class);
+  }
+  /**
+   * Verifies that Cloud KMS can successfully connect to the external key manager
+   * specified by an EkmConnection. If there is an error connecting to the EKM,
+   * this method returns a FAILED_PRECONDITION status containing structured
+   * information as described at
+   * https://cloud.google.com/kms/docs/reference/ekm_errors.
+   * (ekmConnections.verifyConnectivity)
+   *
+   * @param string $name Required. The name of the EkmConnection to verify.
+   * @param array $optParams Optional parameters.
+   * @return VerifyConnectivityResponse
+   */
+  public function verifyConnectivity($name, $optParams = [])
+  {
+    $params = ['name' => $name];
+    $params = array_merge($params, $optParams);
+    return $this->call('verifyConnectivity', [$params], VerifyConnectivityResponse::class);
   }
 }
 

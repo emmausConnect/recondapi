@@ -25,7 +25,7 @@ use Google\Service\SmartDeviceManagement\GoogleHomeEnterpriseSdmV1Room;
  * Typical usage is:
  *  <code>
  *   $smartdevicemanagementService = new Google\Service\SmartDeviceManagement(...);
- *   $rooms = $smartdevicemanagementService->rooms;
+ *   $rooms = $smartdevicemanagementService->enterprises_structures_rooms;
  *  </code>
  */
 class EnterprisesStructuresRooms extends \Google\Service\Resource
@@ -50,10 +50,6 @@ class EnterprisesStructuresRooms extends \Google\Service\Resource
    * @param string $parent The parent resource name of the rooms requested. For
    * example: "enterprises/XYZ/structures/ABC".
    * @param array $optParams Optional parameters.
-   *
-   * @opt_param int pageSize Requested page size. Server may return fewer rooms
-   * than requested. If unspecified, server will pick an appropriate default.
-   * @opt_param string pageToken The token of the page to retrieve.
    * @return GoogleHomeEnterpriseSdmV1ListRoomsResponse
    */
   public function listEnterprisesStructuresRooms($parent, $optParams = [])

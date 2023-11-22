@@ -30,7 +30,7 @@ use Google\Service\CloudRun\GoogleLongrunningOperation;
  * Typical usage is:
  *  <code>
  *   $runService = new Google\Service\CloudRun(...);
- *   $services = $runService->services;
+ *   $services = $runService->projects_locations_services;
  *  </code>
  */
 class ProjectsLocationsServices extends \Google\Service\Resource
@@ -39,13 +39,16 @@ class ProjectsLocationsServices extends \Google\Service\Resource
    * Creates a new Service in a given project and location. (services.create)
    *
    * @param string $parent Required. The location and project in which this
-   * service should be created. Format:
-   * projects/{projectnumber}/locations/{location}
+   * service should be created. Format: projects/{project}/locations/{location},
+   * where {project} can be project id or number. Only lowercase characters,
+   * digits, and hyphens.
    * @param GoogleCloudRunV2Service $postBody
    * @param array $optParams Optional parameters.
    *
    * @opt_param string serviceId Required. The unique identifier for the Service.
-   * The name of the service becomes {parent}/services/{service_id}.
+   * It must begin with letter, and cannot end with hyphen; must contain fewer
+   * than 50 characters. The name of the service becomes
+   * {parent}/services/{service_id}.
    * @opt_param bool validateOnly Indicates that the request should be validated
    * and default values populated, without persisting the request or creating any
    * resources.
@@ -62,7 +65,8 @@ class ProjectsLocationsServices extends \Google\Service\Resource
    * will delete all revisions. (services.delete)
    *
    * @param string $name Required. The full name of the Service. Format:
-   * projects/{projectnumber}/locations/{location}/services/{service}
+   * projects/{project}/locations/{location}/services/{service}, where {project}
+   * can be project id or number.
    * @param array $optParams Optional parameters.
    *
    * @opt_param string etag A system-generated fingerprint for this version of the
@@ -81,7 +85,8 @@ class ProjectsLocationsServices extends \Google\Service\Resource
    * Gets information about a Service. (services.get)
    *
    * @param string $name Required. The full name of the Service. Format:
-   * projects/{projectnumber}/locations/{location}/services/{service}
+   * projects/{project}/locations/{location}/services/{service}, where {project}
+   * can be project id or number.
    * @param array $optParams Optional parameters.
    * @return GoogleCloudRunV2Service
    */
@@ -92,13 +97,14 @@ class ProjectsLocationsServices extends \Google\Service\Resource
     return $this->call('get', [$params], GoogleCloudRunV2Service::class);
   }
   /**
-   * Get the IAM Access Control policy currently in effect for the given Cloud Run
-   * Service. This result does not include any inherited policies.
+   * Gets the IAM Access Control policy currently in effect for the given Cloud
+   * Run Service. This result does not include any inherited policies.
    * (services.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
@@ -122,11 +128,12 @@ class ProjectsLocationsServices extends \Google\Service\Resource
     return $this->call('getIamPolicy', [$params], GoogleIamV1Policy::class);
   }
   /**
-   * List Services. (services.listProjectsLocationsServices)
+   * Lists Services. (services.listProjectsLocationsServices)
    *
    * @param string $parent Required. The location and project to list resources
-   * on. Location must be a valid GCP region, and may not be the "-" wildcard.
-   * Format: projects/{projectnumber}/locations/{location}
+   * on. Location must be a valid Google Cloud region, and cannot be the "-"
+   * wildcard. Format: projects/{project}/locations/{location}, where {project}
+   * can be project id or number.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int pageSize Maximum number of Services to return in this call.
@@ -153,9 +160,8 @@ class ProjectsLocationsServices extends \Google\Service\Resource
    * @param array $optParams Optional parameters.
    *
    * @opt_param bool allowMissing If set to true, and if the Service does not
-   * exist, it will create a new one. Caller must have both create and update
-   * permissions for this call if this is set to true.
-   * @opt_param string updateMask The list of fields to be updated.
+   * exist, it will create a new one. The caller must have 'run.services.create'
+   * permissions if this is set to true and the Service does not exist.
    * @opt_param bool validateOnly Indicates that the request should be validated
    * and default values populated, without persisting the request or updating any
    * resources.
@@ -172,8 +178,9 @@ class ProjectsLocationsServices extends \Google\Service\Resource
    * existing policy. (services.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param GoogleIamV1SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleIamV1Policy
@@ -189,8 +196,9 @@ class ProjectsLocationsServices extends \Google\Service\Resource
    * permissions required for making this API call. (services.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param GoogleIamV1TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleIamV1TestIamPermissionsResponse

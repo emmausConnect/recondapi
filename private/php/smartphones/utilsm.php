@@ -2,7 +2,8 @@
 declare(strict_types=1);
 
 $path_private_class = $g_contexte_instance->getPath('private/class');
-require_once $path_private_class.'/paramini.class.php';
+require_once __DIR__.'/../../class/contexte.class.php';
+//require_once $path_private_class.'/paramini.class.php';
 
 /**
  * Retourne la valeur dans le Post ou l avaleur par défaut
@@ -91,7 +92,9 @@ function formatKey($text, bool $supSpaces): string {
 }
 
 function getPlagesAsTable() {
-    $paramArray = ParamIni::getInstance(__DIR__.'/../../config/param.ini')->getParam();
+    $ctx = Contexte::getInstance();
+    $paramArray = $ctx->getParamIniCls()->getParam();
+    //$paramArray = ParamIni::getInstance(__DIR__.'/../../config/param.ini')->getParam();
     $ramPlagesA            = $paramArray['smram'];
     $stockagePlagesA       = $paramArray['smstockage'];
     $indicePlagesA         = $paramArray['smindice'];

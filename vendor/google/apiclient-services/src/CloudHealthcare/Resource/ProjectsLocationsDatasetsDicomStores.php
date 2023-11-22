@@ -19,6 +19,7 @@ namespace Google\Service\CloudHealthcare\Resource;
 
 use Google\Service\CloudHealthcare\DeidentifyDicomStoreRequest;
 use Google\Service\CloudHealthcare\DicomStore;
+use Google\Service\CloudHealthcare\DicomStoreMetrics;
 use Google\Service\CloudHealthcare\ExportDicomDataRequest;
 use Google\Service\CloudHealthcare\HealthcareEmpty;
 use Google\Service\CloudHealthcare\HttpBody;
@@ -35,7 +36,7 @@ use Google\Service\CloudHealthcare\TestIamPermissionsResponse;
  * Typical usage is:
  *  <code>
  *   $healthcareService = new Google\Service\CloudHealthcare(...);
- *   $dicomStores = $healthcareService->dicomStores;
+ *   $dicomStores = $healthcareService->projects_locations_datasets_dicomStores;
  *  </code>
  */
 class ProjectsLocationsDatasetsDicomStores extends \Google\Service\Resource
@@ -65,7 +66,8 @@ class ProjectsLocationsDatasetsDicomStores extends \Google\Service\Resource
    * identification fails for some DICOM instances. The output DICOM store will
    * not contain these failed resources. Failed resource totals are tracked in
    * Operation.metadata. Error details are also logged to Cloud Logging (see
-   * [Viewing error logs in Cloud Logging](/healthcare/docs/how-tos/logging)).
+   * [Viewing error logs in Cloud
+   * Logging](https://cloud.google.com/healthcare/docs/how-tos/logging)).
    * (dicomStores.deidentify)
    *
    * @param string $sourceStore Source DICOM store resource name. For example, `pr
@@ -129,12 +131,27 @@ class ProjectsLocationsDatasetsDicomStores extends \Google\Service\Resource
     return $this->call('get', [$params], DicomStore::class);
   }
   /**
+   * Gets metrics associated with the DICOM store.
+   * (dicomStores.getDICOMStoreMetrics)
+   *
+   * @param string $name The resource name of the DICOM store to get metrics for.
+   * @param array $optParams Optional parameters.
+   * @return DicomStoreMetrics
+   */
+  public function getDICOMStoreMetrics($name, $optParams = [])
+  {
+    $params = ['name' => $name];
+    $params = array_merge($params, $optParams);
+    return $this->call('getDICOMStoreMetrics', [$params], DicomStoreMetrics::class);
+  }
+  /**
    * Gets the access control policy for a resource. Returns an empty policy if the
    * resource exists and does not have a policy set. (dicomStores.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
@@ -245,10 +262,9 @@ class ProjectsLocationsDatasetsDicomStores extends \Google\Service\Resource
    * html#sect_10.6). For details on the implementation of SearchForInstances, see
    * [Search transaction](https://cloud.google.com/healthcare/docs/dicom#search_tr
    * ansaction) in the Cloud Healthcare API conformance statement. For samples
-   * that show how to call SearchForInstances, see [Searching for studies, series,
-   * instances, and frames](https://cloud.google.com/healthcare/docs/how-
-   * tos/dicomweb#searching_for_studies_series_instances_and_frames).
-   * (dicomStores.searchForInstances)
+   * that show how to call SearchForInstances, see [Search for DICOM
+   * data](https://cloud.google.com/healthcare/docs/how-tos/dicomweb#search-
+   * dicom). (dicomStores.searchForInstances)
    *
    * @param string $parent The name of the DICOM store that is being accessed. For
    * example, `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}
@@ -271,10 +287,9 @@ class ProjectsLocationsDatasetsDicomStores extends \Google\Service\Resource
    * ). For details on the implementation of SearchForSeries, see [Search transact
    * ion](https://cloud.google.com/healthcare/docs/dicom#search_transaction) in
    * the Cloud Healthcare API conformance statement. For samples that show how to
-   * call SearchForSeries, see [Searching for studies, series, instances, and
-   * frames](https://cloud.google.com/healthcare/docs/how-
-   * tos/dicomweb#searching_for_studies_series_instances_and_frames).
-   * (dicomStores.searchForSeries)
+   * call SearchForSeries, see [Search for DICOM
+   * data](https://cloud.google.com/healthcare/docs/how-tos/dicomweb#search-
+   * dicom). (dicomStores.searchForSeries)
    *
    * @param string $parent The name of the DICOM store that is being accessed. For
    * example, `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}
@@ -296,10 +311,9 @@ class ProjectsLocationsDatasetsDicomStores extends \Google\Service\Resource
    * 6). For details on the implementation of SearchForStudies, see [Search transa
    * ction](https://cloud.google.com/healthcare/docs/dicom#search_transaction) in
    * the Cloud Healthcare API conformance statement. For samples that show how to
-   * call SearchForStudies, see [Searching for studies, series, instances, and
-   * frames](https://cloud.google.com/healthcare/docs/how-
-   * tos/dicomweb#searching_for_studies_series_instances_and_frames).
-   * (dicomStores.searchForStudies)
+   * call SearchForStudies, see [Search for DICOM
+   * data](https://cloud.google.com/healthcare/docs/how-tos/dicomweb#search-
+   * dicom). (dicomStores.searchForStudies)
    *
    * @param string $parent The name of the DICOM store that is being accessed. For
    * example, `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}
@@ -321,8 +335,9 @@ class ProjectsLocationsDatasetsDicomStores extends \Google\Service\Resource
    * `PERMISSION_DENIED` errors. (dicomStores.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -340,8 +355,8 @@ class ProjectsLocationsDatasetsDicomStores extends \Google\Service\Resource
    * implementation of StoreInstances, see [Store transaction](https://cloud.googl
    * e.com/healthcare/docs/dicom#store_transaction) in the Cloud Healthcare API
    * conformance statement. For samples that show how to call StoreInstances, see
-   * [Storing DICOM data](https://cloud.google.com/healthcare/docs/how-
-   * tos/dicomweb#storing_dicom_data). (dicomStores.storeInstances)
+   * [Store DICOM data](https://cloud.google.com/healthcare/docs/how-
+   * tos/dicomweb#store-dicom). (dicomStores.storeInstances)
    *
    * @param string $parent The name of the DICOM store that is being accessed. For
    * example, `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}
@@ -367,8 +382,9 @@ class ProjectsLocationsDatasetsDicomStores extends \Google\Service\Resource
    * (dicomStores.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

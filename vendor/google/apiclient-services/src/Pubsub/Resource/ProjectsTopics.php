@@ -33,14 +33,15 @@ use Google\Service\Pubsub\UpdateTopicRequest;
  * Typical usage is:
  *  <code>
  *   $pubsubService = new Google\Service\Pubsub(...);
- *   $topics = $pubsubService->topics;
+ *   $topics = $pubsubService->projects_topics;
  *  </code>
  */
 class ProjectsTopics extends \Google\Service\Resource
 {
   /**
    * Creates the given topic with the given name. See the [resource name rules]
-   * (https://cloud.google.com/pubsub/docs/admin#resource_names). (topics.create)
+   * (https://cloud.google.com/pubsub/docs/pubsub-basics#resource_names).
+   * (topics.create)
    *
    * @param string $name Required. The name of the topic. It must have the format
    * `"projects/{project}/topics/{topic}"`. `{topic}` must start with a letter,
@@ -95,8 +96,9 @@ class ProjectsTopics extends \Google\Service\Resource
    * resource exists and does not have a policy set. (topics.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
@@ -126,8 +128,8 @@ class ProjectsTopics extends \Google\Service\Resource
    * topics. Format is `projects/{project-id}`.
    * @param array $optParams Optional parameters.
    *
-   * @opt_param int pageSize Maximum number of topics to return.
-   * @opt_param string pageToken The value returned by the last
+   * @opt_param int pageSize Optional. Maximum number of topics to return.
+   * @opt_param string pageToken Optional. The value returned by the last
    * `ListTopicsResponse`; indicates that this is a continuation of a prior
    * `ListTopics` call, and that the system should return the next page of data.
    * @return ListTopicsResponse
@@ -180,8 +182,9 @@ class ProjectsTopics extends \Google\Service\Resource
    * `PERMISSION_DENIED` errors. (topics.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -200,8 +203,9 @@ class ProjectsTopics extends \Google\Service\Resource
    * This operation may "fail open" without warning. (topics.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

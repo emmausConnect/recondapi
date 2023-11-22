@@ -80,6 +80,10 @@ class JobStatistics2 extends \Google\Collection
   protected $reservationUsageDataType = 'array';
   protected $schemaType = TableSchema::class;
   protected $schemaDataType = '';
+  protected $searchStatisticsType = SearchStatistics::class;
+  protected $searchStatisticsDataType = '';
+  protected $sparkStatisticsType = SparkStatistics::class;
+  protected $sparkStatisticsDataType = '';
   /**
    * @var string
    */
@@ -106,6 +110,10 @@ class JobStatistics2 extends \Google\Collection
    * @var string
    */
   public $totalSlotMs;
+  /**
+   * @var string
+   */
+  public $transferredBytes;
   protected $undeclaredQueryParametersType = QueryParameter::class;
   protected $undeclaredQueryParametersDataType = 'array';
 
@@ -418,6 +426,34 @@ class JobStatistics2 extends \Google\Collection
     return $this->schema;
   }
   /**
+   * @param SearchStatistics
+   */
+  public function setSearchStatistics(SearchStatistics $searchStatistics)
+  {
+    $this->searchStatistics = $searchStatistics;
+  }
+  /**
+   * @return SearchStatistics
+   */
+  public function getSearchStatistics()
+  {
+    return $this->searchStatistics;
+  }
+  /**
+   * @param SparkStatistics
+   */
+  public function setSparkStatistics(SparkStatistics $sparkStatistics)
+  {
+    $this->sparkStatistics = $sparkStatistics;
+  }
+  /**
+   * @return SparkStatistics
+   */
+  public function getSparkStatistics()
+  {
+    return $this->sparkStatistics;
+  }
+  /**
    * @param string
    */
   public function setStatementType($statementType)
@@ -514,6 +550,20 @@ class JobStatistics2 extends \Google\Collection
   public function getTotalSlotMs()
   {
     return $this->totalSlotMs;
+  }
+  /**
+   * @param string
+   */
+  public function setTransferredBytes($transferredBytes)
+  {
+    $this->transferredBytes = $transferredBytes;
+  }
+  /**
+   * @return string
+   */
+  public function getTransferredBytes()
+  {
+    return $this->transferredBytes;
   }
   /**
    * @param QueryParameter[]

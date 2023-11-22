@@ -19,11 +19,33 @@ namespace Google\Service\OnDemandScanning;
 
 class PackageData extends \Google\Collection
 {
-  protected $collection_key = 'pathToFile';
+  protected $collection_key = 'patchedCve';
+  /**
+   * @var string
+   */
+  public $architecture;
+  protected $binarySourceInfoType = BinarySourceInfo::class;
+  protected $binarySourceInfoDataType = 'array';
+  protected $binaryVersionType = PackageVersion::class;
+  protected $binaryVersionDataType = '';
   /**
    * @var string
    */
   public $cpeUri;
+  protected $dependencyChainType = LanguagePackageDependency::class;
+  protected $dependencyChainDataType = 'array';
+  protected $fileLocationType = FileLocation::class;
+  protected $fileLocationDataType = 'array';
+  /**
+   * @var string
+   */
+  public $hashDigest;
+  /**
+   * @var string[]
+   */
+  public $licenses;
+  protected $maintainerType = Maintainer::class;
+  protected $maintainerDataType = '';
   /**
    * @var string
    */
@@ -43,7 +65,9 @@ class PackageData extends \Google\Collection
   /**
    * @var string[]
    */
-  public $pathToFile;
+  public $patchedCve;
+  protected $sourceVersionType = PackageVersion::class;
+  protected $sourceVersionDataType = '';
   /**
    * @var string
    */
@@ -53,6 +77,48 @@ class PackageData extends \Google\Collection
    */
   public $version;
 
+  /**
+   * @param string
+   */
+  public function setArchitecture($architecture)
+  {
+    $this->architecture = $architecture;
+  }
+  /**
+   * @return string
+   */
+  public function getArchitecture()
+  {
+    return $this->architecture;
+  }
+  /**
+   * @param BinarySourceInfo[]
+   */
+  public function setBinarySourceInfo($binarySourceInfo)
+  {
+    $this->binarySourceInfo = $binarySourceInfo;
+  }
+  /**
+   * @return BinarySourceInfo[]
+   */
+  public function getBinarySourceInfo()
+  {
+    return $this->binarySourceInfo;
+  }
+  /**
+   * @param PackageVersion
+   */
+  public function setBinaryVersion(PackageVersion $binaryVersion)
+  {
+    $this->binaryVersion = $binaryVersion;
+  }
+  /**
+   * @return PackageVersion
+   */
+  public function getBinaryVersion()
+  {
+    return $this->binaryVersion;
+  }
   /**
    * @param string
    */
@@ -66,6 +132,76 @@ class PackageData extends \Google\Collection
   public function getCpeUri()
   {
     return $this->cpeUri;
+  }
+  /**
+   * @param LanguagePackageDependency[]
+   */
+  public function setDependencyChain($dependencyChain)
+  {
+    $this->dependencyChain = $dependencyChain;
+  }
+  /**
+   * @return LanguagePackageDependency[]
+   */
+  public function getDependencyChain()
+  {
+    return $this->dependencyChain;
+  }
+  /**
+   * @param FileLocation[]
+   */
+  public function setFileLocation($fileLocation)
+  {
+    $this->fileLocation = $fileLocation;
+  }
+  /**
+   * @return FileLocation[]
+   */
+  public function getFileLocation()
+  {
+    return $this->fileLocation;
+  }
+  /**
+   * @param string
+   */
+  public function setHashDigest($hashDigest)
+  {
+    $this->hashDigest = $hashDigest;
+  }
+  /**
+   * @return string
+   */
+  public function getHashDigest()
+  {
+    return $this->hashDigest;
+  }
+  /**
+   * @param string[]
+   */
+  public function setLicenses($licenses)
+  {
+    $this->licenses = $licenses;
+  }
+  /**
+   * @return string[]
+   */
+  public function getLicenses()
+  {
+    return $this->licenses;
+  }
+  /**
+   * @param Maintainer
+   */
+  public function setMaintainer(Maintainer $maintainer)
+  {
+    $this->maintainer = $maintainer;
+  }
+  /**
+   * @return Maintainer
+   */
+  public function getMaintainer()
+  {
+    return $this->maintainer;
   }
   /**
    * @param string
@@ -126,16 +262,30 @@ class PackageData extends \Google\Collection
   /**
    * @param string[]
    */
-  public function setPathToFile($pathToFile)
+  public function setPatchedCve($patchedCve)
   {
-    $this->pathToFile = $pathToFile;
+    $this->patchedCve = $patchedCve;
   }
   /**
    * @return string[]
    */
-  public function getPathToFile()
+  public function getPatchedCve()
   {
-    return $this->pathToFile;
+    return $this->patchedCve;
+  }
+  /**
+   * @param PackageVersion
+   */
+  public function setSourceVersion(PackageVersion $sourceVersion)
+  {
+    $this->sourceVersion = $sourceVersion;
+  }
+  /**
+   * @return PackageVersion
+   */
+  public function getSourceVersion()
+  {
+    return $this->sourceVersion;
   }
   /**
    * @param string

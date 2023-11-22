@@ -50,6 +50,8 @@ class InstanceGroupManager extends \Google\Collection
    * @var string
    */
   public $instanceGroup;
+  protected $instanceLifecyclePolicyType = InstanceGroupManagerInstanceLifecyclePolicy::class;
+  protected $instanceLifecyclePolicyDataType = '';
   /**
    * @var string
    */
@@ -58,6 +60,10 @@ class InstanceGroupManager extends \Google\Collection
    * @var string
    */
   public $kind;
+  /**
+   * @var string
+   */
+  public $listManagedInstancesResults;
   /**
    * @var string
    */
@@ -220,6 +226,20 @@ class InstanceGroupManager extends \Google\Collection
     return $this->instanceGroup;
   }
   /**
+   * @param InstanceGroupManagerInstanceLifecyclePolicy
+   */
+  public function setInstanceLifecyclePolicy(InstanceGroupManagerInstanceLifecyclePolicy $instanceLifecyclePolicy)
+  {
+    $this->instanceLifecyclePolicy = $instanceLifecyclePolicy;
+  }
+  /**
+   * @return InstanceGroupManagerInstanceLifecyclePolicy
+   */
+  public function getInstanceLifecyclePolicy()
+  {
+    return $this->instanceLifecyclePolicy;
+  }
+  /**
    * @param string
    */
   public function setInstanceTemplate($instanceTemplate)
@@ -246,6 +266,20 @@ class InstanceGroupManager extends \Google\Collection
   public function getKind()
   {
     return $this->kind;
+  }
+  /**
+   * @param string
+   */
+  public function setListManagedInstancesResults($listManagedInstancesResults)
+  {
+    $this->listManagedInstancesResults = $listManagedInstancesResults;
+  }
+  /**
+   * @return string
+   */
+  public function getListManagedInstancesResults()
+  {
+    return $this->listManagedInstancesResults;
   }
   /**
    * @param string

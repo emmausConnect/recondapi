@@ -25,7 +25,7 @@ use Google\Service\Books\Volumes as VolumesModel;
  * Typical usage is:
  *  <code>
  *   $booksService = new Google\Service\Books(...);
- *   $recommended = $booksService->recommended;
+ *   $recommended = $booksService->volumes_recommended;
  *  </code>
  */
 class VolumesRecommended extends \Google\Service\Resource
@@ -42,7 +42,7 @@ class VolumesRecommended extends \Google\Service\Resource
    * rating of returned recommendations. Books with a higher maturity rating are
    * filtered out.
    * @opt_param string source String to identify the originator of this request.
-   * @return Volumes
+   * @return VolumesModel
    */
   public function listVolumesRecommended($optParams = [])
   {

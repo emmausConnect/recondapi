@@ -18,9 +18,11 @@
 namespace Google\Service\CloudMemorystoreforMemcached\Resource;
 
 use Google\Service\CloudMemorystoreforMemcached\ApplyParametersRequest;
+use Google\Service\CloudMemorystoreforMemcached\GoogleCloudMemcacheV1UpgradeInstanceRequest;
 use Google\Service\CloudMemorystoreforMemcached\Instance;
 use Google\Service\CloudMemorystoreforMemcached\ListInstancesResponse;
 use Google\Service\CloudMemorystoreforMemcached\Operation;
+use Google\Service\CloudMemorystoreforMemcached\RescheduleMaintenanceRequest;
 use Google\Service\CloudMemorystoreforMemcached\UpdateParametersRequest;
 
 /**
@@ -28,7 +30,7 @@ use Google\Service\CloudMemorystoreforMemcached\UpdateParametersRequest;
  * Typical usage is:
  *  <code>
  *   $memcacheService = new Google\Service\CloudMemorystoreforMemcached(...);
- *   $instances = $memcacheService->instances;
+ *   $instances = $memcacheService->projects_locations_instances;
  *  </code>
  */
 class ProjectsLocationsInstances extends \Google\Service\Resource
@@ -156,6 +158,22 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
     return $this->call('patch', [$params], Operation::class);
   }
   /**
+   * Reschedules upcoming maintenance event. (instances.rescheduleMaintenance)
+   *
+   * @param string $instance Required. Memcache instance resource name using the
+   * form: `projects/{project_id}/locations/{location_id}/instances/{instance_id}`
+   * where `location_id` refers to a GCP region.
+   * @param RescheduleMaintenanceRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Operation
+   */
+  public function rescheduleMaintenance($instance, RescheduleMaintenanceRequest $postBody, $optParams = [])
+  {
+    $params = ['instance' => $instance, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('rescheduleMaintenance', [$params], Operation::class);
+  }
+  /**
    * Updates the defined Memcached parameters for an existing instance. This
    * method only stages the parameters, it must be followed by `ApplyParameters`
    * to apply the parameters to nodes of the Memcached instance.
@@ -172,6 +190,23 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
     $params = ['name' => $name, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
     return $this->call('updateParameters', [$params], Operation::class);
+  }
+  /**
+   * Upgrades the Memcache instance to a newer memcached engine version specified
+   * in the request. (instances.upgrade)
+   *
+   * @param string $name Required. Memcache instance resource name using the form:
+   * `projects/{project}/locations/{location}/instances/{instance}` where
+   * `location_id` refers to a GCP region.
+   * @param GoogleCloudMemcacheV1UpgradeInstanceRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Operation
+   */
+  public function upgrade($name, GoogleCloudMemcacheV1UpgradeInstanceRequest $postBody, $optParams = [])
+  {
+    $params = ['name' => $name, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('upgrade', [$params], Operation::class);
   }
 }
 

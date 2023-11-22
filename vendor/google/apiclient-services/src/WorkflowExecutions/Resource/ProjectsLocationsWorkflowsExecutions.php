@@ -19,6 +19,7 @@ namespace Google\Service\WorkflowExecutions\Resource;
 
 use Google\Service\WorkflowExecutions\CancelExecutionRequest;
 use Google\Service\WorkflowExecutions\Execution;
+use Google\Service\WorkflowExecutions\ExportDataResponse;
 use Google\Service\WorkflowExecutions\ListExecutionsResponse;
 
 /**
@@ -26,7 +27,7 @@ use Google\Service\WorkflowExecutions\ListExecutionsResponse;
  * Typical usage is:
  *  <code>
  *   $workflowexecutionsService = new Google\Service\WorkflowExecutions(...);
- *   $executions = $workflowexecutionsService->executions;
+ *   $executions = $workflowexecutionsService->projects_locations_workflows_executions;
  *  </code>
  */
 class ProjectsLocationsWorkflowsExecutions extends \Google\Service\Resource
@@ -66,6 +67,22 @@ class ProjectsLocationsWorkflowsExecutions extends \Google\Service\Resource
     return $this->call('create', [$params], Execution::class);
   }
   /**
+   * Returns all metadata stored about an execution, excluding most data that is
+   * already accessible using other API methods. (executions.exportData)
+   *
+   * @param string $name Required. Name of the execution for which data is to be
+   * exported. Format: projects/{project}/locations/{location}/workflows/{workflow
+   * }/executions/{execution}
+   * @param array $optParams Optional parameters.
+   * @return ExportDataResponse
+   */
+  public function exportData($name, $optParams = [])
+  {
+    $params = ['name' => $name];
+    $params = array_merge($params, $optParams);
+    return $this->call('exportData', [$params], ExportDataResponse::class);
+  }
+  /**
    * Returns an execution of the given name. (executions.get)
    *
    * @param string $name Required. Name of the execution to be retrieved. Format:
@@ -94,15 +111,27 @@ class ProjectsLocationsWorkflowsExecutions extends \Google\Service\Resource
    * projects/{project}/locations/{location}/workflows/{workflow}
    * @param array $optParams Optional parameters.
    *
+   * @opt_param string filter Optional. Filters applied to the
+   * `[Executions.ListExecutions]` results. The following fields are supported for
+   * filtering: `executionId`, `state`, `startTime`, `endTime`, `duration`,
+   * `workflowRevisionId`, `stepName`, and `label`. For details, see AIP-160. For
+   * example, if you are using the Google APIs Explorer: `state="SUCCEEDED"` or
+   * `startTime>"2023-08-01" AND state="FAILED"`
+   * @opt_param string orderBy Optional. Comma-separated list of fields that
+   * specify the ordering applied to the `[Executions.ListExecutions]` results. By
+   * default the ordering is based on descending `startTime`. The following fields
+   * are supported for ordering: `executionId`, `state`, `startTime`, `endTime`,
+   * `duration`, and `workflowRevisionId`. For details, see AIP-132.
    * @opt_param int pageSize Maximum number of executions to return per call. Max
-   * supported value depends on the selected Execution view: it's 10000 for BASIC
+   * supported value depends on the selected Execution view: it's 1000 for BASIC
    * and 100 for FULL. The default value used if the field is not specified is
    * 100, regardless of the selected view. Values greater than the max value will
    * be coerced down to it.
    * @opt_param string pageToken A page token, received from a previous
    * `ListExecutions` call. Provide this to retrieve the subsequent page. When
    * paginating, all other parameters provided to `ListExecutions` must match the
-   * call that provided the page token.
+   * call that provided the page token. Note that pagination is applied to dynamic
+   * data. The list of executions returned can change between page requests.
    * @opt_param string view Optional. A view defining which fields should be
    * filled in the returned executions. The API will default to the BASIC view.
    * @return ListExecutionsResponse

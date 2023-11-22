@@ -27,7 +27,7 @@ use Google\Service\TagManager\RevertFolderResponse;
  * Typical usage is:
  *  <code>
  *   $tagmanagerService = new Google\Service\TagManager(...);
- *   $folders = $tagmanagerService->folders;
+ *   $folders = $tagmanagerService->accounts_containers_workspaces_folders;
  *  </code>
  */
 class AccountsContainersWorkspacesFolders extends \Google\Service\Resource
@@ -110,7 +110,9 @@ class AccountsContainersWorkspacesFolders extends \Google\Service\Resource
     return $this->call('list', [$params], ListFoldersResponse::class);
   }
   /**
-   * Moves entities to a GTM Folder. (folders.move_entities_to_folder)
+   * Moves entities to a GTM Folder. If {folder_id} in the request path equals 0,
+   * this will instead move entities out of the folder they currently belong to.
+   * (folders.move_entities_to_folder)
    *
    * @param string $path GTM Folder's API relative path. Example: accounts/{accoun
    * t_id}/containers/{container_id}/workspaces/{workspace_id}/folders/{folder_id}

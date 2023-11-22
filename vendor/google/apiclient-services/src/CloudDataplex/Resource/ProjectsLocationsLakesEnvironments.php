@@ -30,7 +30,7 @@ use Google\Service\CloudDataplex\GoogleLongrunningOperation;
  * Typical usage is:
  *  <code>
  *   $dataplexService = new Google\Service\CloudDataplex(...);
- *   $environments = $dataplexService->environments;
+ *   $environments = $dataplexService->projects_locations_lakes_environments;
  *  </code>
  */
 class ProjectsLocationsLakesEnvironments extends \Google\Service\Resource
@@ -39,7 +39,7 @@ class ProjectsLocationsLakesEnvironments extends \Google\Service\Resource
    * Create an environment resource. (environments.create)
    *
    * @param string $parent Required. The resource name of the parent lake:
-   * projects/{project_id}/locations/{location_id}/lakes/{lake_id}
+   * projects/{project_id}/locations/{location_id}/lakes/{lake_id}.
    * @param GoogleCloudDataplexV1Environment $postBody
    * @param array $optParams Optional parameters.
    *
@@ -63,7 +63,7 @@ class ProjectsLocationsLakesEnvironments extends \Google\Service\Resource
    *
    * @param string $name Required. The resource name of the environment: projects/
    * {project_id}/locations/{location_id}/lakes/{lake_id}/environments/{environmen
-   * t_id}`
+   * t_id}.
    * @param array $optParams Optional parameters.
    * @return GoogleLongrunningOperation
    */
@@ -78,7 +78,7 @@ class ProjectsLocationsLakesEnvironments extends \Google\Service\Resource
    *
    * @param string $name Required. The resource name of the environment: projects/
    * {project_id}/locations/{location_id}/lakes/{lake_id}/environments/{environmen
-   * t_id}
+   * t_id}.
    * @param array $optParams Optional parameters.
    * @return GoogleCloudDataplexV1Environment
    */
@@ -93,8 +93,9 @@ class ProjectsLocationsLakesEnvironments extends \Google\Service\Resource
    * resource exists and does not have a policy set. (environments.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See Resource names
+   * (https://cloud.google.com/apis/design/resource_names) for the appropriate
+   * value for this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
@@ -121,7 +122,7 @@ class ProjectsLocationsLakesEnvironments extends \Google\Service\Resource
    * (environments.listProjectsLocationsLakesEnvironments)
    *
    * @param string $parent Required. The resource name of the parent lake:
-   * projects/{project_id}/locations/{location_id}/lakes/{lake_id}
+   * projects/{project_id}/locations/{location_id}/lakes/{lake_id}.
    * @param array $optParams Optional parameters.
    *
    * @opt_param string filter Optional. Filter request.
@@ -168,8 +169,9 @@ class ProjectsLocationsLakesEnvironments extends \Google\Service\Resource
    * errors. (environments.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See Resource names
+   * (https://cloud.google.com/apis/design/resource_names) for the appropriate
+   * value for this field.
    * @param GoogleIamV1SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleIamV1Policy
@@ -189,8 +191,9 @@ class ProjectsLocationsLakesEnvironments extends \Google\Service\Resource
    * (environments.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See Resource names
+   * (https://cloud.google.com/apis/design/resource_names) for the appropriate
+   * value for this field.
    * @param GoogleIamV1TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleIamV1TestIamPermissionsResponse

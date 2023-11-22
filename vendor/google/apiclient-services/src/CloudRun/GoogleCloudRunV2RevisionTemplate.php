@@ -24,14 +24,6 @@ class GoogleCloudRunV2RevisionTemplate extends \Google\Collection
    * @var string[]
    */
   public $annotations;
-  /**
-   * @var bool
-   */
-  public $confidential;
-  /**
-   * @var int
-   */
-  public $containerConcurrency;
   protected $containersType = GoogleCloudRunV2Container::class;
   protected $containersDataType = 'array';
   /**
@@ -47,6 +39,10 @@ class GoogleCloudRunV2RevisionTemplate extends \Google\Collection
    */
   public $labels;
   /**
+   * @var int
+   */
+  public $maxInstanceRequestConcurrency;
+  /**
    * @var string
    */
   public $revision;
@@ -56,6 +52,10 @@ class GoogleCloudRunV2RevisionTemplate extends \Google\Collection
    * @var string
    */
   public $serviceAccount;
+  /**
+   * @var bool
+   */
+  public $sessionAffinity;
   /**
    * @var string
    */
@@ -78,34 +78,6 @@ class GoogleCloudRunV2RevisionTemplate extends \Google\Collection
   public function getAnnotations()
   {
     return $this->annotations;
-  }
-  /**
-   * @param bool
-   */
-  public function setConfidential($confidential)
-  {
-    $this->confidential = $confidential;
-  }
-  /**
-   * @return bool
-   */
-  public function getConfidential()
-  {
-    return $this->confidential;
-  }
-  /**
-   * @param int
-   */
-  public function setContainerConcurrency($containerConcurrency)
-  {
-    $this->containerConcurrency = $containerConcurrency;
-  }
-  /**
-   * @return int
-   */
-  public function getContainerConcurrency()
-  {
-    return $this->containerConcurrency;
   }
   /**
    * @param GoogleCloudRunV2Container[]
@@ -164,6 +136,20 @@ class GoogleCloudRunV2RevisionTemplate extends \Google\Collection
     return $this->labels;
   }
   /**
+   * @param int
+   */
+  public function setMaxInstanceRequestConcurrency($maxInstanceRequestConcurrency)
+  {
+    $this->maxInstanceRequestConcurrency = $maxInstanceRequestConcurrency;
+  }
+  /**
+   * @return int
+   */
+  public function getMaxInstanceRequestConcurrency()
+  {
+    return $this->maxInstanceRequestConcurrency;
+  }
+  /**
    * @param string
    */
   public function setRevision($revision)
@@ -204,6 +190,20 @@ class GoogleCloudRunV2RevisionTemplate extends \Google\Collection
   public function getServiceAccount()
   {
     return $this->serviceAccount;
+  }
+  /**
+   * @param bool
+   */
+  public function setSessionAffinity($sessionAffinity)
+  {
+    $this->sessionAffinity = $sessionAffinity;
+  }
+  /**
+   * @return bool
+   */
+  public function getSessionAffinity()
+  {
+    return $this->sessionAffinity;
   }
   /**
    * @param string

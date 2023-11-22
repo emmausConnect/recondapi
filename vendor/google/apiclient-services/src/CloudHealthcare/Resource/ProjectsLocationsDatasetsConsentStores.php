@@ -36,7 +36,7 @@ use Google\Service\CloudHealthcare\TestIamPermissionsResponse;
  * Typical usage is:
  *  <code>
  *   $healthcareService = new Google\Service\CloudHealthcare(...);
- *   $consentStores = $healthcareService->consentStores;
+ *   $consentStores = $healthcareService->projects_locations_datasets_consentStores;
  *  </code>
  */
 class ProjectsLocationsDatasetsConsentStores extends \Google\Service\Resource
@@ -131,8 +131,9 @@ class ProjectsLocationsDatasetsConsentStores extends \Google\Service\Resource
    * resource exists and does not have a policy set. (consentStores.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
@@ -188,10 +189,11 @@ class ProjectsLocationsDatasetsConsentStores extends \Google\Service\Resource
    * @param array $optParams Optional parameters.
    *
    * @opt_param string updateMask Required. The update mask that applies to the
-   * resource. For the `FieldMask` definition, see https://developers.google.com
-   * /protocol-buffers/docs/reference/google.protobuf#fieldmask. Only the
-   * `labels`, `default_consent_ttl`, and `enable_consent_create_on_update` fields
-   * are allowed to be updated.
+   * resource. For the `FieldMask` definition, see
+   * https://developers.google.com/protocol-
+   * buffers/docs/reference/google.protobuf#fieldmask. Only the `labels`,
+   * `default_consent_ttl`, and `enable_consent_create_on_update` fields are
+   * allowed to be updated.
    * @return ConsentStore
    */
   public function patch($name, ConsentStore $postBody, $optParams = [])
@@ -243,8 +245,9 @@ class ProjectsLocationsDatasetsConsentStores extends \Google\Service\Resource
    * `PERMISSION_DENIED` errors. (consentStores.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -264,8 +267,9 @@ class ProjectsLocationsDatasetsConsentStores extends \Google\Service\Resource
    * (consentStores.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

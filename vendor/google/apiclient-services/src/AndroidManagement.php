@@ -47,6 +47,7 @@ class AndroidManagement extends \Google\Service
   public $enterprises_policies;
   public $enterprises_webApps;
   public $enterprises_webTokens;
+  public $provisioningInfo;
   public $signupUrls;
 
   /**
@@ -344,6 +345,34 @@ class AndroidManagement extends \Google\Service
                   'required' => true,
                 ],
               ],
+            ],'get' => [
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'list' => [
+              'path' => 'v1/{+parent}/enrollmentTokens',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'parent' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'pageSize' => [
+                  'location' => 'query',
+                  'type' => 'integer',
+                ],
+                'pageToken' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
             ],
           ]
         ]
@@ -493,6 +522,26 @@ class AndroidManagement extends \Google\Service
               'httpMethod' => 'POST',
               'parameters' => [
                 'parent' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],
+          ]
+        ]
+    );
+    $this->provisioningInfo = new AndroidManagement\Resource\ProvisioningInfo(
+        $this,
+        $this->serviceName,
+        'provisioningInfo',
+        [
+          'methods' => [
+            'get' => [
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'name' => [
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,

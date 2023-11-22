@@ -21,10 +21,16 @@ class Step extends \Google\Model
 {
   protected $abortType = AbortInfo::class;
   protected $abortDataType = '';
+  protected $appEngineVersionType = AppEngineVersionInfo::class;
+  protected $appEngineVersionDataType = '';
   /**
    * @var bool
    */
   public $causesDrop;
+  protected $cloudFunctionType = CloudFunctionInfo::class;
+  protected $cloudFunctionDataType = '';
+  protected $cloudRunRevisionType = CloudRunRevisionInfo::class;
+  protected $cloudRunRevisionDataType = '';
   protected $cloudSqlInstanceType = CloudSQLInstanceInfo::class;
   protected $cloudSqlInstanceDataType = '';
   protected $deliverType = DeliverInfo::class;
@@ -45,6 +51,8 @@ class Step extends \Google\Model
   protected $forwardingRuleDataType = '';
   protected $gkeMasterType = GKEMasterInfo::class;
   protected $gkeMasterDataType = '';
+  protected $googleServiceType = GoogleServiceInfo::class;
+  protected $googleServiceDataType = '';
   protected $instanceType = InstanceInfo::class;
   protected $instanceDataType = '';
   protected $loadBalancerType = LoadBalancerInfo::class;
@@ -61,6 +69,8 @@ class Step extends \Google\Model
    * @var string
    */
   public $state;
+  protected $vpcConnectorType = VpcConnectorInfo::class;
+  protected $vpcConnectorDataType = '';
   protected $vpnGatewayType = VpnGatewayInfo::class;
   protected $vpnGatewayDataType = '';
   protected $vpnTunnelType = VpnTunnelInfo::class;
@@ -81,6 +91,20 @@ class Step extends \Google\Model
     return $this->abort;
   }
   /**
+   * @param AppEngineVersionInfo
+   */
+  public function setAppEngineVersion(AppEngineVersionInfo $appEngineVersion)
+  {
+    $this->appEngineVersion = $appEngineVersion;
+  }
+  /**
+   * @return AppEngineVersionInfo
+   */
+  public function getAppEngineVersion()
+  {
+    return $this->appEngineVersion;
+  }
+  /**
    * @param bool
    */
   public function setCausesDrop($causesDrop)
@@ -93,6 +117,34 @@ class Step extends \Google\Model
   public function getCausesDrop()
   {
     return $this->causesDrop;
+  }
+  /**
+   * @param CloudFunctionInfo
+   */
+  public function setCloudFunction(CloudFunctionInfo $cloudFunction)
+  {
+    $this->cloudFunction = $cloudFunction;
+  }
+  /**
+   * @return CloudFunctionInfo
+   */
+  public function getCloudFunction()
+  {
+    return $this->cloudFunction;
+  }
+  /**
+   * @param CloudRunRevisionInfo
+   */
+  public function setCloudRunRevision(CloudRunRevisionInfo $cloudRunRevision)
+  {
+    $this->cloudRunRevision = $cloudRunRevision;
+  }
+  /**
+   * @return CloudRunRevisionInfo
+   */
+  public function getCloudRunRevision()
+  {
+    return $this->cloudRunRevision;
   }
   /**
    * @param CloudSQLInstanceInfo
@@ -221,6 +273,20 @@ class Step extends \Google\Model
     return $this->gkeMaster;
   }
   /**
+   * @param GoogleServiceInfo
+   */
+  public function setGoogleService(GoogleServiceInfo $googleService)
+  {
+    $this->googleService = $googleService;
+  }
+  /**
+   * @return GoogleServiceInfo
+   */
+  public function getGoogleService()
+  {
+    return $this->googleService;
+  }
+  /**
    * @param InstanceInfo
    */
   public function setInstance(InstanceInfo $instance)
@@ -303,6 +369,20 @@ class Step extends \Google\Model
   public function getState()
   {
     return $this->state;
+  }
+  /**
+   * @param VpcConnectorInfo
+   */
+  public function setVpcConnector(VpcConnectorInfo $vpcConnector)
+  {
+    $this->vpcConnector = $vpcConnector;
+  }
+  /**
+   * @return VpcConnectorInfo
+   */
+  public function getVpcConnector()
+  {
+    return $this->vpcConnector;
   }
   /**
    * @param VpnGatewayInfo

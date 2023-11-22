@@ -31,7 +31,7 @@ use Google\Service\DataCatalog\TestIamPermissionsResponse;
  * Typical usage is:
  *  <code>
  *   $datacatalogService = new Google\Service\DataCatalog(...);
- *   $entryGroups = $datacatalogService->entryGroups;
+ *   $entryGroups = $datacatalogService->projects_locations_entryGroups;
  *  </code>
  */
 class ProjectsLocationsEntryGroups extends \Google\Service\Resource
@@ -75,8 +75,8 @@ class ProjectsLocationsEntryGroups extends \Google\Service\Resource
   /**
    * Deletes an entry group. You must enable the Data Catalog API in the project
    * identified by the `name` parameter. For more information, see [Data Catalog
-   * resource project](https://cloud.google.com/data-catalog/docs/concepts
-   * /resource-project). (entryGroups.delete)
+   * resource project](https://cloud.google.com/data-
+   * catalog/docs/concepts/resource-project). (entryGroups.delete)
    *
    * @param string $name Required. The name of the entry group to delete.
    * @param array $optParams Optional parameters.
@@ -119,8 +119,9 @@ class ProjectsLocationsEntryGroups extends \Google\Service\Resource
    * groups. (entryGroups.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param GetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -187,8 +188,9 @@ class ProjectsLocationsEntryGroups extends \Google\Service\Resource
    * (entryGroups.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -209,8 +211,9 @@ class ProjectsLocationsEntryGroups extends \Google\Service\Resource
    * (entryGroups.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

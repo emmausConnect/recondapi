@@ -29,7 +29,7 @@ use Google\Service\CloudHealthcare\Message;
  * Typical usage is:
  *  <code>
  *   $healthcareService = new Google\Service\CloudHealthcare(...);
- *   $messages = $healthcareService->messages;
+ *   $messages = $healthcareService->projects_locations_datasets_hl7V2Stores_messages;
  *  </code>
  */
 class ProjectsLocationsDatasetsHl7V2StoresMessages extends \Google\Service\Resource
@@ -41,7 +41,7 @@ class ProjectsLocationsDatasetsHl7V2StoresMessages extends \Google\Service\Resou
    * an MLLP adapter is configured to listen to a Pub/Sub topic, the adapter
    * transmits the message when a notification is received. (messages.create)
    *
-   * @param string $parent The name of the dataset this message belongs to.
+   * @param string $parent The name of the HL7v2 store this message belongs to.
    * @param CreateMessageRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Message
@@ -178,8 +178,8 @@ class ProjectsLocationsDatasetsHl7V2StoresMessages extends \Google\Service\Resou
    * same keys are updated. (messages.patch)
    *
    * @param string $name Resource name of the Message, of the form `projects/{proj
-   * ect_id}/datasets/{dataset_id}/hl7V2Stores/{hl7_v2_store_id}/messages/{message
-   * _id}`. Assigned by the server.
+   * ect_id}/locations/{location_id}/datasets/{dataset_id}/hl7V2Stores/{hl7_v2_sto
+   * re_id}/messages/{message_id}`. Assigned by the server.
    * @param Message $postBody
    * @param array $optParams Optional parameters.
    *

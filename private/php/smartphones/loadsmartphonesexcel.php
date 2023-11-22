@@ -54,7 +54,6 @@ if (array_key_exists('truncate',$_GET)) {
     }
 }
 
-
 try {
     $nbLignesInserted = trtExcel($uploaDir, $excelFileName, $reader, $truncate);
     echo "chargement terminé, $nbLignesInserted lignes ajoutées ou mises à jour";
@@ -89,12 +88,12 @@ function trtExcel(String $uploaDir, String $fileNameOrig, $reader, $truncate) {
     $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn); // e.g. 5
     echo("<br>    ".$fileNameOrig." highestRowIndex : ".$highestRowIndex."   highestColumnIndex : ".$highestColumnIndex."\n");
     
-    $sqlQueryInsert = "INSERT INTO $tableName( marque, modele, ram, stockage, indice, os, url, 
-        crtorigine, crtby, crtdate, crttype, tocheck ) 
-        VALUES (:marque, :modele, :ram, :stockage, :indice, :os, :url, :origine, :crtby, :crtdate, :crttype, :tocheck)
-        ON DUPLICATE KEY UPDATE indice =:indice, os=:os, url=:url, 
-            updorigine =:origine, upddate=:crtdate, updby=:crtby, updtype=:crttype, tocheck=:tocheck
-        
+    $sqlQueryInsert = "INSERT INTO $tableName( marque, marque_ns, modele, modele_ns, modele_synonyme, ram, stockage, indice
+            , os, url, crtorigine, crtby, crtdate, crttype, tocheck ) 
+        VALUES (:marque, :marque_ns, :modele, :modele_ns, :modele_synonyme, :ram, :stockage, :indice
+           , :os, :url, :origine, :crtby, :crtdate, :crttype, :tocheck)
+        ON DUPLICATE KEY UPDATE indice =:indice2, os=:os2, url=:url2, 
+            updorigine =:updorigine, upddate=:upddate, updby=:updby, updtype=:updtype, tocheck=:tocheck2
         ;";
 
     $insertRecipe = $db->prepare($sqlQueryInsert);
@@ -105,7 +104,6 @@ function trtExcel(String $uploaDir, String $fileNameOrig, $reader, $truncate) {
         $title    = formatKey($worksheet->getCellByColumnAndRow(1, $ligne)->getValue(), true);
         $marque   = strtok($title.' ', ' ');
         $modeles  = formatKey($worksheet->getCellByColumnAndRow(2, $ligne)->getValue(), true);
-
         $ram      = formatKey($worksheet->getCellByColumnAndRow(3, $ligne)->getValue(), true);
         $stockage = formatKey($worksheet->getCellByColumnAndRow(4, $ligne)->getValue(), true);
         $indice   = formatKey($worksheet->getCellByColumnAndRow(5, $ligne)->getValue(), true);
@@ -113,12 +111,16 @@ function trtExcel(String $uploaDir, String $fileNameOrig, $reader, $truncate) {
         $url      = formatKey($worksheet->getCellByColumnAndRow(7, $ligne)->getValue(), true);
         //echo "<br><b>[$ligne][$title][$marque][$modeles][$ram][$stockage]</b>";
         if ($title != "" && $title != null) {
+            // les modèles viennent du titre(marque) après le 1er mot + la colonne $modeles
             $modelesArray = [];
             if ($modeles != "" && $modeles != null) {
+                // la colonne modèle contient une liste de modèle séparés par des virgules
                 $modelesArray = explode(",", $modeles);
             }
+            // on extrait le modèle contenu dans la colonne titre, après la marque
             $modeleTitle = str_replace($marque, '', $title);
             $modeleTitle = trim($modeleTitle . ' ');
+            // on l'ajoute à la liste des modèles
             array_push($modelesArray, $modeleTitle);
             foreach($modelesArray as $modele) {
                 $modele = trim($modele);
@@ -126,21 +128,35 @@ function trtExcel(String $uploaDir, String $fileNameOrig, $reader, $truncate) {
                 $modele = trim(preg_replace($exp, '$1', $modele));
                 //echo "<br>[$ligne][$title][$marque][$modele][$ram][$stockage]";
                 //'title'    => $marque .' '.trim($modele." ") ,
-
-                $insertRecipe->execute([
-                    'marque'   => $marque,
-                    'modele'   => trim($modele." "),
-                    'ram'      => $ram,
-                    'stockage' => $stockage,
-                    'indice'   => $indice,
-                    'os'       => $os,
-                    'url'      => $url,
-                    'origine'  => $fileNameOrig,
-                    'crtby'    => basename(__FILE__),
-                    'crtdate'  => $mysqltime,
-                    'crttype'  => 'excel',
-                    'tocheck'  => 'N'
-                ]);
+                try {
+                    $insertRecipe->execute([
+                        'marque'   => $marque,
+                        'marque_ns'=> str_replace(" ", "", $marque),
+                        'modele'   => trim($modele." "),
+                        'modele_ns'=> str_replace(" ", "", $modele),
+                        'modele_synonyme' => $modeleTitle,
+                        'ram'      => $ram,
+                        'stockage' => $stockage,
+                        'indice'   => $indice,
+                        'os'       => $os,
+                        'url'      => $url,
+                        'origine'  => $fileNameOrig,
+                        'crtby'    => basename(__FILE__),
+                        'crtdate'  => $mysqltime,
+                        'crttype'  => 'excel',
+                        'tocheck'  => 'N',
+                        'indice2'   => $indice,
+                        'os2'       => $os,
+                        'url2'      => $url,
+                        'updorigine' => $fileNameOrig,
+                        'upddate'  => $mysqltime,
+                        'updby'    => basename(__FILE__),
+                        'updtype'  => 'excel',
+                        'tocheck2' => 'N'
+                    ]);
+                } catch (Exception $e) {
+                    echo 'Exception reçue : ',  $e->getMessage(), "\n";
+                }
                 ++$nbLignesInserted;
             }
         }
@@ -148,12 +164,3 @@ function trtExcel(String $uploaDir, String $fileNameOrig, $reader, $truncate) {
     }
     return $nbLignesInserted;
 }
-
-// function mb_basename($path) {
-//     if (preg_match('@^.*[\\\\/]([^\\\\/]+)$@s', $path, $matches)) {
-//         return $matches[1];
-//     } else if (preg_match('@^([^\\\\/]+)$@s', $path, $matches)) {
-//         return $matches[1];
-//     }
-//     return '';
-// }

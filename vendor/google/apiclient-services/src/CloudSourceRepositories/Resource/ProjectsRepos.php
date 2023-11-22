@@ -33,7 +33,7 @@ use Google\Service\CloudSourceRepositories\UpdateRepoRequest;
  * Typical usage is:
  *  <code>
  *   $sourcerepoService = new Google\Service\CloudSourceRepositories(...);
- *   $repos = $sourcerepoService->repos;
+ *   $repos = $sourcerepoService->projects_repos;
  *  </code>
  */
 class ProjectsRepos extends \Google\Service\Resource
@@ -88,8 +88,9 @@ class ProjectsRepos extends \Google\Service\Resource
    * resource exists and does not have a policy set. (repos.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
@@ -154,8 +155,9 @@ class ProjectsRepos extends \Google\Service\Resource
    * existing policy. (repos.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -188,8 +190,9 @@ class ProjectsRepos extends \Google\Service\Resource
    * NOT_FOUND error. (repos.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

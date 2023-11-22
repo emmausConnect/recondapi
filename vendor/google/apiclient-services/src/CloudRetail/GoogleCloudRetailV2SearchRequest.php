@@ -32,6 +32,10 @@ class GoogleCloudRetailV2SearchRequest extends \Google\Collection
   public $canonicalFilter;
   protected $dynamicFacetSpecType = GoogleCloudRetailV2SearchRequestDynamicFacetSpec::class;
   protected $dynamicFacetSpecDataType = '';
+  /**
+   * @var string
+   */
+  public $entity;
   protected $facetSpecsType = GoogleCloudRetailV2SearchRequestFacetSpec::class;
   protected $facetSpecsDataType = 'array';
   /**
@@ -74,6 +78,8 @@ class GoogleCloudRetailV2SearchRequest extends \Google\Collection
    * @var string
    */
   public $searchMode;
+  protected $spellCorrectionSpecType = GoogleCloudRetailV2SearchRequestSpellCorrectionSpec::class;
+  protected $spellCorrectionSpecDataType = '';
   protected $userInfoType = GoogleCloudRetailV2UserInfo::class;
   protected $userInfoDataType = '';
   /**
@@ -140,6 +146,20 @@ class GoogleCloudRetailV2SearchRequest extends \Google\Collection
   public function getDynamicFacetSpec()
   {
     return $this->dynamicFacetSpec;
+  }
+  /**
+   * @param string
+   */
+  public function setEntity($entity)
+  {
+    $this->entity = $entity;
+  }
+  /**
+   * @return string
+   */
+  public function getEntity()
+  {
+    return $this->entity;
   }
   /**
    * @param GoogleCloudRetailV2SearchRequestFacetSpec[]
@@ -308,6 +328,20 @@ class GoogleCloudRetailV2SearchRequest extends \Google\Collection
   public function getSearchMode()
   {
     return $this->searchMode;
+  }
+  /**
+   * @param GoogleCloudRetailV2SearchRequestSpellCorrectionSpec
+   */
+  public function setSpellCorrectionSpec(GoogleCloudRetailV2SearchRequestSpellCorrectionSpec $spellCorrectionSpec)
+  {
+    $this->spellCorrectionSpec = $spellCorrectionSpec;
+  }
+  /**
+   * @return GoogleCloudRetailV2SearchRequestSpellCorrectionSpec
+   */
+  public function getSpellCorrectionSpec()
+  {
+    return $this->spellCorrectionSpec;
   }
   /**
    * @param GoogleCloudRetailV2UserInfo

@@ -27,6 +27,10 @@ class ProvisioningConfig extends \Google\Collection
   /**
    * @var string
    */
+  public $customId;
+  /**
+   * @var string
+   */
   public $email;
   /**
    * @var string
@@ -47,7 +51,15 @@ class ProvisioningConfig extends \Google\Collection
   /**
    * @var string
    */
+  public $pod;
+  /**
+   * @var string
+   */
   public $state;
+  /**
+   * @var string
+   */
+  public $statusMessage;
   /**
    * @var string
    */
@@ -58,6 +70,10 @@ class ProvisioningConfig extends \Google\Collection
   public $updateTime;
   protected $volumesType = VolumeConfig::class;
   protected $volumesDataType = 'array';
+  /**
+   * @var bool
+   */
+  public $vpcScEnabled;
 
   /**
    * @param string
@@ -72,6 +88,20 @@ class ProvisioningConfig extends \Google\Collection
   public function getCloudConsoleUri()
   {
     return $this->cloudConsoleUri;
+  }
+  /**
+   * @param string
+   */
+  public function setCustomId($customId)
+  {
+    $this->customId = $customId;
+  }
+  /**
+   * @return string
+   */
+  public function getCustomId()
+  {
+    return $this->customId;
   }
   /**
    * @param string
@@ -160,6 +190,20 @@ class ProvisioningConfig extends \Google\Collection
   /**
    * @param string
    */
+  public function setPod($pod)
+  {
+    $this->pod = $pod;
+  }
+  /**
+   * @return string
+   */
+  public function getPod()
+  {
+    return $this->pod;
+  }
+  /**
+   * @param string
+   */
   public function setState($state)
   {
     $this->state = $state;
@@ -170,6 +214,20 @@ class ProvisioningConfig extends \Google\Collection
   public function getState()
   {
     return $this->state;
+  }
+  /**
+   * @param string
+   */
+  public function setStatusMessage($statusMessage)
+  {
+    $this->statusMessage = $statusMessage;
+  }
+  /**
+   * @return string
+   */
+  public function getStatusMessage()
+  {
+    return $this->statusMessage;
   }
   /**
    * @param string
@@ -212,6 +270,20 @@ class ProvisioningConfig extends \Google\Collection
   public function getVolumes()
   {
     return $this->volumes;
+  }
+  /**
+   * @param bool
+   */
+  public function setVpcScEnabled($vpcScEnabled)
+  {
+    $this->vpcScEnabled = $vpcScEnabled;
+  }
+  /**
+   * @return bool
+   */
+  public function getVpcScEnabled()
+  {
+    return $this->vpcScEnabled;
   }
 }
 

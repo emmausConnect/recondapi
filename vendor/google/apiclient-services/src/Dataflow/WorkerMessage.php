@@ -19,6 +19,8 @@ namespace Google\Service\Dataflow;
 
 class WorkerMessage extends \Google\Model
 {
+  protected $dataSamplingReportType = DataSamplingReport::class;
+  protected $dataSamplingReportDataType = '';
   /**
    * @var string[]
    */
@@ -37,7 +39,23 @@ class WorkerMessage extends \Google\Model
   protected $workerMetricsDataType = '';
   protected $workerShutdownNoticeType = WorkerShutdownNotice::class;
   protected $workerShutdownNoticeDataType = '';
+  protected $workerThreadScalingReportType = WorkerThreadScalingReport::class;
+  protected $workerThreadScalingReportDataType = '';
 
+  /**
+   * @param DataSamplingReport
+   */
+  public function setDataSamplingReport(DataSamplingReport $dataSamplingReport)
+  {
+    $this->dataSamplingReport = $dataSamplingReport;
+  }
+  /**
+   * @return DataSamplingReport
+   */
+  public function getDataSamplingReport()
+  {
+    return $this->dataSamplingReport;
+  }
   /**
    * @param string[]
    */
@@ -135,6 +153,20 @@ class WorkerMessage extends \Google\Model
   public function getWorkerShutdownNotice()
   {
     return $this->workerShutdownNotice;
+  }
+  /**
+   * @param WorkerThreadScalingReport
+   */
+  public function setWorkerThreadScalingReport(WorkerThreadScalingReport $workerThreadScalingReport)
+  {
+    $this->workerThreadScalingReport = $workerThreadScalingReport;
+  }
+  /**
+   * @return WorkerThreadScalingReport
+   */
+  public function getWorkerThreadScalingReport()
+  {
+    return $this->workerThreadScalingReport;
   }
 }
 

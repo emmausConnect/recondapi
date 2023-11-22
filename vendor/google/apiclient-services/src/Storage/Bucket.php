@@ -28,6 +28,8 @@ class Bucket extends \Google\Collection
   protected $billingDataType = '';
   protected $corsType = BucketCors::class;
   protected $corsDataType = 'array';
+  protected $customPlacementConfigType = BucketCustomPlacementConfig::class;
+  protected $customPlacementConfigDataType = '';
   /**
    * @var bool
    */
@@ -74,6 +76,8 @@ class Bucket extends \Google\Collection
    * @var string
    */
   public $name;
+  protected $objectRetentionType = BucketObjectRetention::class;
+  protected $objectRetentionDataType = '';
   protected $ownerType = BucketOwner::class;
   protected $ownerDataType = '';
   /**
@@ -94,6 +98,8 @@ class Bucket extends \Google\Collection
    * @var string
    */
   public $selfLink;
+  protected $softDeletePolicyType = BucketSoftDeletePolicy::class;
+  protected $softDeletePolicyDataType = '';
   /**
    * @var string
    */
@@ -166,6 +172,20 @@ class Bucket extends \Google\Collection
   public function getCors()
   {
     return $this->cors;
+  }
+  /**
+   * @param BucketCustomPlacementConfig
+   */
+  public function setCustomPlacementConfig(BucketCustomPlacementConfig $customPlacementConfig)
+  {
+    $this->customPlacementConfig = $customPlacementConfig;
+  }
+  /**
+   * @return BucketCustomPlacementConfig
+   */
+  public function getCustomPlacementConfig()
+  {
+    return $this->customPlacementConfig;
   }
   /**
    * @param bool
@@ -364,6 +384,20 @@ class Bucket extends \Google\Collection
     return $this->name;
   }
   /**
+   * @param BucketObjectRetention
+   */
+  public function setObjectRetention(BucketObjectRetention $objectRetention)
+  {
+    $this->objectRetention = $objectRetention;
+  }
+  /**
+   * @return BucketObjectRetention
+   */
+  public function getObjectRetention()
+  {
+    return $this->objectRetention;
+  }
+  /**
    * @param BucketOwner
    */
   public function setOwner(BucketOwner $owner)
@@ -446,6 +480,20 @@ class Bucket extends \Google\Collection
   public function getSelfLink()
   {
     return $this->selfLink;
+  }
+  /**
+   * @param BucketSoftDeletePolicy
+   */
+  public function setSoftDeletePolicy(BucketSoftDeletePolicy $softDeletePolicy)
+  {
+    $this->softDeletePolicy = $softDeletePolicy;
+  }
+  /**
+   * @return BucketSoftDeletePolicy
+   */
+  public function getSoftDeletePolicy()
+  {
+    return $this->softDeletePolicy;
   }
   /**
    * @param string

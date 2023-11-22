@@ -27,6 +27,10 @@ class TargetHttpsProxy extends \Google\Collection
   /**
    * @var string
    */
+  public $certificateMap;
+  /**
+   * @var string
+   */
   public $creationTimestamp;
   /**
    * @var string
@@ -36,6 +40,10 @@ class TargetHttpsProxy extends \Google\Collection
    * @var string
    */
   public $fingerprint;
+  /**
+   * @var int
+   */
+  public $httpKeepAliveTimeoutSec;
   /**
    * @var string
    */
@@ -98,6 +106,20 @@ class TargetHttpsProxy extends \Google\Collection
   /**
    * @param string
    */
+  public function setCertificateMap($certificateMap)
+  {
+    $this->certificateMap = $certificateMap;
+  }
+  /**
+   * @return string
+   */
+  public function getCertificateMap()
+  {
+    return $this->certificateMap;
+  }
+  /**
+   * @param string
+   */
   public function setCreationTimestamp($creationTimestamp)
   {
     $this->creationTimestamp = $creationTimestamp;
@@ -136,6 +158,20 @@ class TargetHttpsProxy extends \Google\Collection
   public function getFingerprint()
   {
     return $this->fingerprint;
+  }
+  /**
+   * @param int
+   */
+  public function setHttpKeepAliveTimeoutSec($httpKeepAliveTimeoutSec)
+  {
+    $this->httpKeepAliveTimeoutSec = $httpKeepAliveTimeoutSec;
+  }
+  /**
+   * @return int
+   */
+  public function getHttpKeepAliveTimeoutSec()
+  {
+    return $this->httpKeepAliveTimeoutSec;
   }
   /**
    * @param string

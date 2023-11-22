@@ -25,6 +25,10 @@ class QueryRequest extends \Google\Collection
   /**
    * @var bool
    */
+  public $continuous;
+  /**
+   * @var bool
+   */
   public $createSession;
   protected $defaultDatasetType = DatasetReference::class;
   protected $defaultDatasetDataType = '';
@@ -32,6 +36,10 @@ class QueryRequest extends \Google\Collection
    * @var bool
    */
   public $dryRun;
+  /**
+   * @var string
+   */
+  public $jobCreationMode;
   /**
    * @var string
    */
@@ -100,6 +108,20 @@ class QueryRequest extends \Google\Collection
   /**
    * @param bool
    */
+  public function setContinuous($continuous)
+  {
+    $this->continuous = $continuous;
+  }
+  /**
+   * @return bool
+   */
+  public function getContinuous()
+  {
+    return $this->continuous;
+  }
+  /**
+   * @param bool
+   */
   public function setCreateSession($createSession)
   {
     $this->createSession = $createSession;
@@ -138,6 +160,20 @@ class QueryRequest extends \Google\Collection
   public function getDryRun()
   {
     return $this->dryRun;
+  }
+  /**
+   * @param string
+   */
+  public function setJobCreationMode($jobCreationMode)
+  {
+    $this->jobCreationMode = $jobCreationMode;
+  }
+  /**
+   * @return string
+   */
+  public function getJobCreationMode()
+  {
+    return $this->jobCreationMode;
   }
   /**
    * @param string

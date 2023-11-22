@@ -27,7 +27,7 @@ use Google\Service\SmartDeviceManagement\GoogleHomeEnterpriseSdmV1ListDevicesRes
  * Typical usage is:
  *  <code>
  *   $smartdevicemanagementService = new Google\Service\SmartDeviceManagement(...);
- *   $devices = $smartdevicemanagementService->devices;
+ *   $devices = $smartdevicemanagementService->enterprises_devices;
  *  </code>
  */
 class EnterprisesDevices extends \Google\Service\Resource
@@ -71,10 +71,6 @@ class EnterprisesDevices extends \Google\Service\Resource
    *
    * @opt_param string filter Optional filter to list devices. Filters can be done
    * on: Device custom name (substring match): 'customName=wing'
-   * @opt_param int pageSize Optional requested page size. Server may return fewer
-   * devices than requested. If unspecified, server will pick an appropriate
-   * default.
-   * @opt_param string pageToken Optional token of the page to retrieve.
    * @return GoogleHomeEnterpriseSdmV1ListDevicesResponse
    */
   public function listEnterprisesDevices($parent, $optParams = [])

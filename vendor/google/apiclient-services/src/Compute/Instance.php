@@ -62,6 +62,12 @@ class Instance extends \Google\Collection
    * @var string
    */
   public $id;
+  protected $instanceEncryptionKeyType = CustomerEncryptionKey::class;
+  protected $instanceEncryptionKeyDataType = '';
+  /**
+   * @var string
+   */
+  public $keyRevocationActionType;
   /**
    * @var string
    */
@@ -116,6 +122,8 @@ class Instance extends \Google\Collection
    * @var string[]
    */
   public $resourcePolicies;
+  protected $resourceStatusType = ResourceStatus::class;
+  protected $resourceStatusDataType = '';
   /**
    * @var bool
    */
@@ -340,6 +348,34 @@ class Instance extends \Google\Collection
     return $this->id;
   }
   /**
+   * @param CustomerEncryptionKey
+   */
+  public function setInstanceEncryptionKey(CustomerEncryptionKey $instanceEncryptionKey)
+  {
+    $this->instanceEncryptionKey = $instanceEncryptionKey;
+  }
+  /**
+   * @return CustomerEncryptionKey
+   */
+  public function getInstanceEncryptionKey()
+  {
+    return $this->instanceEncryptionKey;
+  }
+  /**
+   * @param string
+   */
+  public function setKeyRevocationActionType($keyRevocationActionType)
+  {
+    $this->keyRevocationActionType = $keyRevocationActionType;
+  }
+  /**
+   * @return string
+   */
+  public function getKeyRevocationActionType()
+  {
+    return $this->keyRevocationActionType;
+  }
+  /**
    * @param string
    */
   public function setKind($kind)
@@ -562,6 +598,20 @@ class Instance extends \Google\Collection
   public function getResourcePolicies()
   {
     return $this->resourcePolicies;
+  }
+  /**
+   * @param ResourceStatus
+   */
+  public function setResourceStatus(ResourceStatus $resourceStatus)
+  {
+    $this->resourceStatus = $resourceStatus;
+  }
+  /**
+   * @return ResourceStatus
+   */
+  public function getResourceStatus()
+  {
+    return $this->resourceStatus;
   }
   /**
    * @param bool

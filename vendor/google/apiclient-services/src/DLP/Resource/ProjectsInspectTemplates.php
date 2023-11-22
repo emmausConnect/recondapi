@@ -28,13 +28,13 @@ use Google\Service\DLP\GoogleProtobufEmpty;
  * Typical usage is:
  *  <code>
  *   $dlpService = new Google\Service\DLP(...);
- *   $inspectTemplates = $dlpService->inspectTemplates;
+ *   $inspectTemplates = $dlpService->projects_inspectTemplates;
  *  </code>
  */
 class ProjectsInspectTemplates extends \Google\Service\Resource
 {
   /**
-   * Creates an InspectTemplate for re-using frequently used configuration for
+   * Creates an InspectTemplate for reusing frequently used configuration for
    * inspecting content, images, and storage. See
    * https://cloud.google.com/dlp/docs/creating-templates to learn more.
    * (inspectTemplates.create)
@@ -115,15 +115,16 @@ class ProjectsInspectTemplates extends \Google\Service\Resource
    *
    * @opt_param string locationId Deprecated. This field has no effect.
    * @opt_param string orderBy Comma separated list of fields to order by,
-   * followed by `asc` or `desc` postfix. This list is case-insensitive, default
-   * sorting order is ascending, redundant space characters are insignificant.
-   * Example: `name asc,update_time, create_time desc` Supported fields are: -
-   * `create_time`: corresponds to time the template was created. - `update_time`:
-   * corresponds to time the template was last updated. - `name`: corresponds to
-   * template's name. - `display_name`: corresponds to template's display name.
-   * @opt_param int pageSize Size of the page, can be limited by server. If zero
-   * server returns a page of max size 100.
-   * @opt_param string pageToken Page token to continue retrieval. Comes from
+   * followed by `asc` or `desc` postfix. This list is case insensitive. The
+   * default sorting order is ascending. Redundant space characters are
+   * insignificant. Example: `name asc,update_time, create_time desc` Supported
+   * fields are: - `create_time`: corresponds to the time the template was
+   * created. - `update_time`: corresponds to the time the template was last
+   * updated. - `name`: corresponds to the template's name. - `display_name`:
+   * corresponds to the template's display name.
+   * @opt_param int pageSize Size of the page. This value can be limited by the
+   * server. If zero server returns a page of max size 100.
+   * @opt_param string pageToken Page token to continue retrieval. Comes from the
    * previous call to `ListInspectTemplates`.
    * @return GooglePrivacyDlpV2ListInspectTemplatesResponse
    */

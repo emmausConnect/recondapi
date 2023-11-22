@@ -27,6 +27,8 @@ use Google\Service\AndroidProvisioningPartner\FindDevicesByDeviceIdentifierReque
 use Google\Service\AndroidProvisioningPartner\FindDevicesByDeviceIdentifierResponse;
 use Google\Service\AndroidProvisioningPartner\FindDevicesByOwnerRequest;
 use Google\Service\AndroidProvisioningPartner\FindDevicesByOwnerResponse;
+use Google\Service\AndroidProvisioningPartner\GetDeviceSimLockStateRequest;
+use Google\Service\AndroidProvisioningPartner\GetDeviceSimLockStateResponse;
 use Google\Service\AndroidProvisioningPartner\Operation;
 use Google\Service\AndroidProvisioningPartner\UnclaimDeviceRequest;
 use Google\Service\AndroidProvisioningPartner\UnclaimDevicesRequest;
@@ -38,7 +40,7 @@ use Google\Service\AndroidProvisioningPartner\UpdateDeviceMetadataRequest;
  * Typical usage is:
  *  <code>
  *   $androiddeviceprovisioningService = new Google\Service\AndroidProvisioningPartner(...);
- *   $devices = $androiddeviceprovisioningService->devices;
+ *   $devices = $androiddeviceprovisioningService->partners_devices;
  *  </code>
  */
 class PartnersDevices extends \Google\Service\Resource
@@ -61,8 +63,8 @@ class PartnersDevices extends \Google\Service\Resource
   }
   /**
    * Claims a batch of devices for a customer asynchronously. Adds the devices to
-   * zero-touch enrollment. To learn more, read [Long‑running batch operations
-   * ](/zero-touch/guides/how-it-works#operations). (devices.claimAsync)
+   * zero-touch enrollment. To learn more, read [Long‑running batch
+   * operations](/zero-touch/guides/how-it-works#operations). (devices.claimAsync)
    *
    * @param string $partnerId Required. The ID of the reseller partner.
    * @param ClaimDevicesRequest $postBody
@@ -122,7 +124,22 @@ class PartnersDevices extends \Google\Service\Resource
     return $this->call('get', [$params], Device::class);
   }
   /**
-   * Updates reseller metadata associated with the device. (devices.metadata)
+   * Gets a device's SIM lock state. (devices.getSimLockState)
+   *
+   * @param string $partnerId Required. The ID of the partner.
+   * @param GetDeviceSimLockStateRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return GetDeviceSimLockStateResponse
+   */
+  public function getSimLockState($partnerId, GetDeviceSimLockStateRequest $postBody, $optParams = [])
+  {
+    $params = ['partnerId' => $partnerId, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('getSimLockState', [$params], GetDeviceSimLockStateResponse::class);
+  }
+  /**
+   * Updates reseller metadata associated with the device. Android devices only.
+   * (devices.metadata)
    *
    * @param string $metadataOwnerId Required. The owner of the newly set metadata.
    * Set this to the partner ID.
@@ -173,7 +190,7 @@ class PartnersDevices extends \Google\Service\Resource
    * Updates the reseller metadata attached to a batch of devices. This method
    * updates devices asynchronously and returns an `Operation` that can be used to
    * track progress. Read [Long‑running batch operations](/zero-touch/guides/how-
-   * it-works#operations). (devices.updateMetadataAsync)
+   * it-works#operations). Android Devices only. (devices.updateMetadataAsync)
    *
    * @param string $partnerId Required. The reseller partner ID.
    * @param UpdateDeviceMetadataInBatchRequest $postBody

@@ -21,17 +21,27 @@ class Release extends \Google\Collection
 {
   protected $collection_key = 'targetSnapshots';
   /**
+   * @var bool
+   */
+  public $abandoned;
+  /**
    * @var string[]
    */
   public $annotations;
   protected $buildArtifactsType = BuildArtifact::class;
   protected $buildArtifactsDataType = 'array';
+  protected $conditionType = ReleaseCondition::class;
+  protected $conditionDataType = '';
   /**
    * @var string
    */
   public $createTime;
   protected $deliveryPipelineSnapshotType = DeliveryPipeline::class;
   protected $deliveryPipelineSnapshotDataType = '';
+  /**
+   * @var string[]
+   */
+  public $deployParameters;
   /**
    * @var string
    */
@@ -84,6 +94,20 @@ class Release extends \Google\Collection
   public $uid;
 
   /**
+   * @param bool
+   */
+  public function setAbandoned($abandoned)
+  {
+    $this->abandoned = $abandoned;
+  }
+  /**
+   * @return bool
+   */
+  public function getAbandoned()
+  {
+    return $this->abandoned;
+  }
+  /**
    * @param string[]
    */
   public function setAnnotations($annotations)
@@ -112,6 +136,20 @@ class Release extends \Google\Collection
     return $this->buildArtifacts;
   }
   /**
+   * @param ReleaseCondition
+   */
+  public function setCondition(ReleaseCondition $condition)
+  {
+    $this->condition = $condition;
+  }
+  /**
+   * @return ReleaseCondition
+   */
+  public function getCondition()
+  {
+    return $this->condition;
+  }
+  /**
    * @param string
    */
   public function setCreateTime($createTime)
@@ -138,6 +176,20 @@ class Release extends \Google\Collection
   public function getDeliveryPipelineSnapshot()
   {
     return $this->deliveryPipelineSnapshot;
+  }
+  /**
+   * @param string[]
+   */
+  public function setDeployParameters($deployParameters)
+  {
+    $this->deployParameters = $deployParameters;
+  }
+  /**
+   * @return string[]
+   */
+  public function getDeployParameters()
+  {
+    return $this->deployParameters;
   }
   /**
    * @param string

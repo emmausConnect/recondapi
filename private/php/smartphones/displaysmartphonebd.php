@@ -71,7 +71,6 @@ $htmlpage .= <<<"EOT"
             let title = column.footer().textContent;
 
             // Create input element
-            //let input = document.createElement('input');
             let children1 = column.footer().children;
             if (children1.length >0) {
                 let firstLevelchildren = column.footer().children[0];
@@ -79,8 +78,7 @@ $htmlpage .= <<<"EOT"
                 if (children1.length >0) {
                     let input = children2[0];
                     input.placeholder = 'liste de mots';
-                    //input.classList.add('searchInput');
-                    //column.footer().replaceChildren(input);
+
 
                     // Event listener for user input
                     input.addEventListener('keyup', () => {
@@ -102,10 +100,10 @@ $htmlpage .= <<<"EOT"
     function toggle(colType) {
         let colNbrs = [];
         if (colType == 'crt') {
-            colNbrs = [6, 7, 8, 9];
+            colNbrs = [8, 9, 10, 11, 12];
         }
         if (colType == 'upd') {
-            colNbrs = [10, 11, 12, 13];
+            colNbrs = [13, 14, 15, 16];
         }
         let tableDb = $('#tableDb').DataTable();
         colNbrs.forEach(col => {
@@ -125,13 +123,16 @@ $htmlpage .= <<<"EOT"
 <h1>liste de la BDD</h1>
 <button onclick="toggle('crt');">Afficher/cacher les colonnes crt</button>
 <button onclick="toggle('upd');">Afficher/cacher les colonnes upd</button>
-Pour n'afficher que les <b>cellules vides</b>, mettre <b>2 espaces</b> '&nbsp;&nbsp;'. Pour n'afficher que les <b>cellules <u>non</u> vides</b>, mettre <b>1 espace</b> ' '.
-Pour un texte exact, mettre entre guillemets "galaxy A01".
+Pour n'afficher que les <b>cellules vides</b>, mettre <b>2 espaces</b> '&nbsp;&nbsp;'. <!--Pour n'afficher que les <b>cellules <u>non</u> vides</b>, mettre <b>1 espace</b>--> ' '.
+Pour un texte exact, mettre entre guillemets "galaxy A01".<br>
+La colonne "modèle_ns" contint le modèle snas espaces, cela facilite la recherche.
 <table  id="tableDb" class="table table-sm table-striped" style="width:50%">
 <thead>
     <tr>
         <th>marque</th>
-        <th>modèle</th>    
+        <th>modèle</th>
+        <th title "sans les espaces">modèle_ns</th>
+        <th>mod origine</th>
         <th style="font-weight: bold;">ram</th>
         <th style="font-weight: bold;">stockage</th>
         <th>indice</th>
@@ -156,6 +157,8 @@ $htmlpage .= <<<"EOT"
     <tr>
 EOT;
 $htmlpage .= makeInput('marqueWidth');
+$htmlpage .= makeInput('modeleWidth');
+$htmlpage .= makeInput('modeleWidth');
 $htmlpage .= makeInput('modeleWidth');
 $htmlpage .= makeInput('ramWidth');
 $htmlpage .= makeInput('stockageWidth');
@@ -198,6 +201,8 @@ foreach($rowsForTitle as $m) {
     $htmlpage .= '<tr>';
     $htmlpage .= '<td>'.$m['marque'].'</td>';
     $htmlpage .= '<td>'.$m['modele'].'</td>';
+    $htmlpage .= '<td>'.$m['modele_ns'].'</td>';
+    $htmlpage .= '<td>'.$m['modele_synonyme'].'</td>';
     $htmlpage .= '<td>'.$m['ram'].'</td>';
     $htmlpage .= '<td>'.$m['stockage']."</td>";
     $htmlpage .= '<td>'.$m['indice']."</td>";

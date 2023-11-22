@@ -27,6 +27,10 @@ class RuntimeSoftwareConfig extends \Google\Collection
   /**
    * @var bool
    */
+  public $disableTerminal;
+  /**
+   * @var bool
+   */
   public $enableHealthMonitoring;
   /**
    * @var bool
@@ -42,6 +46,7 @@ class RuntimeSoftwareConfig extends \Google\Collection
   public $installGpuDriver;
   protected $kernelsType = ContainerImage::class;
   protected $kernelsDataType = 'array';
+  public $kernels = [];
   /**
    * @var string
    */
@@ -51,9 +56,17 @@ class RuntimeSoftwareConfig extends \Google\Collection
    */
   public $postStartupScript;
   /**
+   * @var string
+   */
+  public $postStartupScriptBehavior;
+  /**
    * @var bool
    */
   public $upgradeable;
+  /**
+   * @var string
+   */
+  public $version;
 
   /**
    * @param string
@@ -68,6 +81,20 @@ class RuntimeSoftwareConfig extends \Google\Collection
   public function getCustomGpuDriverPath()
   {
     return $this->customGpuDriverPath;
+  }
+  /**
+   * @param bool
+   */
+  public function setDisableTerminal($disableTerminal)
+  {
+    $this->disableTerminal = $disableTerminal;
+  }
+  /**
+   * @return bool
+   */
+  public function getDisableTerminal()
+  {
+    return $this->disableTerminal;
   }
   /**
    * @param bool
@@ -168,6 +195,20 @@ class RuntimeSoftwareConfig extends \Google\Collection
     return $this->postStartupScript;
   }
   /**
+   * @param string
+   */
+  public function setPostStartupScriptBehavior($postStartupScriptBehavior)
+  {
+    $this->postStartupScriptBehavior = $postStartupScriptBehavior;
+  }
+  /**
+   * @return string
+   */
+  public function getPostStartupScriptBehavior()
+  {
+    return $this->postStartupScriptBehavior;
+  }
+  /**
    * @param bool
    */
   public function setUpgradeable($upgradeable)
@@ -180,6 +221,20 @@ class RuntimeSoftwareConfig extends \Google\Collection
   public function getUpgradeable()
   {
     return $this->upgradeable;
+  }
+  /**
+   * @param string
+   */
+  public function setVersion($version)
+  {
+    $this->version = $version;
+  }
+  /**
+   * @return string
+   */
+  public function getVersion()
+  {
+    return $this->version;
   }
 }
 

@@ -39,7 +39,7 @@ class TagKeys extends \Google\Service\Resource
   /**
    * Creates a new TagKey. If another request with the same parameters is sent
    * while the original request is in process, the second request will receive an
-   * error. A maximum of 300 TagKeys can exist under a parent at any given time.
+   * error. A maximum of 1000 TagKeys can exist under a parent at any given time.
    * (tagKeys.create)
    *
    * @param TagKey $postBody
@@ -99,8 +99,9 @@ class TagKeys extends \Google\Service\Resource
    * specified TagKey. (tagKeys.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param GetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -110,6 +111,25 @@ class TagKeys extends \Google\Service\Resource
     $params = ['resource' => $resource, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
     return $this->call('getIamPolicy', [$params], Policy::class);
+  }
+  /**
+   * Retrieves a TagKey by its namespaced name. This method will return
+   * `PERMISSION_DENIED` if the key does not exist or the user does not have
+   * permission to view it. (tagKeys.getNamespaced)
+   *
+   * @param array $optParams Optional parameters.
+   *
+   * @opt_param string name Required. A namespaced tag key name in the format
+   * `{parentId}/{tagKeyShort}`, such as `42/foo` for a key with short name "foo"
+   * under the organization with ID 42 or `r2-d2/bar` for a key with short name
+   * "bar" under the project `r2-d2`.
+   * @return TagKey
+   */
+  public function getNamespaced($optParams = [])
+  {
+    $params = [];
+    $params = array_merge($params, $optParams);
+    return $this->call('getNamespaced', [$params], TagKey::class);
   }
   /**
    * Lists all TagKeys for a parent resource. (tagKeys.listTagKeys)
@@ -122,9 +142,9 @@ class TagKeys extends \Google\Service\Resource
    * @opt_param string pageToken Optional. A pagination token returned from a
    * previous call to `ListTagKey` that indicates where this listing should
    * continue from.
-   * @opt_param string parent Required. The resource name of the new TagKey's
-   * parent. Must be of the form `folders/{folder_id}` or
-   * `organizations/{org_id}`.
+   * @opt_param string parent Required. The resource name of the TagKey's parent.
+   * Must be of the form `organizations/{org_id}` or `projects/{project_id}` or
+   * `projects/{project_number}`
    * @return ListTagKeysResponse
    */
   public function listTagKeys($optParams = [])
@@ -162,8 +182,9 @@ class TagKeys extends \Google\Service\Resource
    * permission on the identified tagValue. (tagKeys.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -181,8 +202,9 @@ class TagKeys extends \Google\Service\Resource
    * (tagKeys.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

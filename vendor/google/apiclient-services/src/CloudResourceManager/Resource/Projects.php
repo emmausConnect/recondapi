@@ -105,8 +105,9 @@ class Projects extends \Google\Service\Resource
    * if the policy or the resource do not exist. (projects.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param GetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -133,9 +134,11 @@ class Projects extends \Google\Service\Resource
    * @opt_param string pageToken Optional. A pagination token returned from a
    * previous call to ListProjects that indicates from where listing should
    * continue.
-   * @opt_param string parent Required. The name of the parent resource to list
-   * projects under. For example, setting this field to 'folders/1234' would list
-   * all projects directly under that folder.
+   * @opt_param string parent Required. The name of the parent resource whose
+   * projects are being listed. Only children of this parent resource are listed;
+   * descendants are not listed. If the parent is a folder, use the value
+   * `folders/{folder_id}`. If the parent is an organization, use the value
+   * `organizations/{org_id}`.
    * @opt_param bool showDeleted Optional. Indicate that projects in the
    * `DELETE_REQUESTED` state should also be returned. Normally only `ACTIVE`
    * projects are returned.
@@ -193,7 +196,7 @@ class Projects extends \Google\Service\Resource
     return $this->call('patch', [$params], Operation::class);
   }
   /**
-   * Search for projects that the caller has both `resourcemanager.projects.get`
+   * Search for projects that the caller has the `resourcemanager.projects.get`
    * permission on, and also satisfy the specified query. This method returns
    * projects in an unspecified order. This method is eventually consistent with
    * project mutations; this means that a newly created project may not appear in
@@ -228,7 +231,7 @@ class Projects extends \Google\Service\Resource
    * NAME:howl | Equivalent to above. | | labels.color:* | The project has the
    * label `color`. | | labels.color:red | The project's label `color` has the
    * value `red`. | | labels.color:red labels.size:big | The project's label
-   * `color` has the value `red` and its label `size` has the value `big`.| ``` If
+   * `color` has the value `red` or its label `size` has the value `big`. | ``` If
    * no query is specified, the call will return projects for which the user has
    * the `resourcemanager.projects.get` permission.
    * @return SearchProjectsResponse
@@ -266,12 +269,12 @@ class Projects extends \Google\Service\Resource
    * that no longer have owners who have accepted the ToS. Edits to IAM policies
    * will be rejected until the lack of a ToS-accepting owner is rectified. If the
    * project is part of an organization, you can remove all owners, potentially
-   * making the organization inaccessible. + Calling this method requires enabling
-   * the App Engine Admin API. (projects.setIamPolicy)
+   * making the organization inaccessible. (projects.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -288,8 +291,9 @@ class Projects extends \Google\Service\Resource
    * (projects.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

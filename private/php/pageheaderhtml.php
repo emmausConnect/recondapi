@@ -21,15 +21,17 @@ EOT;
 }
 
 function getHtmlHeader() {
-	$contexte = Contexte::getInstance();
+	$ctx = Contexte::getInstance();
 	$isConnected = false;
 	if(array_key_exists('emmaususerconnected',$_SESSION) && $_SESSION['emmaususerconnected'] == 'Y') {
 		$isConnected = true;
 	}
-	$paramPhpArray = ParamIni::getInstance(__DIR__.'/../config/paramphp.ini')->getParam();
+	//$paramPhpArray = ParamIni::getInstance(__DIR__.'/../config/paramphp.ini')->getParam();
+	$ctx = Contexte::getInstance();
+	$paramPhpArray = $ctx->getParamPhpIniCls()->getParam();
 	$menuInitial = "/?".$_SERVER['QUERY_STRING'];
 	$retour = '<!-- debut getHtmlHeader( -->';
-	if (! $contexte->environnementIsProd()) {
+	if (! $ctx->environnementIsProd()) {
 		$retour .= '<div style="background-color:red; text-align:center; font-size:150%;">Environnement de test<br>Les résultats peuvent être faux car des tests y sont en cours</div>';
 	}
 	$retour .=  '<header>';

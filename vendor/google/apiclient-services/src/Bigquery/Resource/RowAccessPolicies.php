@@ -20,7 +20,6 @@ namespace Google\Service\Bigquery\Resource;
 use Google\Service\Bigquery\GetIamPolicyRequest;
 use Google\Service\Bigquery\ListRowAccessPoliciesResponse;
 use Google\Service\Bigquery\Policy;
-use Google\Service\Bigquery\SetIamPolicyRequest;
 use Google\Service\Bigquery\TestIamPermissionsRequest;
 use Google\Service\Bigquery\TestIamPermissionsResponse;
 
@@ -40,8 +39,9 @@ class RowAccessPolicies extends \Google\Service\Resource
    * (rowAccessPolicies.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param GetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -77,24 +77,6 @@ class RowAccessPolicies extends \Google\Service\Resource
     return $this->call('list', [$params], ListRowAccessPoliciesResponse::class);
   }
   /**
-   * Sets the access control policy on the specified resource. Replaces any
-   * existing policy. Can return `NOT_FOUND`, `INVALID_ARGUMENT`, and
-   * `PERMISSION_DENIED` errors. (rowAccessPolicies.setIamPolicy)
-   *
-   * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
-   * @param SetIamPolicyRequest $postBody
-   * @param array $optParams Optional parameters.
-   * @return Policy
-   */
-  public function setIamPolicy($resource, SetIamPolicyRequest $postBody, $optParams = [])
-  {
-    $params = ['resource' => $resource, 'postBody' => $postBody];
-    $params = array_merge($params, $optParams);
-    return $this->call('setIamPolicy', [$params], Policy::class);
-  }
-  /**
    * Returns permissions that a caller has on the specified resource. If the
    * resource does not exist, this will return an empty set of permissions, not a
    * `NOT_FOUND` error. Note: This operation is designed to be used for building
@@ -103,8 +85,9 @@ class RowAccessPolicies extends \Google\Service\Resource
    * (rowAccessPolicies.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

@@ -3,16 +3,18 @@ declare(strict_types=1);
 require_once 'smartphone.class.php';
 $path_private_class = $g_contexte_instance->getPath('private/class');
 $path_private       = $g_contexte_instance->getPath('private');
-require_once $path_private_class.'/paramini.class.php';
+//require_once $path_private_class.'/paramini.class.php';
 require_once $path_private_class.'/db/dbmanagement.class.php';
 require_once $path_private_class.'/util01.class.php';
+require_once $path_private_class.'/contexte.class.php';
 require_once $path_private.'/php/smartphones/utilsm.php';
 
 class EvaluationSm {
 
     private Smartphone $sm;
-    private bool   $supressSpacesBool = true;
-    private array  $paramArray;
+    private bool   $supressSpacesBool = true; // indique s'il faut suppriler les espaces multiple pour la rcherche en BDD
+    private Contexte $ctx;
+    private array  $paramArray; // contient les seuils
     private int    $noteRam = 0;
     private int    $noteStockage = 0;
     private int    $indice = 0;
@@ -25,12 +27,19 @@ class EvaluationSm {
     private int    $categoriePondere = 0;
     private string $categoriePondereAlpha = "";
     private string $errMsg;
-    private bool   $simulation = false;
-    private bool   $smRowFound = false;
-    private array  $smRow = [];
+    private bool   $simulation = false; // true => la marque est EMMAUSCONNECT et l'indice est dans MODELE
+    private bool   $smRowFound = false; // smartphne trouvé dans la BDD
+    private array  $smRow = [];         // enregistrement de la BDD
 
     private function __construct() {}
 
+    /**
+     * Undocumented function
+     *
+     * @param Smartphone|null $sm l'instance Smartphone à catégoriser
+     * @param boolean $supressSpacesBool 
+     * @return EvaluationSm
+     */
     public static function getInstance(Smartphone $sm = null, bool $supressSpacesBool = true) : EvaluationSm
     {
         $c = new EvaluationSm();
@@ -38,8 +47,9 @@ class EvaluationSm {
             $c->sm = $sm;
         }
         $c->supressSpacesBool = $supressSpacesBool;
-        $paramArray = ParamIni::getInstance(__DIR__.'/../../config/param.ini')->getParam();
-        $c->paramArray = $paramArray;
+        $ctx = Contexte::getInstance();
+        $c->ctx = $ctx;
+        $c->paramArray = $ctx->getParamIniCls()->getParam();
         return $c;
     }
     
@@ -47,8 +57,9 @@ class EvaluationSm {
         $errMsg = "";
         $tailleRamCvt      = $this->sm->getRamGo();
         $tailleStockageCvt = $this->sm->getStockageGo();
+        // il arrive que le stockage soit de la forme "26.0 GB"
         if(is_string($tailleRamCvt) || is_string($tailleStockageCvt)) {
-            $errMsg = "Ram ou Stockahe incorrect";
+            $errMsg = "Ram ou Stockage incorrect";
         }else{
             if ($this->sm->getMarque() != "EMMAUSCONNECT") {
                 // recherche dans la BBD
@@ -65,6 +76,19 @@ class EvaluationSm {
                     'stockage' => formatKey($this->sm->getStockage(),$this->supressSpacesBool)
                     ]);
                 $smRow = $stmt->fetch(PDO::FETCH_ASSOC);
+                if (!$smRow) {
+                    // on recherche sur le modèle sans espaces
+                    $sqlQuery = "SELECT * from $tableName 
+                    where marque=:marque and modele_ns=:modele_ns and ram=:ram and stockage=:stockage;";
+                    $stmt = $db->prepare($sqlQuery);
+                    $stmt->execute([
+                        'marque'   => formatKey($this->sm->getMarque(),$this->supressSpacesBool),
+                        'modele_ns'   => str_replace(" ","",$this->sm->getModele()),
+                        'ram'      => formatKey($tailleRamCvt,$this->supressSpacesBool),
+                        'stockage' => formatKey($this->sm->getStockage(),$this->supressSpacesBool)
+                                        ]);
+                    $smRow = $stmt->fetch(PDO::FETCH_ASSOC);
+                }
                 if ($smRow) {
                     $this->smRowFound  = true;
                     $this->smRow = $smRow;

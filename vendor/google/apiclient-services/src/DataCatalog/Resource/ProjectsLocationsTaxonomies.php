@@ -35,7 +35,7 @@ use Google\Service\DataCatalog\TestIamPermissionsResponse;
  * Typical usage is:
  *  <code>
  *   $datacatalogService = new Google\Service\DataCatalog(...);
- *   $taxonomies = $datacatalogService->taxonomies;
+ *   $taxonomies = $datacatalogService->projects_locations_taxonomies;
  *  </code>
  */
 class ProjectsLocationsTaxonomies extends \Google\Service\Resource
@@ -112,8 +112,9 @@ class ProjectsLocationsTaxonomies extends \Google\Service\Resource
    * Gets the IAM policy for a policy tag or a taxonomy. (taxonomies.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param GetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -151,6 +152,8 @@ class ProjectsLocationsTaxonomies extends \Google\Service\Resource
    * taxonomies of.
    * @param array $optParams Optional parameters.
    *
+   * @opt_param string filter Supported field for filter is 'service' and value is
+   * 'dataplex'. Eg: service=dataplex.
    * @opt_param int pageSize The maximum number of items to return. Must be a
    * value between 1 and 1000 inclusively. If not set, defaults to 50.
    * @opt_param string pageToken The pagination token of the next results page. If
@@ -209,8 +212,9 @@ class ProjectsLocationsTaxonomies extends \Google\Service\Resource
    * Sets the IAM policy for a policy tag or a taxonomy. (taxonomies.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -226,8 +230,9 @@ class ProjectsLocationsTaxonomies extends \Google\Service\Resource
    * (taxonomies.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

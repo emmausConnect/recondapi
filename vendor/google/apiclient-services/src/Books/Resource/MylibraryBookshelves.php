@@ -26,7 +26,7 @@ use Google\Service\Books\Bookshelves as BookshelvesModel;
  * Typical usage is:
  *  <code>
  *   $booksService = new Google\Service\Books(...);
- *   $bookshelves = $booksService->bookshelves;
+ *   $bookshelves = $booksService->mylibrary_bookshelves;
  *  </code>
  */
 class MylibraryBookshelves extends \Google\Service\Resource
@@ -87,7 +87,7 @@ class MylibraryBookshelves extends \Google\Service\Resource
    * @param array $optParams Optional parameters.
    *
    * @opt_param string source String to identify the originator of this request.
-   * @return Bookshelves
+   * @return BookshelvesModel
    */
   public function listMylibraryBookshelves($optParams = [])
   {

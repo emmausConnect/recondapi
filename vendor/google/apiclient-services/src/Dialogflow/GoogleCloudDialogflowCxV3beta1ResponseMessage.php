@@ -19,10 +19,16 @@ namespace Google\Service\Dialogflow;
 
 class GoogleCloudDialogflowCxV3beta1ResponseMessage extends \Google\Model
 {
+  /**
+   * @var string
+   */
+  public $channel;
   protected $conversationSuccessType = GoogleCloudDialogflowCxV3beta1ResponseMessageConversationSuccess::class;
   protected $conversationSuccessDataType = '';
   protected $endInteractionType = GoogleCloudDialogflowCxV3beta1ResponseMessageEndInteraction::class;
   protected $endInteractionDataType = '';
+  protected $knowledgeInfoCardType = GoogleCloudDialogflowCxV3beta1ResponseMessageKnowledgeInfoCard::class;
+  protected $knowledgeInfoCardDataType = '';
   protected $liveAgentHandoffType = GoogleCloudDialogflowCxV3beta1ResponseMessageLiveAgentHandoff::class;
   protected $liveAgentHandoffDataType = '';
   protected $mixedAudioType = GoogleCloudDialogflowCxV3beta1ResponseMessageMixedAudio::class;
@@ -40,6 +46,20 @@ class GoogleCloudDialogflowCxV3beta1ResponseMessage extends \Google\Model
   protected $textType = GoogleCloudDialogflowCxV3beta1ResponseMessageText::class;
   protected $textDataType = '';
 
+  /**
+   * @param string
+   */
+  public function setChannel($channel)
+  {
+    $this->channel = $channel;
+  }
+  /**
+   * @return string
+   */
+  public function getChannel()
+  {
+    return $this->channel;
+  }
   /**
    * @param GoogleCloudDialogflowCxV3beta1ResponseMessageConversationSuccess
    */
@@ -67,6 +87,20 @@ class GoogleCloudDialogflowCxV3beta1ResponseMessage extends \Google\Model
   public function getEndInteraction()
   {
     return $this->endInteraction;
+  }
+  /**
+   * @param GoogleCloudDialogflowCxV3beta1ResponseMessageKnowledgeInfoCard
+   */
+  public function setKnowledgeInfoCard(GoogleCloudDialogflowCxV3beta1ResponseMessageKnowledgeInfoCard $knowledgeInfoCard)
+  {
+    $this->knowledgeInfoCard = $knowledgeInfoCard;
+  }
+  /**
+   * @return GoogleCloudDialogflowCxV3beta1ResponseMessageKnowledgeInfoCard
+   */
+  public function getKnowledgeInfoCard()
+  {
+    return $this->knowledgeInfoCard;
   }
   /**
    * @param GoogleCloudDialogflowCxV3beta1ResponseMessageLiveAgentHandoff

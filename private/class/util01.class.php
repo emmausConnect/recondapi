@@ -3,8 +3,8 @@ declare(strict_types=1);
 class Util01
 {
     /**
-     * Convertit en GB
-     * @param [string] $text qt à convertir
+     * Convertit en GB. La partie décimale en entrée est ignorée
+     * @param [string] $text qt à convertir ('dd' 'ddG' 'dd g' 'dd.dd' 'dd.ddg)
      * @param [type] $dest unité destination
      * @param [type] $uniteParDefaut unité de $textpar défaut
      * @return string|integer
@@ -17,7 +17,8 @@ class Util01
             $text = preg_replace('/[\x00-\x1F\x7F]/u', '', $text); // sup cara non imprimable
         }
         // le texte est de la forme
-        // ddG, ddGo ..
+        // ddG, ddGo 
+        // dd.ddG, 
         // extraire dd, puis regarder par quoi commence l'unité et la convertie en G
         if(is_numeric($text)) {
             // si'il n'y a pas d'unité, on prend celle par défaut
@@ -28,12 +29,13 @@ class Util01
         );
         // seul Giga et Tera sont acceptés
         //preg_match('/^(\d*)(O|K|M|G|T)/i', $text, $tailleArray);
-
-        preg_match('/^(\d+)([G|T])+[a-z]*$/iU', $text, $tailleArray);
-        if (count($tailleArray) != 3 or !ctype_digit($tailleArray[1])) {
-            $retour = 'convertUnit : "'.$text.'"erreur de syntaxe, mettre un nombre suivi de "GB", "GO" ou "G" ou "T" ... Exemple  "4GB", "512GO", "2T"';
+        //              0        1     2    3     4
+        // 123.45g ['123.45g', '123', '.', '45', 'g']
+        preg_match('/^(\d+)(\.*)(\d*)([G|T])+[a-z]*$/i', $text, $tailleArray);
+        if (count($tailleArray) != 5 or !ctype_digit($tailleArray[1])) {
+            $retour = 'convertUnit : "'.$text.'"erreur de syntaxe, mettre un nombre suivi de "GB", "GO" ou "G" ou "T" ... Exemple  "4GB", "512GO", "2T", "53.2GO"';
         } else {
-            $tailleOctets = $tailleArray[1] * $unit[strtoupper($tailleArray[2])];
+            $tailleOctets = $tailleArray[1] * $unit[strtoupper($tailleArray[4])];
             $retour = $tailleOctets / $unit[strtoupper($dest)];
         }
         return $retour;

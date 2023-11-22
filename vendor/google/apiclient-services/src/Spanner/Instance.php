@@ -20,6 +20,8 @@ namespace Google\Service\Spanner;
 class Instance extends \Google\Collection
 {
   protected $collection_key = 'endpointUris';
+  protected $autoscalingConfigType = AutoscalingConfig::class;
+  protected $autoscalingConfigDataType = '';
   /**
    * @var string
    */
@@ -36,6 +38,12 @@ class Instance extends \Google\Collection
    * @var string[]
    */
   public $endpointUris;
+  protected $freeInstanceMetadataType = FreeInstanceMetadata::class;
+  protected $freeInstanceMetadataDataType = '';
+  /**
+   * @var string
+   */
+  public $instanceType;
   /**
    * @var string[]
    */
@@ -61,6 +69,20 @@ class Instance extends \Google\Collection
    */
   public $updateTime;
 
+  /**
+   * @param AutoscalingConfig
+   */
+  public function setAutoscalingConfig(AutoscalingConfig $autoscalingConfig)
+  {
+    $this->autoscalingConfig = $autoscalingConfig;
+  }
+  /**
+   * @return AutoscalingConfig
+   */
+  public function getAutoscalingConfig()
+  {
+    return $this->autoscalingConfig;
+  }
   /**
    * @param string
    */
@@ -116,6 +138,34 @@ class Instance extends \Google\Collection
   public function getEndpointUris()
   {
     return $this->endpointUris;
+  }
+  /**
+   * @param FreeInstanceMetadata
+   */
+  public function setFreeInstanceMetadata(FreeInstanceMetadata $freeInstanceMetadata)
+  {
+    $this->freeInstanceMetadata = $freeInstanceMetadata;
+  }
+  /**
+   * @return FreeInstanceMetadata
+   */
+  public function getFreeInstanceMetadata()
+  {
+    return $this->freeInstanceMetadata;
+  }
+  /**
+   * @param string
+   */
+  public function setInstanceType($instanceType)
+  {
+    $this->instanceType = $instanceType;
+  }
+  /**
+   * @return string
+   */
+  public function getInstanceType()
+  {
+    return $this->instanceType;
   }
   /**
    * @param string[]

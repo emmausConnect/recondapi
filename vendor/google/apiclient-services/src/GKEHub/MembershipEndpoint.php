@@ -19,10 +19,16 @@ namespace Google\Service\GKEHub;
 
 class MembershipEndpoint extends \Google\Model
 {
+  protected $applianceClusterType = ApplianceCluster::class;
+  protected $applianceClusterDataType = '';
   protected $edgeClusterType = EdgeCluster::class;
   protected $edgeClusterDataType = '';
   protected $gkeClusterType = GkeCluster::class;
   protected $gkeClusterDataType = '';
+  /**
+   * @var bool
+   */
+  public $googleManaged;
   protected $kubernetesMetadataType = KubernetesMetadata::class;
   protected $kubernetesMetadataDataType = '';
   protected $kubernetesResourceType = KubernetesResource::class;
@@ -32,6 +38,20 @@ class MembershipEndpoint extends \Google\Model
   protected $onPremClusterType = OnPremCluster::class;
   protected $onPremClusterDataType = '';
 
+  /**
+   * @param ApplianceCluster
+   */
+  public function setApplianceCluster(ApplianceCluster $applianceCluster)
+  {
+    $this->applianceCluster = $applianceCluster;
+  }
+  /**
+   * @return ApplianceCluster
+   */
+  public function getApplianceCluster()
+  {
+    return $this->applianceCluster;
+  }
   /**
    * @param EdgeCluster
    */
@@ -59,6 +79,20 @@ class MembershipEndpoint extends \Google\Model
   public function getGkeCluster()
   {
     return $this->gkeCluster;
+  }
+  /**
+   * @param bool
+   */
+  public function setGoogleManaged($googleManaged)
+  {
+    $this->googleManaged = $googleManaged;
+  }
+  /**
+   * @return bool
+   */
+  public function getGoogleManaged()
+  {
+    return $this->googleManaged;
   }
   /**
    * @param KubernetesMetadata

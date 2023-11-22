@@ -54,12 +54,18 @@ class UptimeCheckConfig extends \Google\Collection
    * @var string[]
    */
   public $selectedRegions;
+  protected $syntheticMonitorType = SyntheticMonitorTarget::class;
+  protected $syntheticMonitorDataType = '';
   protected $tcpCheckType = TcpCheck::class;
   protected $tcpCheckDataType = '';
   /**
    * @var string
    */
   public $timeout;
+  /**
+   * @var string[]
+   */
+  public $userLabels;
 
   /**
    * @param string
@@ -216,6 +222,20 @@ class UptimeCheckConfig extends \Google\Collection
     return $this->selectedRegions;
   }
   /**
+   * @param SyntheticMonitorTarget
+   */
+  public function setSyntheticMonitor(SyntheticMonitorTarget $syntheticMonitor)
+  {
+    $this->syntheticMonitor = $syntheticMonitor;
+  }
+  /**
+   * @return SyntheticMonitorTarget
+   */
+  public function getSyntheticMonitor()
+  {
+    return $this->syntheticMonitor;
+  }
+  /**
    * @param TcpCheck
    */
   public function setTcpCheck(TcpCheck $tcpCheck)
@@ -242,6 +262,20 @@ class UptimeCheckConfig extends \Google\Collection
   public function getTimeout()
   {
     return $this->timeout;
+  }
+  /**
+   * @param string[]
+   */
+  public function setUserLabels($userLabels)
+  {
+    $this->userLabels = $userLabels;
+  }
+  /**
+   * @return string[]
+   */
+  public function getUserLabels()
+  {
+    return $this->userLabels;
   }
 }
 

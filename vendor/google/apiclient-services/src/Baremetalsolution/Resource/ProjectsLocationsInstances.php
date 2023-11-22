@@ -17,9 +17,13 @@
 
 namespace Google\Service\Baremetalsolution\Resource;
 
+use Google\Service\Baremetalsolution\DetachLunRequest;
+use Google\Service\Baremetalsolution\DisableInteractiveSerialConsoleRequest;
+use Google\Service\Baremetalsolution\EnableInteractiveSerialConsoleRequest;
 use Google\Service\Baremetalsolution\Instance;
 use Google\Service\Baremetalsolution\ListInstancesResponse;
 use Google\Service\Baremetalsolution\Operation;
+use Google\Service\Baremetalsolution\RenameInstanceRequest;
 use Google\Service\Baremetalsolution\ResetInstanceRequest;
 use Google\Service\Baremetalsolution\StartInstanceRequest;
 use Google\Service\Baremetalsolution\StopInstanceRequest;
@@ -29,11 +33,55 @@ use Google\Service\Baremetalsolution\StopInstanceRequest;
  * Typical usage is:
  *  <code>
  *   $baremetalsolutionService = new Google\Service\Baremetalsolution(...);
- *   $instances = $baremetalsolutionService->instances;
+ *   $instances = $baremetalsolutionService->projects_locations_instances;
  *  </code>
  */
 class ProjectsLocationsInstances extends \Google\Service\Resource
 {
+  /**
+   * Detach LUN from Instance. (instances.detachLun)
+   *
+   * @param string $instance Required. Name of the instance.
+   * @param DetachLunRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Operation
+   */
+  public function detachLun($instance, DetachLunRequest $postBody, $optParams = [])
+  {
+    $params = ['instance' => $instance, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('detachLun', [$params], Operation::class);
+  }
+  /**
+   * Disable the interactive serial console feature on an instance.
+   * (instances.disableInteractiveSerialConsole)
+   *
+   * @param string $name Required. Name of the resource.
+   * @param DisableInteractiveSerialConsoleRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Operation
+   */
+  public function disableInteractiveSerialConsole($name, DisableInteractiveSerialConsoleRequest $postBody, $optParams = [])
+  {
+    $params = ['name' => $name, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('disableInteractiveSerialConsole', [$params], Operation::class);
+  }
+  /**
+   * Enable the interactive serial console feature on an instance.
+   * (instances.enableInteractiveSerialConsole)
+   *
+   * @param string $name Required. Name of the resource.
+   * @param EnableInteractiveSerialConsoleRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Operation
+   */
+  public function enableInteractiveSerialConsole($name, EnableInteractiveSerialConsoleRequest $postBody, $optParams = [])
+  {
+    $params = ['name' => $name, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('enableInteractiveSerialConsole', [$params], Operation::class);
+  }
   /**
    * Get details about a single server. (instances.get)
    *
@@ -70,15 +118,16 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
   /**
    * Update details of a single server. (instances.patch)
    *
-   * @param string $name Output only. The resource name of this `Instance`.
-   * Resource names are schemeless URIs that follow the conventions in
+   * @param string $name Immutable. The resource name of this `Instance`. Resource
+   * names are schemeless URIs that follow the conventions in
    * https://cloud.google.com/apis/design/resource_names. Format:
    * `projects/{project}/locations/{location}/instances/{instance}`
    * @param Instance $postBody
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string updateMask The list of fields to update. The only currently
-   * supported fields are: `labels` `hyperthreading_enabled`
+   * @opt_param string updateMask The list of fields to update. The currently
+   * supported fields are: `labels` `hyperthreading_enabled` `os_image` `ssh_keys`
+   * `kms_key_version`
    * @return Operation
    */
   public function patch($name, Instance $postBody, $optParams = [])
@@ -86,6 +135,23 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
     $params = ['name' => $name, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
     return $this->call('patch', [$params], Operation::class);
+  }
+  /**
+   * RenameInstance sets a new name for an instance. Use with caution, previous
+   * names become immediately invalidated. (instances.rename)
+   *
+   * @param string $name Required. The `name` field is used to identify the
+   * instance. Format:
+   * projects/{project}/locations/{location}/instances/{instance}
+   * @param RenameInstanceRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Instance
+   */
+  public function rename($name, RenameInstanceRequest $postBody, $optParams = [])
+  {
+    $params = ['name' => $name, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('rename', [$params], Instance::class);
   }
   /**
    * Perform an ungraceful, hard reset on a server. Equivalent to shutting the

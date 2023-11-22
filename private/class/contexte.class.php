@@ -201,10 +201,16 @@ class Contexte {
     }
 
      /**
-     * Get Class paramIni avec fichier param.ini
+     * Get Class 'paramIni' avec fichier param.ini
      * use getparam() to retreive data
      * 
-     * ex : context->getParamIniCls().getParam()['...']['...']
+     * ex : 
+     *     $ctx = Contexte::getInstance();
+     *     $val = $ctx->getParamIniCls()->getParam()['...']['...']
+     * or
+     *     $ctx = Contexte::getInstance();
+     *     $paramArray = $ctx->getParamIniCls()->getParam();
+     *     $val = $paramArray['...']['...']
      */
     public function getParamIniCls(): ParamIni
     {
@@ -212,10 +218,16 @@ class Contexte {
     }
 
     /**
-     * Get Class paramIni avec fichier paramphp.ini
+     * Get Class 'paramIni' avec fichier paramphp.ini
      * use getparam() to retreive data
      * 
-     * ex : context->getParamPhpIniCls().getParam()['fichiers']['sm_modele_BOLC_xlsx']
+     * ex : 
+     *     $ctx = Contexte::getInstance();
+     *     $val = $ctx->getParamPhpIniCls()->getParam()['...']['...']
+     * or
+     *     $ctx = Contexte::getInstance();
+     *     $paramPhpArray = $ctx->getParamPhpIniCls()->getParam();
+     *     $val = $paramArray['...']['...']
      */
     public function getParamPhpIniCls(): ParamIni
     {

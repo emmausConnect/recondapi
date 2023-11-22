@@ -20,6 +20,7 @@ namespace Google\Service\CloudHealthcare\Resource;
 use Google\Service\CloudHealthcare\ExportMessagesRequest;
 use Google\Service\CloudHealthcare\HealthcareEmpty;
 use Google\Service\CloudHealthcare\Hl7V2Store;
+use Google\Service\CloudHealthcare\Hl7V2StoreMetrics;
 use Google\Service\CloudHealthcare\ImportMessagesRequest;
 use Google\Service\CloudHealthcare\ListHl7V2StoresResponse;
 use Google\Service\CloudHealthcare\Operation;
@@ -33,7 +34,7 @@ use Google\Service\CloudHealthcare\TestIamPermissionsResponse;
  * Typical usage is:
  *  <code>
  *   $healthcareService = new Google\Service\CloudHealthcare(...);
- *   $hl7V2Stores = $healthcareService->hl7V2Stores;
+ *   $hl7V2Stores = $healthcareService->projects_locations_datasets_hl7V2Stores;
  *  </code>
  */
 class ProjectsLocationsDatasetsHl7V2Stores extends \Google\Service\Resource
@@ -107,12 +108,29 @@ class ProjectsLocationsDatasetsHl7V2Stores extends \Google\Service\Resource
     return $this->call('get', [$params], Hl7V2Store::class);
   }
   /**
+   * Gets metrics associated with the HL7v2 store.
+   * (hl7V2Stores.getHL7v2StoreMetrics)
+   *
+   * @param string $name The resource name of the HL7v2 store to get metrics for,
+   * in the format `projects/{project_id}/locations/{location_id}/datasets/{datase
+   * t_id}/hl7V2Stores/{hl7v2_store_id}`.
+   * @param array $optParams Optional parameters.
+   * @return Hl7V2StoreMetrics
+   */
+  public function getHL7v2StoreMetrics($name, $optParams = [])
+  {
+    $params = ['name' => $name];
+    $params = array_merge($params, $optParams);
+    return $this->call('getHL7v2StoreMetrics', [$params], Hl7V2StoreMetrics::class);
+  }
+  /**
    * Gets the access control policy for a resource. Returns an empty policy if the
    * resource exists and does not have a policy set. (hl7V2Stores.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
@@ -219,8 +237,9 @@ class ProjectsLocationsDatasetsHl7V2Stores extends \Google\Service\Resource
   /**
    * Updates the HL7v2 store. (hl7V2Stores.patch)
    *
-   * @param string $name Resource name of the HL7v2 store, of the form
-   * `projects/{project_id}/datasets/{dataset_id}/hl7V2Stores/{hl7v2_store_id}`.
+   * @param string $name Resource name of the HL7v2 store, of the form `projects/{
+   * project_id}/locations/{location_id}/datasets/{dataset_id}/hl7V2Stores/{hl7v2_
+   * store_id}`.
    * @param Hl7V2Store $postBody
    * @param array $optParams Optional parameters.
    *
@@ -241,8 +260,9 @@ class ProjectsLocationsDatasetsHl7V2Stores extends \Google\Service\Resource
    * `PERMISSION_DENIED` errors. (hl7V2Stores.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -262,8 +282,9 @@ class ProjectsLocationsDatasetsHl7V2Stores extends \Google\Service\Resource
    * (hl7V2Stores.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

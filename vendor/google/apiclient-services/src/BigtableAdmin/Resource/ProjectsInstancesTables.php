@@ -34,13 +34,14 @@ use Google\Service\BigtableAdmin\SetIamPolicyRequest;
 use Google\Service\BigtableAdmin\Table;
 use Google\Service\BigtableAdmin\TestIamPermissionsRequest;
 use Google\Service\BigtableAdmin\TestIamPermissionsResponse;
+use Google\Service\BigtableAdmin\UndeleteTableRequest;
 
 /**
  * The "tables" collection of methods.
  * Typical usage is:
  *  <code>
  *   $bigtableadminService = new Google\Service\BigtableAdmin(...);
- *   $tables = $bigtableadminService->tables;
+ *   $tables = $bigtableadminService->projects_instances_tables;
  *  </code>
  */
 class ProjectsInstancesTables extends \Google\Service\Resource
@@ -151,12 +152,14 @@ class ProjectsInstancesTables extends \Google\Service\Resource
     return $this->call('get', [$params], Table::class);
   }
   /**
-   * Gets the access control policy for a Table resource. Returns an empty policy
-   * if the resource exists but does not have a policy set. (tables.getIamPolicy)
+   * Gets the access control policy for a Table or Backup resource. Returns an
+   * empty policy if the resource exists but does not have a policy set.
+   * (tables.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param GetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -215,15 +218,38 @@ class ProjectsInstancesTables extends \Google\Service\Resource
     return $this->call('modifyColumnFamilies', [$params], Table::class);
   }
   /**
-   * Create a new table by restoring from a completed backup. The new table must
-   * be in the same project as the instance containing the backup. The returned
-   * table long-running operation can be used to track the progress of the
-   * operation, and to cancel it. The metadata field type is RestoreTableMetadata.
-   * The response type is Table, if successful. (tables.restore)
+   * Updates a specified table. (tables.patch)
+   *
+   * @param string $name The unique name of the table. Values are of the form
+   * `projects/{project}/instances/{instance}/tables/_a-zA-Z0-9*`. Views:
+   * `NAME_ONLY`, `SCHEMA_VIEW`, `REPLICATION_VIEW`, `STATS_VIEW`, `FULL`
+   * @param Table $postBody
+   * @param array $optParams Optional parameters.
+   *
+   * @opt_param string updateMask Required. The list of fields to update. A mask
+   * specifying which fields (e.g. `change_stream_config`) in the `table` field
+   * should be updated. This mask is relative to the `table` field, not to the
+   * request message. The wildcard (*) path is currently not supported. Currently
+   * UpdateTable is only supported for the following fields: *
+   * `change_stream_config` * `change_stream_config.retention_period` *
+   * `deletion_protection` If `column_families` is set in `update_mask`, it will
+   * return an UNIMPLEMENTED error.
+   * @return Operation
+   */
+  public function patch($name, Table $postBody, $optParams = [])
+  {
+    $params = ['name' => $name, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('patch', [$params], Operation::class);
+  }
+  /**
+   * Create a new table by restoring from a completed backup. The returned table
+   * long-running operation can be used to track the progress of the operation,
+   * and to cancel it. The metadata field type is RestoreTableMetadata. The
+   * response type is Table, if successful. (tables.restore)
    *
    * @param string $parent Required. The name of the instance in which to create
-   * the restored table. This instance must be in the same project as the source
-   * backup. Values are of the form `projects//instances/`.
+   * the restored table. Values are of the form `projects//instances/`.
    * @param RestoreTableRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
@@ -235,12 +261,13 @@ class ProjectsInstancesTables extends \Google\Service\Resource
     return $this->call('restore', [$params], Operation::class);
   }
   /**
-   * Sets the access control policy on a Table resource. Replaces any existing
-   * policy. (tables.setIamPolicy)
+   * Sets the access control policy on a Table or Backup resource. Replaces any
+   * existing policy. (tables.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -252,12 +279,13 @@ class ProjectsInstancesTables extends \Google\Service\Resource
     return $this->call('setIamPolicy', [$params], Policy::class);
   }
   /**
-   * Returns permissions that the caller has on the specified table resource.
-   * (tables.testIamPermissions)
+   * Returns permissions that the caller has on the specified Table or Backup
+   * resource. (tables.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse
@@ -267,6 +295,22 @@ class ProjectsInstancesTables extends \Google\Service\Resource
     $params = ['resource' => $resource, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
     return $this->call('testIamPermissions', [$params], TestIamPermissionsResponse::class);
+  }
+  /**
+   * Restores a specified table which was accidentally deleted. (tables.undelete)
+   *
+   * @param string $name Required. The unique name of the table to be restored.
+   * Values are of the form
+   * `projects/{project}/instances/{instance}/tables/{table}`.
+   * @param UndeleteTableRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Operation
+   */
+  public function undelete($name, UndeleteTableRequest $postBody, $optParams = [])
+  {
+    $params = ['name' => $name, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('undelete', [$params], Operation::class);
   }
 }
 

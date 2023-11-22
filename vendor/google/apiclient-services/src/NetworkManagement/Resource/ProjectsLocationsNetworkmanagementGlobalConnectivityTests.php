@@ -31,7 +31,7 @@ use Google\Service\NetworkManagement\TestIamPermissionsResponse;
  * Typical usage is:
  *  <code>
  *   $networkmanagementService = new Google\Service\NetworkManagement(...);
- *   $connectivityTests = $networkmanagementService->connectivityTests;
+ *   $connectivityTests = $networkmanagementService->projects_locations_global_connectivityTests;
  *  </code>
  */
 class ProjectsLocationsNetworkmanagementGlobalConnectivityTests extends \Google\Service\Resource
@@ -100,8 +100,9 @@ class ProjectsLocationsNetworkmanagementGlobalConnectivityTests extends \Google\
    * (connectivityTests.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
@@ -211,8 +212,9 @@ class ProjectsLocationsNetworkmanagementGlobalConnectivityTests extends \Google\
    * `PERMISSION_DENIED` errors. (connectivityTests.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -232,8 +234,9 @@ class ProjectsLocationsNetworkmanagementGlobalConnectivityTests extends \Google\
    * (connectivityTests.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

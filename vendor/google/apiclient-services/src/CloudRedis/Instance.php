@@ -19,7 +19,7 @@ namespace Google\Service\CloudRedis;
 
 class Instance extends \Google\Collection
 {
-  protected $collection_key = 'serverCaCerts';
+  protected $collection_key = 'suspensionReasons';
   /**
    * @var string
    */
@@ -33,6 +33,10 @@ class Instance extends \Google\Collection
    */
   public $authorizedNetwork;
   /**
+   * @var string[]
+   */
+  public $availableMaintenanceVersions;
+  /**
    * @var string
    */
   public $connectMode;
@@ -44,6 +48,10 @@ class Instance extends \Google\Collection
    * @var string
    */
   public $currentLocationId;
+  /**
+   * @var string
+   */
+  public $customerManagedKey;
   /**
    * @var string
    */
@@ -64,6 +72,10 @@ class Instance extends \Google\Collection
   protected $maintenancePolicyDataType = '';
   protected $maintenanceScheduleType = MaintenanceSchedule::class;
   protected $maintenanceScheduleDataType = '';
+  /**
+   * @var string
+   */
+  public $maintenanceVersion;
   /**
    * @var int
    */
@@ -113,6 +125,10 @@ class Instance extends \Google\Collection
    */
   public $reservedIpRange;
   /**
+   * @var bool
+   */
+  public $satisfiesPzs;
+  /**
    * @var string
    */
   public $secondaryIpRange;
@@ -126,6 +142,10 @@ class Instance extends \Google\Collection
    * @var string
    */
   public $statusMessage;
+  /**
+   * @var string[]
+   */
+  public $suspensionReasons;
   /**
    * @var string
    */
@@ -178,6 +198,20 @@ class Instance extends \Google\Collection
     return $this->authorizedNetwork;
   }
   /**
+   * @param string[]
+   */
+  public function setAvailableMaintenanceVersions($availableMaintenanceVersions)
+  {
+    $this->availableMaintenanceVersions = $availableMaintenanceVersions;
+  }
+  /**
+   * @return string[]
+   */
+  public function getAvailableMaintenanceVersions()
+  {
+    return $this->availableMaintenanceVersions;
+  }
+  /**
    * @param string
    */
   public function setConnectMode($connectMode)
@@ -218,6 +252,20 @@ class Instance extends \Google\Collection
   public function getCurrentLocationId()
   {
     return $this->currentLocationId;
+  }
+  /**
+   * @param string
+   */
+  public function setCustomerManagedKey($customerManagedKey)
+  {
+    $this->customerManagedKey = $customerManagedKey;
+  }
+  /**
+   * @return string
+   */
+  public function getCustomerManagedKey()
+  {
+    return $this->customerManagedKey;
   }
   /**
    * @param string
@@ -302,6 +350,20 @@ class Instance extends \Google\Collection
   public function getMaintenanceSchedule()
   {
     return $this->maintenanceSchedule;
+  }
+  /**
+   * @param string
+   */
+  public function setMaintenanceVersion($maintenanceVersion)
+  {
+    $this->maintenanceVersion = $maintenanceVersion;
+  }
+  /**
+   * @return string
+   */
+  public function getMaintenanceVersion()
+  {
+    return $this->maintenanceVersion;
   }
   /**
    * @param int
@@ -486,6 +548,20 @@ class Instance extends \Google\Collection
     return $this->reservedIpRange;
   }
   /**
+   * @param bool
+   */
+  public function setSatisfiesPzs($satisfiesPzs)
+  {
+    $this->satisfiesPzs = $satisfiesPzs;
+  }
+  /**
+   * @return bool
+   */
+  public function getSatisfiesPzs()
+  {
+    return $this->satisfiesPzs;
+  }
+  /**
    * @param string
    */
   public function setSecondaryIpRange($secondaryIpRange)
@@ -540,6 +616,20 @@ class Instance extends \Google\Collection
   public function getStatusMessage()
   {
     return $this->statusMessage;
+  }
+  /**
+   * @param string[]
+   */
+  public function setSuspensionReasons($suspensionReasons)
+  {
+    $this->suspensionReasons = $suspensionReasons;
+  }
+  /**
+   * @return string[]
+   */
+  public function getSuspensionReasons()
+  {
+    return $this->suspensionReasons;
   }
   /**
    * @param string

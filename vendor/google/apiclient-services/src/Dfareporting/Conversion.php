@@ -19,7 +19,7 @@ namespace Google\Service\Dfareporting;
 
 class Conversion extends \Google\Collection
 {
-  protected $collection_key = 'encryptedUserIdCandidates';
+  protected $collection_key = 'userIdentifiers';
   /**
    * @var bool
    */
@@ -50,6 +50,10 @@ class Conversion extends \Google\Collection
    * @var string
    */
   public $gclid;
+  /**
+   * @var string
+   */
+  public $impressionId;
   /**
    * @var string
    */
@@ -86,6 +90,8 @@ class Conversion extends \Google\Collection
    * @var bool
    */
   public $treatmentForUnderage;
+  protected $userIdentifiersType = UserIdentifier::class;
+  protected $userIdentifiersDataType = 'array';
   public $value;
 
   /**
@@ -199,6 +205,20 @@ class Conversion extends \Google\Collection
   public function getGclid()
   {
     return $this->gclid;
+  }
+  /**
+   * @param string
+   */
+  public function setImpressionId($impressionId)
+  {
+    $this->impressionId = $impressionId;
+  }
+  /**
+   * @return string
+   */
+  public function getImpressionId()
+  {
+    return $this->impressionId;
   }
   /**
    * @param string
@@ -325,6 +345,20 @@ class Conversion extends \Google\Collection
   public function getTreatmentForUnderage()
   {
     return $this->treatmentForUnderage;
+  }
+  /**
+   * @param UserIdentifier[]
+   */
+  public function setUserIdentifiers($userIdentifiers)
+  {
+    $this->userIdentifiers = $userIdentifiers;
+  }
+  /**
+   * @return UserIdentifier[]
+   */
+  public function getUserIdentifiers()
+  {
+    return $this->userIdentifiers;
   }
   public function setValue($value)
   {

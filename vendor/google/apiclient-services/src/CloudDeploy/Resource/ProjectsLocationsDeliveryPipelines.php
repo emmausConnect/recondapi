@@ -21,6 +21,8 @@ use Google\Service\CloudDeploy\DeliveryPipeline;
 use Google\Service\CloudDeploy\ListDeliveryPipelinesResponse;
 use Google\Service\CloudDeploy\Operation;
 use Google\Service\CloudDeploy\Policy;
+use Google\Service\CloudDeploy\RollbackTargetRequest;
+use Google\Service\CloudDeploy\RollbackTargetResponse;
 use Google\Service\CloudDeploy\SetIamPolicyRequest;
 use Google\Service\CloudDeploy\TestIamPermissionsRequest;
 use Google\Service\CloudDeploy\TestIamPermissionsResponse;
@@ -30,7 +32,7 @@ use Google\Service\CloudDeploy\TestIamPermissionsResponse;
  * Typical usage is:
  *  <code>
  *   $clouddeployService = new Google\Service\CloudDeploy(...);
- *   $deliveryPipelines = $clouddeployService->deliveryPipelines;
+ *   $deliveryPipelines = $clouddeployService->projects_locations_deliveryPipelines;
  *  </code>
  */
 class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
@@ -41,7 +43,7 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
    *
    * @param string $parent Required. The parent collection in which the
    * `DeliveryPipeline` should be created. Format should be
-   * projects/{project_id}/locations/{location_name}.
+   * `projects/{project_id}/locations/{location_name}`.
    * @param DeliveryPipeline $postBody
    * @param array $optParams Optional parameters.
    *
@@ -72,8 +74,8 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
    * Deletes a single DeliveryPipeline. (deliveryPipelines.delete)
    *
    * @param string $name Required. The name of the `DeliveryPipeline` to delete.
-   * Format should be projects/{project_id}/locations/{location_name}/deliveryPipe
-   * lines/{pipeline_name}.
+   * Format should be `projects/{project_id}/locations/{location_name}/deliveryPip
+   * elines/{pipeline_name}`.
    * @param array $optParams Optional parameters.
    *
    * @opt_param bool allowMissing Optional. If set to true, then deleting an
@@ -109,8 +111,8 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
    * Gets details of a single DeliveryPipeline. (deliveryPipelines.get)
    *
    * @param string $name Required. Name of the `DeliveryPipeline`. Format must be
-   * projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_n
-   * ame}.
+   * `projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_
+   * name}`.
    * @param array $optParams Optional parameters.
    * @return DeliveryPipeline
    */
@@ -126,8 +128,9 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
    * (deliveryPipelines.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
@@ -155,7 +158,7 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
    * (deliveryPipelines.listProjectsLocationsDeliveryPipelines)
    *
    * @param string $parent Required. The parent, which owns this collection of
-   * pipelines. Format must be projects/{project_id}/locations/{location_name}.
+   * pipelines. Format must be `projects/{project_id}/locations/{location_name}`.
    * @param array $optParams Optional parameters.
    *
    * @opt_param string filter Filter pipelines to be returned. See
@@ -183,7 +186,7 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
    * (deliveryPipelines.patch)
    *
    * @param string $name Optional. Name of the `DeliveryPipeline`. Format is
-   * projects/{project}/ locations/{location}/deliveryPipelines/a-z{0,62}.
+   * `projects/{project}/locations/{location}/deliveryPipelines/a-z{0,62}`.
    * @param DeliveryPipeline $postBody
    * @param array $optParams Optional parameters.
    *
@@ -218,13 +221,31 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
     return $this->call('patch', [$params], Operation::class);
   }
   /**
+   * Creates a `Rollout` to roll back the specified target.
+   * (deliveryPipelines.rollbackTarget)
+   *
+   * @param string $name Required. The `DeliveryPipeline` for which the rollback
+   * `Rollout` should be created. Format should be `projects/{project_id}/location
+   * s/{location_name}/deliveryPipelines/{pipeline_name}`.
+   * @param RollbackTargetRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return RollbackTargetResponse
+   */
+  public function rollbackTarget($name, RollbackTargetRequest $postBody, $optParams = [])
+  {
+    $params = ['name' => $name, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('rollbackTarget', [$params], RollbackTargetResponse::class);
+  }
+  /**
    * Sets the access control policy on the specified resource. Replaces any
    * existing policy. Can return `NOT_FOUND`, `INVALID_ARGUMENT`, and
    * `PERMISSION_DENIED` errors. (deliveryPipelines.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -244,8 +265,9 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
    * (deliveryPipelines.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

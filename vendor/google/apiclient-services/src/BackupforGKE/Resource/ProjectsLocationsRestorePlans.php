@@ -30,7 +30,7 @@ use Google\Service\BackupforGKE\TestIamPermissionsResponse;
  * Typical usage is:
  *  <code>
  *   $gkebackupService = new Google\Service\BackupforGKE(...);
- *   $restorePlans = $gkebackupService->restorePlans;
+ *   $restorePlans = $gkebackupService->projects_locations_restorePlans;
  *  </code>
  */
 class ProjectsLocationsRestorePlans extends \Google\Service\Resource
@@ -39,15 +39,15 @@ class ProjectsLocationsRestorePlans extends \Google\Service\Resource
    * Creates a new RestorePlan in a given location. (restorePlans.create)
    *
    * @param string $parent Required. The location within which to create the
-   * RestorePlan. Format: projects/{project}/locations/{location}
+   * RestorePlan. Format: `projects/locations`
    * @param RestorePlan $postBody
    * @param array $optParams Optional parameters.
    *
    * @opt_param string restorePlanId Required. The client-provided short name for
-   * the RestorePlan resource. This name must: a. be between 1 and 63 characters
-   * long (inclusive) b. consist of only lower-case ASCII letters, numbers, and
-   * dashes c. start with a lower-case letter d. end with a lower-case letter or
-   * number e. be unique within the set of RestorePlans in this location
+   * the RestorePlan resource. This name must: - be between 1 and 63 characters
+   * long (inclusive) - consist of only lower-case ASCII letters, numbers, and
+   * dashes - start with a lower-case letter - end with a lower-case letter or
+   * number - be unique within the set of RestorePlans in this location
    * @return GoogleLongrunningOperation
    */
   public function create($parent, RestorePlan $postBody, $optParams = [])
@@ -60,14 +60,15 @@ class ProjectsLocationsRestorePlans extends \Google\Service\Resource
    * Deletes an existing RestorePlan. (restorePlans.delete)
    *
    * @param string $name Required. Fully qualified RestorePlan name. Format:
-   * projects/{project}/locations/{location}/restorePlans/{restore_plan}
+   * `projects/locations/restorePlans`
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string etag If provided, this value must match the value currently
-   * assigned to the target resource.
-   * @opt_param bool force If set to true, any restores below this restorePlan
-   * will also be deleted. Otherwise, the request will only succeed if the
-   * restorePlan has no restores.
+   * @opt_param string etag Optional. If provided, this value must match the
+   * current value of the target RestorePlan's etag field or the request is
+   * rejected.
+   * @opt_param bool force Optional. If set to true, any Restores below this
+   * RestorePlan will also be deleted. Otherwise, the request will only succeed if
+   * the RestorePlan has no Restores.
    * @return GoogleLongrunningOperation
    */
   public function delete($name, $optParams = [])
@@ -80,7 +81,7 @@ class ProjectsLocationsRestorePlans extends \Google\Service\Resource
    * Retrieve the details of a single RestorePlan. (restorePlans.get)
    *
    * @param string $name Required. Fully qualified RestorePlan name. Format:
-   * projects/{project}/locations/{location}/restorePlans/{restore_plan}
+   * `projects/locations/restorePlans`
    * @param array $optParams Optional parameters.
    * @return RestorePlan
    */
@@ -95,8 +96,9 @@ class ProjectsLocationsRestorePlans extends \Google\Service\Resource
    * resource exists and does not have a policy set. (restorePlans.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
@@ -124,21 +126,22 @@ class ProjectsLocationsRestorePlans extends \Google\Service\Resource
    * (restorePlans.listProjectsLocationsRestorePlans)
    *
    * @param string $parent Required. The location that contains the RestorePlans
-   * to list. Format: projects/{project}/locations/{location}
+   * to list. Format: `projects/locations`
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string filter List filter.
-   * @opt_param string orderBy Sort results.
-   * @opt_param int pageSize The target number of results to return in a single
-   * response. If not specified, a default value will be chosen by the service.
-   * Note that the response may inclue a partial list and a caller should only
-   * rely on the response's next_page_token to determine if there are more
-   * instances left to be queried.
-   * @opt_param string pageToken The value of next_page_token received from a
-   * previous `ListRestorePlans` call. Provide this to retrieve the subsequent
-   * page in a multi-page list of results. When paginating, all other parameters
-   * provided to `ListRestorePlans` must match the call that provided the page
-   * token.
+   * @opt_param string filter Optional. Field match expression used to filter the
+   * results.
+   * @opt_param string orderBy Optional. Field by which to sort the results.
+   * @opt_param int pageSize Optional. The target number of results to return in a
+   * single response. If not specified, a default value will be chosen by the
+   * service. Note that the response may include a partial list and a caller
+   * should only rely on the response's next_page_token to determine if there are
+   * more instances left to be queried.
+   * @opt_param string pageToken Optional. The value of next_page_token received
+   * from a previous `ListRestorePlans` call. Provide this to retrieve the
+   * subsequent page in a multi-page list of results. When paginating, all other
+   * parameters provided to `ListRestorePlans` must match the call that provided
+   * the page token.
    * @return ListRestorePlansResponse
    */
   public function listProjectsLocationsRestorePlans($parent, $optParams = [])
@@ -150,13 +153,13 @@ class ProjectsLocationsRestorePlans extends \Google\Service\Resource
   /**
    * Update a RestorePlan. (restorePlans.patch)
    *
-   * @param string $name Output only. [Output Only] The full name of the
-   * RestorePlan resource. Format: projects/locations/restorePlans
+   * @param string $name Output only. The full name of the RestorePlan resource.
+   * Format: `projects/locations/restorePlans`.
    * @param RestorePlan $postBody
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string updateMask This is used to specify the fields to be
-   * overwritten in the RestorePlan targeted for update. The values for each of
+   * @opt_param string updateMask Optional. This is used to specify the fields to
+   * be overwritten in the RestorePlan targeted for update. The values for each of
    * these updated fields will be taken from the `restore_plan` provided with this
    * request. Field names are relative to the root of the resource. If no
    * `update_mask` is provided, all fields in `restore_plan` will be written to
@@ -177,8 +180,9 @@ class ProjectsLocationsRestorePlans extends \Google\Service\Resource
    * `PERMISSION_DENIED` errors. (restorePlans.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -198,8 +202,9 @@ class ProjectsLocationsRestorePlans extends \Google\Service\Resource
    * (restorePlans.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

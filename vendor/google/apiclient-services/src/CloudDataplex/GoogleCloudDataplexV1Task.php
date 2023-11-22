@@ -33,6 +33,8 @@ class GoogleCloudDataplexV1Task extends \Google\Model
   public $displayName;
   protected $executionSpecType = GoogleCloudDataplexV1TaskExecutionSpec::class;
   protected $executionSpecDataType = '';
+  protected $executionStatusType = GoogleCloudDataplexV1TaskExecutionStatus::class;
+  protected $executionStatusDataType = '';
   /**
    * @var string[]
    */
@@ -41,6 +43,8 @@ class GoogleCloudDataplexV1Task extends \Google\Model
    * @var string
    */
   public $name;
+  protected $notebookType = GoogleCloudDataplexV1TaskNotebookTaskConfig::class;
+  protected $notebookDataType = '';
   protected $sparkType = GoogleCloudDataplexV1TaskSparkTaskConfig::class;
   protected $sparkDataType = '';
   /**
@@ -115,6 +119,20 @@ class GoogleCloudDataplexV1Task extends \Google\Model
     return $this->executionSpec;
   }
   /**
+   * @param GoogleCloudDataplexV1TaskExecutionStatus
+   */
+  public function setExecutionStatus(GoogleCloudDataplexV1TaskExecutionStatus $executionStatus)
+  {
+    $this->executionStatus = $executionStatus;
+  }
+  /**
+   * @return GoogleCloudDataplexV1TaskExecutionStatus
+   */
+  public function getExecutionStatus()
+  {
+    return $this->executionStatus;
+  }
+  /**
    * @param string[]
    */
   public function setLabels($labels)
@@ -141,6 +159,20 @@ class GoogleCloudDataplexV1Task extends \Google\Model
   public function getName()
   {
     return $this->name;
+  }
+  /**
+   * @param GoogleCloudDataplexV1TaskNotebookTaskConfig
+   */
+  public function setNotebook(GoogleCloudDataplexV1TaskNotebookTaskConfig $notebook)
+  {
+    $this->notebook = $notebook;
+  }
+  /**
+   * @return GoogleCloudDataplexV1TaskNotebookTaskConfig
+   */
+  public function getNotebook()
+  {
+    return $this->notebook;
   }
   /**
    * @param GoogleCloudDataplexV1TaskSparkTaskConfig

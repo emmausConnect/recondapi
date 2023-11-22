@@ -19,11 +19,9 @@ function fct($data) {
     return $data;
 }
 $fct = 'fct';
-
-//$paramArray    = ParamIni::getInstance($path_private_config.'/param.ini')->getParam();
-//$paramPhpArray = ParamIni::getInstance($path_private_config.'/paramphp.ini')->getParam();
-$paramArray    = $g_contexte_instance->getParamIniCls()->getParam();
-$paramPhpArray = $g_contexte_instance->getParamPhpIniCls()->getParam();
+$ctx = Contexte::getInstance();
+$paramArray    = $ctx->getParamIniCls()->getParam();
+$paramPhpArray = $ctx->getParamPhpIniCls()->getParam();
 
 $supressSpaces = "on";
 $marque        = trim(getPostValue('marque',' '));
@@ -105,7 +103,7 @@ if ($marque == "") {
             if (is_numeric($ponderationValue)) {
                 $ponderationValue = (int) $ponderationValue;
                 $ponderationValue = (string) $ponderationValue;
-                $ponderationKey   = (string) $g_contexte_instance->getParamIniCls()->getParamName('smselectponderation',$ponderationValue);
+                $ponderationKey   = (string) $ctx->getParamIniCls()->getParamName('smselectponderation',$ponderationValue);
             }
 
             $imei     = $explodeCsv[16] ;
@@ -113,15 +111,13 @@ if ($marque == "") {
 
             $statutValue = $explodeCsv[15] ;
             if ($statutValue != "") {
-                $statutKey = (string) $g_contexte_instance->getParamIniCls()->getParamName('smselectstatut',$statutValue);
+                $statutKey = (string) $ctx->getParamIniCls()->getParamName('smselectstatut',$statutValue);
             }
 
             $osf =  $explodeCsv[17] ;
 
             $batterieStatut = strtoupper($explodeCsv[18]) ;
-            // if ($batterieStatut != "") {
-            //     $statutKey = (string) $g_contexte_instance->getParamIniCls()->getParamName('smselectstatut',$statutValue);
-            // }
+
         }else{
             $errmsg .= "<hr>le champ csv contient " .count($explodeCsv). " postes. Il devrait en contenir 4. Il y a peut être des virgules dans les valeurs :";
             $tempcsv = str_replace(",", '<span style="background-color: red;">,</span>', $incsv );
@@ -667,7 +663,7 @@ $htmlpage .= <<<"EOT"
         if (marque.toLowerCase() != marque2.toLowerCase() || ram != ram2 || stockage != stockage2) {
             buttonDiv.innerHTML = '<span style="color: red">Copie impossible : marque, ram et stockage doivent être identiques</span><br>';
         }else{
-            let innerHTML = 'Voulez-vous ajouter ce nouveau modèle de '+marque+' dans la base<br>';
+            let innerHTML = 'Voulez-vous ajouter ce smartphone : <b>'+marque+' '+modele+ ' ram=' +ram+ ' stockage=' +stockage+ ' indice=' +indice2+ '</b> dans la base<br>';
             innerHTML    += 'votre nom : <input type="text" id="'+modalPrefix+'_username"><br>';
             innerHTML    += '<button onclick="copyInDb()">ajouter</button><br>';
             buttonDiv.innerHTML = innerHTML;
@@ -732,7 +728,7 @@ $htmlpage .= <<<"EOT"
             <input type="text" id="marque" name="marque" class="inputForm" value="{$htmlentities($marque)}">&nbsp;$marqueMsg<br>
             <label class="shortLabel" for="modele">Modèle</label>
             <input type="text" id="modele" name="modele" class="inputForm" value="{$htmlentities($modele)}">&nbsp;$modeleMsg
-            <button id ="btnKimovil" type="button" onclick="searchKimovil()">Kimovil</button><br>
+            <button id ="btnKimovil" type="button" onclick="searchKimovil()" title="Affiche la page Kimovil pour la marque et modèle">Kimovil</button><br>
             <label class="shortLabel" for="ram">Ram Go</label>
             <input type="number" min="0" step="1" id="ram" name="ram" class="inputForm" value="{$htmlentities($ram)}">&nbsp;$ramMsg<br>
             <label class="shortLabel" for="stockage">Stockage Go</label>
@@ -768,7 +764,7 @@ $htmlpage .= <<<"EOT"
             &nbsp;$batterieMsg<br>
             </div><!-- div container du form -->
 EOT;
-if ($g_contexte_instance->isConnected()) {
+if ($ctx->isConnected()) {
     $htmlpage .= <<<"EOT"
             <div style="border:1px solid;padding: 10px;width: 600px;" class="input">
                 <b>Pour MARC V.  </b>
@@ -922,7 +918,7 @@ $htmlpage .= '</div>';
     //=========================================================
     //=== smartphone NON trouvé
     //=========================================================
-    //if (! $errInForm) {
+    if ($marque !== "") {
         // la recherche a échouée affichage des modèles 
         $marqueGrey = setSpaceGrey($marque);
         $htmlpage .= '<hr><h3>Smartphones de la marque <span style="text-decoration: underline;">'.$marque.'</span>';
@@ -937,7 +933,7 @@ $htmlpage .= '</div>';
             $htmlpage .= '<div id="div_03" style="width:1000px; border-style: solid; border-width: 1px;">';
             $htmlpage .= '<table id="sm_modele_table" style="width:820px">';
             $htmlpage .= '<thead>';
-            $htmlpage .= "<tr><th>Modele</th><th>Ram</th><th>Stockage</th><th>Indice</th><th>Catégorie</th><th>Web</th><th>Copier</th></tr>";
+            $htmlpage .= "<tr><th>Modele</th><th>Ram</th><th>Stockage</th><th>Indice</th><th>Catégorie</th><th>Web</th><th>Cloner</th></tr>";
             $htmlpage .= '</thead>';
             $htmlpage .= '<tfoot>';
             $htmlpage .= '<tr>';
@@ -976,54 +972,6 @@ $htmlpage .= '</div>';
             $htmlpage .= '</div>';
         }
         //=========================================================
-        //=== Modèles de smartphones pour la marque ram stockage
-        //=========================================================
-        if (false) {
-            $htmlpage .= '<hr><h3>Modèle de la marque <span style="text-decoration: underline;">'.$marque.'</span>';
-            $htmlpage .= ', ram = <span style="text-decoration: underline;">'.$ram.'</span> et';
-            $htmlpage .= ' et stockage = <span style="text-decoration: underline;">'.$stockage.'</span>';
-            $htmlpage .= '</h3>';
-            $htmlpage .= '<div id="div_03a" style="width:1000px; border-style: solid; border-width: 1px;">';
-            $htmlpage .= '<table id="sm_modele_ram_stk_table" style="width:820px">';
-            $htmlpage .= '<thead>';
-            $htmlpage .= "<tr><th>Marque</th><th>Modele</th><th>Ram</th><th>Stockage</th><th>Indice</th><th>Catégorie</th><th>URL</th><th>Choix</th></tr>";
-            $htmlpage .= '</thead>';
-            $htmlpage .= '<tfoot>';
-            $htmlpage .= '<tr>';
-            $htmlpage .= '<th><input class="marqueWidth"></th>';
-            $htmlpage .= '<th><input class="modeleWidth"></th>';
-            $htmlpage .= '<th><input class="ramWidth"></th>';
-            $htmlpage .= '<th><input class="stockageWidth"></th>';
-            $htmlpage .= '<th><input class="indiceWidth"></th>';
-            $htmlpage .= '<th>&nbsp;</th>';
-            $htmlpage .= '<th>&nbsp;</th>';
-            $htmlpage .= '<th>&nbsp;</th>';
-            $htmlpage .= '</tr>';
-            $htmlpage .= '</tfoot>';
-            $htmlpage .= '<tbody>';
-            $evalSmTemp  = EvaluationSm::getInstance();
-            foreach($modelesForMarqueRamStk as $m) {
-                $note      = $evalSmTemp->calculCategorie($m['ram'], $m['stockage'], $m['indice'] );
-                $htmlpage .= '<tr>';
-                $htmlpage .= "<td>".htmlentities($m['marque'])."</td>";
-                $htmlpage .= '<td class="marque">'.htmlentities($m['modele']).'</td>';
-                $htmlpage .= '<td style="text-align: right;">'.$m['ram']."</td>";
-                $htmlpage .= '<td style="text-align: right;">'.$m['stockage']."</td>";
-                $htmlpage .= '<td style="text-align: right;">'.$m['indice']."</td>";
-                $htmlpage .= '<td style="text-align: right;">'.$note['categorieApha']."</td>";
-                $htmlpage .= '<td>'.getUrlInchor($m['url']).'</td>'; 
-                $htmlpage .= '<td>';
-                $htmlpage .=  makeSetDuplicationModalButton($m, $note);
-                $htmlpage .= '</td>';
-                $htmlpage .= '</tr>';
-            }
-            $htmlpage .= '</tbody>';
-            $htmlpage .= '</table>';
-            $htmlpage .= '</div>';
-        }
-    
-
-        //=========================================================
         //=== Modèles de smartphones pour la marque 
         //=========================================================
         $htmlpage .= '<br><hr><h3>Modèles de smartphones pour la marque <span style="text-decoration: underline;">'.$marque.'</span>';
@@ -1055,23 +1003,24 @@ $htmlpage .= '</div>';
             $htmlpage .= "</tbody></table>";
             $htmlpage .= '</div>';
         }
-            $htmlpage .= "<h3><b>Liste des marques</b></h3>";
-            $htmlpage .= '<div id="div_05" style="width:1000px; border-style: solid; border-width: 1px;">';
-            $htmlpage .= '<table style="width:820px">';
-            $htmlpage .= "<thead>";
-            $htmlpage .= '<tr><th>Marque</th></tr>';
-            $htmlpage .= "</thead>";
-            $htmlpage .= "<tbody>";
+    }
+        $htmlpage .= "<h3><b>Marques dans notre base de données</b></h3>";
+        $htmlpage .= '<div id="div_05" style="width:1000px; border-style: solid; border-width: 1px;">';
+        $htmlpage .= '<table style="width:820px">';
+        $htmlpage .= "<thead>";
+        $htmlpage .= '<tr><th>Marque</th></tr>';
+        $htmlpage .= "</thead>";
+        $htmlpage .= "<tbody>";
 
-            foreach($listeMarque as $t_marque) {
-                $htmlpage .= "<tr>";
-                $htmlpage .= "<td>".htmlentities($t_marque)."</td>";
-               $htmlpage .= "</tr>";
-            }
-            $htmlpage .= "</tbody></table>";
-            $htmlpage .= '</div>';
+        foreach($listeMarque as $t_marque) {
+            $htmlpage .= "<tr>";
+            $htmlpage .= "<td>".htmlentities($t_marque)."</td>";
+            $htmlpage .= "</tr>";
+        }
+        $htmlpage .= "</tbody></table>";
+        $htmlpage .= '</div>';
       
-    //}
+
 
 }
 // div duplication d'un smartphone
@@ -1083,11 +1032,10 @@ $htmlpage .= <<<"EOT"
         <span id = "chooseSm_close" class="close">&times;</span>
         <hr>
         Vous avez cherché un smartphone inconnu dans la base et vous en avez sélectionné un pour remplacer votre sélection.<br>
-        Vous pouvez simplement utiliser l'indice et la catégorie de celui que vous avez trouvé<br>
+        Vous pouvez simplement utiliser l'indice et la catégorie de celui que vous avez trouvé.<br>
         <br>
-        Mais si votre smartphone est un homonime de celui que vous avez sélectionne (car certains smartphone ont plusieurs nom de modèle),<br>
-        <br>
-        <b>Merci de compléter notre base de données</b> en créant une copie avec le nom de modèle de celui que vous avez en main<br>
+        Mais si votre smartphone est un homonime de celui que vous avez sélectionné (car certains smartphone ont plusieurs nom de modèle),<br>
+        <b>Merci de compléter notre base de données</b> en créant une copie avec le nom de modèle de celui que vous avez en main.<br>
         Cela facilitera le travail de vos collègues et les traitements de masse automatisés (excel)<br>
         &nbsp;&nbsp; (la copie n'est possible que si marque, ram et stockage sont identiques)<br>
         <br>

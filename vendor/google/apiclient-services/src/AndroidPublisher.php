@@ -23,7 +23,9 @@ use Google\Client;
  * Service definition for AndroidPublisher (v3).
  *
  * <p>
- * Lets Android application developers access their Google Play accounts.</p>
+ * Lets Android application developers access their Google Play accounts. At a
+ * high level, the expected workflow is to "insert" an Edit, make changes as
+ * necessary, and then "commit" it.</p>
  *
  * <p>
  * For more information about this service, see the API
@@ -50,14 +52,19 @@ class AndroidPublisher extends \Google\Service
   public $edits_listings;
   public $edits_testers;
   public $edits_tracks;
+  public $externaltransactions;
   public $generatedapks;
   public $grants;
   public $inappproducts;
   public $internalappsharingartifacts;
   public $monetization;
+  public $monetization_subscriptions;
+  public $monetization_subscriptions_basePlans;
+  public $monetization_subscriptions_basePlans_offers;
   public $orders;
   public $purchases_products;
   public $purchases_subscriptions;
+  public $purchases_subscriptionsv2;
   public $purchases_voidedpurchases;
   public $reviews;
   public $systemapks_variants;
@@ -313,6 +320,10 @@ class AndroidPublisher extends \Google\Service
                 'ackBundleInstallationWarning' => [
                   'location' => 'query',
                   'type' => 'boolean',
+                ],
+                'deviceTierConfigId' => [
+                  'location' => 'query',
+                  'type' => 'string',
                 ],
               ],
             ],
@@ -860,7 +871,22 @@ class AndroidPublisher extends \Google\Service
         'tracks',
         [
           'methods' => [
-            'get' => [
+            'create' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/edits/{editId}/tracks',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'packageName' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'editId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'get' => [
               'path' => 'androidpublisher/v3/applications/{packageName}/edits/{editId}/tracks/{track}',
               'httpMethod' => 'GET',
               'parameters' => [
@@ -930,6 +956,50 @@ class AndroidPublisher extends \Google\Service
                   'required' => true,
                 ],
                 'track' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],
+          ]
+        ]
+    );
+    $this->externaltransactions = new AndroidPublisher\Resource\Externaltransactions(
+        $this,
+        $this->serviceName,
+        'externaltransactions',
+        [
+          'methods' => [
+            'createexternaltransaction' => [
+              'path' => 'androidpublisher/v3/{+parent}/externalTransactions',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'parent' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'externalTransactionId' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
+            ],'getexternaltransaction' => [
+              'path' => 'androidpublisher/v3/{+name}',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'refundexternaltransaction' => [
+              'path' => 'androidpublisher/v3/{+name}:refund',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'name' => [
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
@@ -1196,6 +1266,413 @@ class AndroidPublisher extends \Google\Service
           ]
         ]
     );
+    $this->monetization_subscriptions = new AndroidPublisher\Resource\MonetizationSubscriptions(
+        $this,
+        $this->serviceName,
+        'subscriptions',
+        [
+          'methods' => [
+            'archive' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/subscriptions/{productId}:archive',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'packageName' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'productId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'create' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/subscriptions',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'packageName' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'productId' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+                'regionsVersion.version' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
+            ],'delete' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/subscriptions/{productId}',
+              'httpMethod' => 'DELETE',
+              'parameters' => [
+                'packageName' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'productId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'get' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/subscriptions/{productId}',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'packageName' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'productId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'list' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/subscriptions',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'packageName' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'pageSize' => [
+                  'location' => 'query',
+                  'type' => 'integer',
+                ],
+                'pageToken' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+                'showArchived' => [
+                  'location' => 'query',
+                  'type' => 'boolean',
+                ],
+              ],
+            ],'patch' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/subscriptions/{productId}',
+              'httpMethod' => 'PATCH',
+              'parameters' => [
+                'packageName' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'productId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'regionsVersion.version' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+                'updateMask' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
+            ],
+          ]
+        ]
+    );
+    $this->monetization_subscriptions_basePlans = new AndroidPublisher\Resource\MonetizationSubscriptionsBasePlans(
+        $this,
+        $this->serviceName,
+        'basePlans',
+        [
+          'methods' => [
+            'activate' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/subscriptions/{productId}/basePlans/{basePlanId}:activate',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'packageName' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'productId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'basePlanId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'deactivate' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/subscriptions/{productId}/basePlans/{basePlanId}:deactivate',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'packageName' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'productId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'basePlanId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'delete' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/subscriptions/{productId}/basePlans/{basePlanId}',
+              'httpMethod' => 'DELETE',
+              'parameters' => [
+                'packageName' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'productId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'basePlanId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'migratePrices' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/subscriptions/{productId}/basePlans/{basePlanId}:migratePrices',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'packageName' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'productId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'basePlanId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],
+          ]
+        ]
+    );
+    $this->monetization_subscriptions_basePlans_offers = new AndroidPublisher\Resource\MonetizationSubscriptionsBasePlansOffers(
+        $this,
+        $this->serviceName,
+        'offers',
+        [
+          'methods' => [
+            'activate' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/subscriptions/{productId}/basePlans/{basePlanId}/offers/{offerId}:activate',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'packageName' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'productId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'basePlanId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'offerId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'create' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/subscriptions/{productId}/basePlans/{basePlanId}/offers',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'packageName' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'productId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'basePlanId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'offerId' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+                'regionsVersion.version' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
+            ],'deactivate' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/subscriptions/{productId}/basePlans/{basePlanId}/offers/{offerId}:deactivate',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'packageName' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'productId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'basePlanId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'offerId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'delete' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/subscriptions/{productId}/basePlans/{basePlanId}/offers/{offerId}',
+              'httpMethod' => 'DELETE',
+              'parameters' => [
+                'packageName' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'productId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'basePlanId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'offerId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'get' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/subscriptions/{productId}/basePlans/{basePlanId}/offers/{offerId}',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'packageName' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'productId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'basePlanId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'offerId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'list' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/subscriptions/{productId}/basePlans/{basePlanId}/offers',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'packageName' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'productId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'basePlanId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'pageSize' => [
+                  'location' => 'query',
+                  'type' => 'integer',
+                ],
+                'pageToken' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
+            ],'patch' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/subscriptions/{productId}/basePlans/{basePlanId}/offers/{offerId}',
+              'httpMethod' => 'PATCH',
+              'parameters' => [
+                'packageName' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'productId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'basePlanId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'offerId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'regionsVersion.version' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+                'updateMask' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
+            ],
+          ]
+        ]
+    );
     $this->orders = new AndroidPublisher\Resource\Orders(
         $this,
         $this->serviceName,
@@ -1233,6 +1710,26 @@ class AndroidPublisher extends \Google\Service
           'methods' => [
             'acknowledge' => [
               'path' => 'androidpublisher/v3/applications/{packageName}/purchases/products/{productId}/tokens/{token}:acknowledge',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'packageName' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'productId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'token' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'consume' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/purchases/products/{productId}/tokens/{token}:consume',
               'httpMethod' => 'POST',
               'parameters' => [
                 'packageName' => [
@@ -1391,6 +1888,31 @@ class AndroidPublisher extends \Google\Service
                   'required' => true,
                 ],
                 'subscriptionId' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'token' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],
+          ]
+        ]
+    );
+    $this->purchases_subscriptionsv2 = new AndroidPublisher\Resource\PurchasesSubscriptionsv2(
+        $this,
+        $this->serviceName,
+        'subscriptionsv2',
+        [
+          'methods' => [
+            'get' => [
+              'path' => 'androidpublisher/v3/applications/{packageName}/purchases/subscriptionsv2/tokens/{token}',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'packageName' => [
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,

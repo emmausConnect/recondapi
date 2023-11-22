@@ -31,7 +31,7 @@ use Google\Service\Dataproc\TestIamPermissionsResponse;
  * Typical usage is:
  *  <code>
  *   $dataprocService = new Google\Service\Dataproc(...);
- *   $operations = $dataprocService->operations;
+ *   $operations = $dataprocService->projects_regions_operations;
  *  </code>
  */
 class ProjectsRegionsOperations extends \Google\Service\Resource
@@ -93,8 +93,9 @@ class ProjectsRegionsOperations extends \Google\Service\Resource
    * resource exists and does not have a policy set. (operations.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See Resource names
+   * (https://cloud.google.com/apis/design/resource_names) for the appropriate
+   * value for this field.
    * @param GetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -107,13 +108,7 @@ class ProjectsRegionsOperations extends \Google\Service\Resource
   }
   /**
    * Lists operations that match the specified filter in the request. If the
-   * server doesn't support this method, it returns UNIMPLEMENTED.NOTE: the name
-   * binding allows API services to override the binding to use different resource
-   * name schemes, such as users/operations. To override the binding, API services
-   * can add a binding such as "/v1/{name=users}/operations" to their service
-   * configuration. For backwards compatibility, the default name includes the
-   * operations collection id, however overriding users must ensure the name
-   * binding is the parent resource, without the operations collection id.
+   * server doesn't support this method, it returns UNIMPLEMENTED.
    * (operations.listProjectsRegionsOperations)
    *
    * @param string $name The name of the operation's parent resource.
@@ -136,8 +131,9 @@ class ProjectsRegionsOperations extends \Google\Service\Resource
    * errors. (operations.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See Resource names
+   * (https://cloud.google.com/apis/design/resource_names) for the appropriate
+   * value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -157,8 +153,9 @@ class ProjectsRegionsOperations extends \Google\Service\Resource
    * (operations.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See Resource names
+   * (https://cloud.google.com/apis/design/resource_names) for the appropriate
+   * value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

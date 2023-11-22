@@ -132,7 +132,17 @@ class Container extends \Google\Service
         'clusters',
         [
           'methods' => [
-            'completeIpRotation' => [
+            'checkAutopilotCompatibility' => [
+              'path' => 'v1/{+name}:checkAutopilotCompatibility',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'completeIpRotation' => [
               'path' => 'v1/{+name}:completeIpRotation',
               'httpMethod' => 'POST',
               'parameters' => [
@@ -354,7 +364,17 @@ class Container extends \Google\Service
         'nodePools',
         [
           'methods' => [
-            'create' => [
+            'completeUpgrade' => [
+              'path' => 'v1/{+name}:completeUpgrade',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'create' => [
               'path' => 'v1/{+parent}/nodePools',
               'httpMethod' => 'POST',
               'parameters' => [
