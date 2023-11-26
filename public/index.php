@@ -160,7 +160,8 @@ $actiontodo = [
     'exgetsmartphoneslist.php'    => '../private/php/smartphones/getsmartphoneslist.php',
     'exaddindb.php'               => '../private/php/smartphones/addindb.php',
     'exformexcelsm.php'           => '../private/php/smartphones/formexcelsm.php',
-    'extrtexcelsm.php'            => '../private/php/smartphones/trtexcelsm.php'
+    'extrtexcelsm.php'            => '../private/php/smartphones/trtexcelsm.php',
+    "exapievalsm.php"             => '../private/php/smartphones/apievalsm.php', 
 ];
 
 // echo "<pre>";

@@ -239,7 +239,7 @@ class TrtExcelPc {
         $fileNameInput = $_FILES["upfile"]["name"];
         $this->logger->addLogDebugLine($fileNameInput, '==== trt du fichier ======================================');
         //$fileNameInputExt = pathinfo($fileNameInput, PATHINFO_EXTENSION);
-        $fileNameOrig = $horodate.'_'.$fileNameInput;
+        $fileNameOrig = $horodate.'_pc_o_'.$fileNameInput;
         $destDir  = __DIR__."/../../public/upload/";
         $destUrl  = "upload/";
         $destFileOrg = $destDir.$fileNameOrig;
@@ -409,7 +409,7 @@ class TrtExcelPc {
             // ********* MAJ de l'excel soumis ***************************************************
             // ***********************************************************************************
             $writer = new Xlsx($spreadsheet);
-            $fileResultName = $horodate.'_r_'.$fileNameInput;
+            $fileResultName = $horodate.'_pc_r_'.$fileNameInput;
             //$fileResult = $destDir. $fileResultName;
             $writer->save($destDir. $fileResultName);
  
@@ -486,7 +486,7 @@ class TrtExcelPc {
             }
 
             $writerNorm = new Xlsx($spreadsheetNorm);
-            $fileResultNameNorm = $horodate.'_n_'.$fileNameInput;
+            $fileResultNameNorm = $horodate.'_pc_n_'.$fileNameInput;
             //$fileResult = $destDir. $fileResultName;
             $writerNorm->save($destDir. $fileResultNameNorm);
 

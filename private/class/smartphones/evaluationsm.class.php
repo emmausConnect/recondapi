@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once 'smartphone.class.php';
+require_once 'utilsm.class.php';
 $path_private_class = $g_contexte_instance->getPath('private/class');
 $path_private       = $g_contexte_instance->getPath('private');
 //require_once $path_private_class.'/paramini.class.php';
@@ -52,7 +53,13 @@ class EvaluationSm {
         $c->paramArray = $ctx->getParamIniCls()->getParam();
         return $c;
     }
-    
+
+    /**
+     * UCatégorise un smartphone.
+     * Si RAM et Stockage sont nul => retrouve uniquement l'indice du modèle
+     *
+     * @return self
+     */
     function evalSmartphone()  : self {
         $errMsg = "";
         $tailleRamCvt      = $this->sm->getRamGo();
@@ -62,49 +69,18 @@ class EvaluationSm {
             $errMsg = "Ram ou Stockage incorrect";
         }else{
             if ($this->sm->getMarque() != "EMMAUSCONNECT") {
-                // recherche dans la BBD
-                $dbInstance = DbManagement::getInstance();
-                $db = $dbInstance->openDb();
-                $tableName = $dbInstance->tableName('smartphones');
-                $sqlQuery = "SELECT * from $tableName 
-                    where marque=:marque and modele=:modele and ram=:ram and stockage=:stockage;";
-                $stmt = $db->prepare($sqlQuery);
-                $stmt->execute([
-                    'marque'   => formatKey($this->sm->getMarque(),$this->supressSpacesBool),
-                    'modele'   => formatKey($this->sm->getModele(),$this->supressSpacesBool),
-                    'ram'      => formatKey($tailleRamCvt,$this->supressSpacesBool),
-                    'stockage' => formatKey($this->sm->getStockage(),$this->supressSpacesBool)
-                    ]);
-                $smRow = $stmt->fetch(PDO::FETCH_ASSOC);
-                if (!$smRow) {
-                    // on recherche sur le modèle sans espaces
-                    $sqlQuery = "SELECT * from $tableName 
-                    where marque=:marque and modele_ns=:modele_ns and ram=:ram and stockage=:stockage;";
-                    $stmt = $db->prepare($sqlQuery);
-                    $stmt->execute([
-                        'marque'   => formatKey($this->sm->getMarque(),$this->supressSpacesBool),
-                        'modele_ns'   => str_replace(" ","",$this->sm->getModele()),
-                        'ram'      => formatKey($tailleRamCvt,$this->supressSpacesBool),
-                        'stockage' => formatKey($this->sm->getStockage(),$this->supressSpacesBool)
-                                        ]);
-                    $smRow = $stmt->fetch(PDO::FETCH_ASSOC);
-                }
+                // un vrai smartphone
+                $smRow = UtilSm::getSmartphoneRow($this->sm->getMarque(), $this->sm->getModele(), $this->sm->getRam(), $this->sm->getStockage(), $this->supressSpacesBool);
                 if ($smRow) {
                     $this->smRowFound  = true;
                     $this->smRow = $smRow;
-                    //$indice      = $smRow['indice'];
-                    // print_r($smRow);
-                    // var_dump($smRow);
-                    // echo $smRow['indice'];
-                    // echo gettype($smRow['indice']);
                     $this->indice = $smRow['indice'];
-                    //exit(1);
                     $this->calculCategorie($this->sm->getRam(), $this->sm->getStockage(), $this->getIndice(), $this->sm->getPonderationValue() );
                 }else{
                     $errMsg .= "Il n'y a aucun modèle dans la base avec les critères spécifiés<br>.";
                     $errMsg .= 'marque ['.$this->sm->getMarque().'] modele ['.$this->sm->getModele().'] ram ['.$tailleRamCvt.'] stockage ['.$tailleStockageCvt.']<br>';
-                    $errMsg .= "Pensez à cocher la case 'Supprimer les espaces en trop<br>";
-                    $errMsg .= "Pensez aussi à changer les chiffres romains en chiffres arabes.";
+                    //$errMsg .= "Pensez à cocher la case 'Supprimer les espaces en trop<br>";
+                    //$errMsg .= "Pensez aussi à changer les chiffres romains en chiffres arabes.";
                 }
             }else{
                 // on utilise un indice en constante qui est dans le modèle
@@ -216,6 +192,28 @@ class EvaluationSm {
         ];
     }
 
+    /**
+     * recherche uniquement l'indice de $this->sm
+     *
+     * @return self
+     */
+    function evalIndice()  : self {
+        $errMsg = '';
+        $smRow = UtilSm::getIndice($this->sm->getMarque(), $this->sm->getModele(), $this->supressSpacesBool);
+        if (! $smRow) {
+            $errMsg .= "Indice non trouvé pour la marque [" .$this->marque. '] et le modèle ['.$this->modele.']';
+        }else{
+            $indice = $smRow['indice'];
+            $this->smRow = $smRow;
+            $this->indice = $smRow['indice'];
+            $indicePlages         = $this->paramArray['smindice'];
+            $noteIndice   = searchIndice($indicePlages, $indice);
+            $this->noteIndice = $noteIndice;
+        }
+        $this->errMsg = $errMsg;
+        return $this;
+    }
+
     function getSmPlages($paramArray) {
         $ramPlages       = $paramArray['smram'];
         $stockagePlages  = $paramArray['smstockage'];
@@ -226,34 +224,25 @@ class EvaluationSm {
         return [$ramPlages, $stockagePlages, $indicePlages, $categoriePlages, $categoriePlagesAlpha];
     }
 
-
-    //******************************************************************* */
-	function __call($name, $arguments)
-    {
-        throw new Exception("Appel de la méthode non statique inconnue : $name, param : ". implode(', ', $arguments). "\n");
+    public function getResultAsArray() : array {
+        $retour = [];
+        $retour['marque']         = $this->getSm()->getMarque();
+        $retour['modele']         = $this->getSm()->getModele();
+        $retour['ram']            = $this->getSm()->getRam();
+        $retour['noteRam']        = $this->getNoteRam();
+        $retour['stockage']       = $this->getSm()->getStockage();
+        $retour['noteStockage']   = $this->getNoteStockage();
+        $retour['indice']         = $this->getIndice();
+        $retour['noteIndice']     = $this->getNoteIndice();
+        $retour['noteTotale']     = $this->getNoteTotale();
+        $retour['categorieApha']  = $this->getCategorieApha();
+        $retour['ponderation']    = $this->getPonderation();
+        $retour['notePondere']    = $this->getNotePondere();
+        $retour['categoriePondereAlpha'] = $this->getCategoriePondereAlpha();
+        return $retour;
     }
 
-    static function __callStatic($name, $arguments)
-    {
-        throw new Exception("Appel de la méthode statique inconnue : $name, param : ". implode(', ', $arguments). "\n");
-    }
-
-    function __set($name, $value)
-    {
-        throw new Exception("Set d'une propriété inconnue : $name, param : $value");
-    }
-
-    function __get($name)
-    {
-        throw new Exception("Get d'une propriété inconnue : $name");
-    }
-
-
-
-   //******************************************************************* */
-
-
-    /**
+     /**
      * Get the value of sm
      */
     public function getSm(): Smartphone
@@ -558,5 +547,28 @@ class EvaluationSm {
         $this->smRow = $smRow;
         return $this;
     }
+
+    //******************************************************************* */
+	function __call($name, $arguments)
+    {
+        throw new Exception("Appel de la méthode non statique inconnue : $name, param : ". implode(', ', $arguments). "\n");
+    }
+
+    static function __callStatic($name, $arguments)
+    {
+        throw new Exception("Appel de la méthode statique inconnue : $name, param : ". implode(', ', $arguments). "\n");
+    }
+
+    function __set($name, $value)
+    {
+        throw new Exception("Set d'une propriété inconnue : $name, param : $value");
+    }
+
+    function __get($name)
+    {
+        throw new Exception("Get d'une propriété inconnue : $name");
+    }
+  //******************************************************************* */
+
 
 }

@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 $path_private_class = $g_contexte_instance->getPath('private/class');
+$path_private       = $g_contexte_instance->getPath('private');
 require_once __DIR__.'/../../class/contexte.class.php';
+require_once $path_private.'/php/smartphones/utilsm.php';
 //require_once $path_private_class.'/paramini.class.php';
 
 /**

@@ -245,7 +245,7 @@ class TrtExcelSm {
             // ********* MAJ de l'excel soumis ***************************************************
             // ***********************************************************************************
             $writer = new Xlsx($spreadsheet);
-            $fileResultName = $this->horodate.'_r_sm_'.$this->fileNameInput;
+            $fileResultName = $this->horodate.'_sm_r_'.$this->fileNameInput;
             $writer->save($this->destDir. $fileResultName);
  
             // ***********************************************************************************
@@ -324,7 +324,7 @@ class TrtExcelSm {
             }
 
             $writerNorm = new Xlsx($spreadsheetNorm);
-            $fileResultNameNorm = $this->horodate.'_n_sm_'.$this->fileNameInput;
+            $fileResultNameNorm = $this->horodate.'_sm_n_'.$this->fileNameInput;
             $writerNorm->save($this->destDir. $fileResultNameNorm);
 
             // ***********************************************************************************
@@ -580,7 +580,7 @@ class TrtExcelSm {
         $this->fileNameInput = $_FILES["upfile"]["name"];
         $this->logger->addLogDebugLine($this->fileNameInput, '==== trt du fichier ======================================');
         //$fileNameInputExt = pathinfo($fileNameInput, PATHINFO_EXTENSION);
-        $this->fileNameOrig = $this->horodate.'_o_sm_'.$this->fileNameInput;
+        $this->fileNameOrig = $this->horodate.'_sm_o_'.$this->fileNameInput;
         $destDir  = $this->destDir;
         $this->destFileOrg = $destDir.$this->fileNameOrig;
         move_uploaded_file($source, $this->destFileOrg);
